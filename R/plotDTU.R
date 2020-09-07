@@ -43,7 +43,7 @@ plotDTU <- function(object, contrast, summaryStat = "model", transcripts = NULL,
 
   ## Stop if some input is not provided or not in the correct format
   stopifnot(class(object) == "SummarizedExperiment")
-  stopifnot(class(contrast) == "matrix")
+  stopifnot(class(contrast)[1] == "matrix")
   stopifnot(class(transcripts) %in% c("character", "NULL"))
   stopifnot(class(genes) %in% c("character", "NULL"))
   stopifnot(class(top.n) %in% c("numeric"))

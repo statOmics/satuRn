@@ -25,7 +25,7 @@
 #'
 #' @export
 
-setMethod("fitQB","SummarizedExperiment",
+setMethod("fitQB.method","SummarizedExperiment",
       function(object,
               speed = FALSE,
               parallel = FALSE,
@@ -34,7 +34,7 @@ setMethod("fitQB","SummarizedExperiment",
           if (ncol(colData(object))==0) stop("error: colData is empty")
           design <- model.matrix(object@metadata$formula, colData(object))
 
-          rowData(object)[["fitQBModels"]] <- fitQB_internal(countData = assay(object),
+          rowData(object)[["fitQBModels"]] <- fitQB(countData = assay(object),
                                                       tx2gene = rowData(object)[,c("isoform_id", "gene_id")],
                                                       design = design,
                                                       speed = speed,

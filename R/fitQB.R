@@ -44,7 +44,7 @@
 #'
 #' @export
 
-fitQB_internal <- function(countData, tx2gene, design, speed, parallel, BPPARAM, verbose){
+fitQB <- function(countData, tx2gene, design, speed, parallel, BPPARAM, verbose){
 
   if (parallel) {
     BiocParallel::register(BPPARAM)
