@@ -1,1 +1,2 @@
-# DTU_Rpackage
+# qbDTU
+Quasi-binomial models for DTU analysis
