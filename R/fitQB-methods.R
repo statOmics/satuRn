@@ -25,7 +25,7 @@
 #'
 #' @export
 
-setMethod("fitQB.method","SummarizedExperiment",
+setMethod("fitQB","SummarizedExperiment",
       function(object,
               speed = FALSE,
               parallel = FALSE,
