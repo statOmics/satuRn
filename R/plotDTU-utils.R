@@ -70,7 +70,7 @@ visualize_DTU <- function(object, topTable, contrast, coefficients, groups, summ
     data$totalCount <- as.numeric(data$totalCount)
     data$variable <- transcript # for adding Tx as a label to the facet
     padj <- format(topTable[transcript,"empirical_FDR"], digits=4)
-    gene <- txInfo[txInfo$isoform_id == transcript,"gene_id"]
+    gene <- tx2gene[tx2gene$isoform_id == transcript,"gene_id"]
     
     # violin plot
     gg <- data %>%
