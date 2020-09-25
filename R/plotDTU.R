@@ -11,7 +11,7 @@
 #'
 #' @param summaryStat Which summaryStatistic for the relative usage of the transcript
 #'      should be displayed. `Character` or `character vector`, must be any of following
-#'      summary statistics; model (default), mean, median and/or weighted mean.
+#'      summary statistics; model (default), mean or median.
 #'
 #' @param transcripts A `character` or `character vector` of transcript IDs,
 #'     to specify which transcripts should be visualized. Can be used together with
@@ -39,31 +39,31 @@
 #'
 #' @export
 
-plotDTU <- function(object, contrast, summaryStat = "model", transcripts = NULL, genes = NULL, top.n = 6){
-
+# Wrapper function, sanity checks and getting all transcripts + the requested contrast in place
+plotDTU <- function(object, contrast, groups, coefficients, summaryStat = "model", transcripts = NULL, genes = NULL, top.n = 6){
+  
   ## Stop if some input is not provided or not in the correct format
   stopifnot(class(object) == "SummarizedExperiment")
-  stopifnot(class(contrast)[1] == "matrix")
   stopifnot(class(transcripts) %in% c("character", "NULL"))
   stopifnot(class(genes) %in% c("character", "NULL"))
   stopifnot(class(top.n) %in% c("numeric"))
-
-  topTable <- rowData(object)[[paste0("fitQBResult_",colnames(contrast))]]
+  
+  topTable <- rowData(object)[[paste0("fitQBResult_",contrast)]] # select the requested contrast
   topTable <- topTable[order(topTable$empirical_pval),]
-
+  
   tx2gene <- data.frame(cbind(rowData(object)[["isoform_id"]],rowData(object)[["gene_id"]]))
   colnames(tx2gene) <- c("isoform_id","gene_id")
   tx2gene$isoform_id <- as.character(tx2gene$isoform_id)
   tx2gene$gene_id <- as.character(tx2gene$gene_id)
-
+  
   # If both transcripts and genes are null
   if (is.null(transcripts) & is.null(genes)){
     transcripts <- rownames(topTable)[1:top.n]
-    return(visualize_DTU(object, topTable, contrast, summaryStat, tx2gene, transcripts))
+    return(visualize_DTU_2(object, topTable, contrast, coefficients, groups, summaryStat, tx2gene, transcripts))
   }
-
+  
   tx_tx <- tx_gene <- c()
-
+  
   # If transcripts is not null
   # By stating this first, transcripts have priority over genes
   if (!is.null(transcripts)){
@@ -75,7 +75,7 @@ plotDTU <- function(object, contrast, summaryStat = "model", transcripts = NULL,
     }
     tx_tx <- transcripts[!transcripts %in% absent]
   }
-
+  
   # If genes is not null
   if (!is.null(genes)){
     absent <- NULL
@@ -86,14 +86,14 @@ plotDTU <- function(object, contrast, summaryStat = "model", transcripts = NULL,
     genes <- genes[!genes %in% absent]
     tx_gene <- tx2gene[tx2gene$gene_id %in% genes, "isoform_id"]
   }
-
+  
   transcripts <- c(tx_tx, tx_gene)
-
+  
   if (length(transcripts) < 1){
     stop("None of the requested transcripts/genes could be retrieved from the provided data")
   }
-
-  plotList <- visualize_DTU(object, topTable, contrast, summaryStat, tx2gene, transcripts)
-
+  
+  # got to the internal visualization function
+  plotList <- visualize_DTU(object, topTable, contrast, coefficients, groups, summaryStat, tx2gene, transcripts)
   return(plotList)
 }
