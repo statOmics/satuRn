@@ -1,12 +1,16 @@
 Package: satuRn
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Scalable Analysis of differential Transcript Usage for bulk and single-Cell RNA-sequencing applications
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Authors@R: c(person("Jeroen", "Gilis", role = c("aut"),
+                     email = "jeroen.gilis@ugent.be"),
+		person("Kristoffer","Vitting-Seerup", role = "ctb"),
+		person("Koen","Van den Berge", role="ctb"),
+		person("Lieven","Clement", role="ctb"))
+Maintainer: Jeroen Gilis <jeroen.gilis@ugent.be>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+License: MIT + file LICENSE
 Collate: 'qbDTU-framework.R' 'constructors.R' 'allGenerics.R'
         'accessors.R' 'fitQB_internal.R' 'fitQB-utils.R' 'fitQB.R' 'topTable.R' 'topTable-utils.R' 'plotDTU.R' 'plotDTU-utils.R'
 Encoding: UTF-8
