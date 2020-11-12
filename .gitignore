@@ -1,2 +1,5 @@
 doc
 Meta
+.Rhistory
+.RData
+.DS_Store
