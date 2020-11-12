@@ -1,18 +1,21 @@
 Package: satuRn
 Type: Package
-Title: Scalable Analysis of differential Transcript Usage for bulk and single-Cell RNA-sequencing applications
+Title: Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell RNA-sequencing Applications
 Version: 0.1.0
-Authors@R: c(person("Jeroen", "Gilis", role = c("aut"),
-                     email = "jeroen.gilis@ugent.be"),
-		person("Kristoffer","Vitting-Seerup", role = "ctb"),
-		person("Koen","Van den Berge", role="ctb"),
-		person("Lieven","Clement", role="ctb"))
 Maintainer: Jeroen Gilis <jeroen.gilis@ugent.be>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
+Depends: R (>= 3.6.0)
+Imports: locfdr,
+	 SummarizedExperiment,
+	 BiocParallel,
+	 limma,
+	 pbapply,
+	 ggplot2,
+	 boot
 License: MIT + file LICENSE
-Collate: 'qbDTU-framework.R' 'constructors.R' 'allGenerics.R'
-        'accessors.R' 'fitQB_internal.R' 'fitQB-utils.R' 'fitQB.R' 'topTable.R' 'topTable-utils.R' 'plotDTU.R' 'plotDTU-utils.R'
+Collate: 'satuRn-framework.R' 'constructors.R' 'allGenerics.R'
+        'accessors.R' 'fitQB.R' 'testDTU.R' 'plotDTU.R'
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.0
