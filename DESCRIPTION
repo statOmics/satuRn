@@ -13,8 +13,12 @@ Imports: locfdr,
 	 pbapply,
 	 ggplot2,
 	 boot
+Suggests:
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
 License: MIT + file LICENSE
-Collate: 'satuRn-framework.R' 'constructors.R' 'allGenerics.R'
+Collate: 'data.R' 'satuRn-framework.R' 'constructors.R' 'allGenerics.R'
         'accessors.R' 'fitQB.R' 'testDTU.R' 'plotDTU.R'
 Encoding: UTF-8
 LazyData: true
