@@ -7,8 +7,6 @@
 
 [![Lifecycle:
 maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
-[![BioC
-status](http://www.bioconductor.org/shields/build/release/bioc/satuRn.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/satuRn)
 [![R build
 status](https://github.com/jgilis/satuRn/workflows/R-CMD-check-bioc/badge.svg)](https://github.com/jgilis/satuRn/actions)
 <!-- badges: end -->
