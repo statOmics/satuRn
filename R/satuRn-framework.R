@@ -1,50 +1,54 @@
 #' @title The StatModel class for satuRn
-#' 
+#'
 #' @description
 #'
 #' The `StatModel` class contains a statistical model generate by the DTU analysis.
 #'
 #' Models are created by the dedicated user-level function `fitDTU()`
-#' or manually, using the `StatModel()` constructor. 
-#' In the former case, each quantitative feature is assigned its statistical model 
+#' or manually, using the `StatModel()` constructor.
+#' In the former case, each quantitative feature is assigned its statistical model
 #' and the models are stored as a variable in a `DataFrame` object, that in turn will
 #' be stored in the `RowData` slot of an `SummarizedExperiment object`.
-#' 
+#'
 #' @slot type `character(1)` defining type of the used model. Default is
 #'     `"fitError"`, i.e. a error model. If not an error, class type will be `"glm"`.
 #' @slot params A `list()` containing the parameters of the fitted model.
 #' @slot varPosterior `numeric()` of posterior variance.
 #' @slot dfPosterior `numeric()` of posterior degrees of freedom.
-#' 
+#'
 #' @rdname satuRn-framework
-#' 
+#'
 #' @author Jeroen Gilis
-#' 
+#'
 #' @export
-#' 
+#'
 #' @examples
 #' ## A fully specified dummy model
-#' myModel <- StatModel(type = "glm",
-#'                      params = list(x = 3, y = 7, b = 4),
-#'                      varPosterior = c(0.1, 0.2, 0.3),
-#'                      dfPosterior = c(6, 7, 8))
+#' myModel <- StatModel(
+#'     type = "glm",
+#'     params = list(x = 3, y = 7, b = 4),
+#'     varPosterior = c(0.1, 0.2, 0.3),
+#'     dfPosterior = c(6, 7, 8)
+#' )
 #' myModel
 #' myModel@params
-#' 
 .StatModel <- setClass("StatModel",
-                       slots = c(type = "character",
-                                 params = "list",
-                                 varPosterior = "numeric",
-                                 dfPosterior = "numeric"))
+    slots = c(
+        type = "character",
+        params = "list",
+        varPosterior = "numeric",
+        dfPosterior = "numeric"
+    )
+)
 
 ##' @rdname StatModel
-##' 
+##'
 ##' @export
-StatModel <- function(type="fitError",params=list(),varPosterior=is.numeric(NA),dfPosterior=is.numeric(NA)) {
-  out<-new("StatModel")
-  out@type=type
-  out@params=params
-  out@varPosterior=varPosterior
-  out@dfPosterior=dfPosterior
-  return(out)
+StatModel <- function(type = "fitError", params = list(), varPosterior = is.numeric(NA), dfPosterior = is.numeric(NA)) {
+    out <- new("StatModel")
+    out@type <- type
+    out@params <- params
+    out@varPosterior <- varPosterior
+    out@dfPosterior <- dfPosterior
+    return(out)
 }

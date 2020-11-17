@@ -9,8 +9,8 @@
 The `StatModel` class contains a statistical model generate by the DTU analysis.
 
 Models are created by the dedicated user-level function `fitDTU()`
-or manually, using the `StatModel()` constructor. 
-In the former case, each quantitative feature is assigned its statistical model 
+or manually, using the `StatModel()` constructor.
+In the former case, each quantitative feature is assigned its statistical model
 and the models are stored as a variable in a `DataFrame` object, that in turn will
 be stored in the `RowData` slot of an `SummarizedExperiment object`.
 }
@@ -29,13 +29,14 @@ be stored in the `RowData` slot of an `SummarizedExperiment object`.
 
 \examples{
 ## A fully specified dummy model
-myModel <- StatModel(type = "glm",
-                     params = list(x = 3, y = 7, b = 4),
-                     varPosterior = c(0.1, 0.2, 0.3),
-                     dfPosterior = c(6, 7, 8))
+myModel <- StatModel(
+    type = "glm",
+    params = list(x = 3, y = 7, b = 4),
+    varPosterior = c(0.1, 0.2, 0.3),
+    dfPosterior = c(6, 7, 8)
+)
 myModel
 myModel@params
-
 }
 \author{
 Jeroen Gilis

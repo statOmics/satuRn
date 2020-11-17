@@ -43,56 +43,59 @@ txs <- transcripts(ahEdb)
 # Data wrangling
 
 ```{r}
-Tasic_metadata_vignette$group <- paste(Tasic_metadata_vignette$brain_region,Tasic_metadata_vignette$cluster,sep=".")
+Tasic_metadata_vignette$group <- paste(Tasic_metadata_vignette$brain_region, Tasic_metadata_vignette$cluster, sep = ".")
 
 # Get the transcript information in correct format
 txInfo <- as.data.frame(matrix(data = NA, nrow = length(txs), ncol = 2))
-colnames(txInfo) <- c("isoform_id","gene_id")
+colnames(txInfo) <- c("isoform_id", "gene_id")
 txInfo$isoform_id <- txs$tx_id
 txInfo$gene_id <- txs$gene_id
 rownames(txInfo) <- txInfo$isoform_id
 
 # Remove transcripts that are the only isoform expressed of a certain gene
 rownames(Tasic_counts_vignette) <- sub("\\..*", "", rownames(Tasic_counts_vignette))
-txInfo <- txInfo[txInfo$isoform_id %in% rownames(Tasic_counts_vignette),]
-txInfo <- subset(txInfo,duplicated(gene_id) | duplicated(gene_id, fromLast=TRUE))
+txInfo <- txInfo[txInfo$isoform_id %in% rownames(Tasic_counts_vignette), ]
+txInfo <- subset(txInfo, duplicated(gene_id) | duplicated(gene_id, fromLast = TRUE))
 
-Tasic_counts_vignette <- Tasic_counts_vignette[which(rownames(Tasic_counts_vignette) %in% txInfo$isoform_id),]
+Tasic_counts_vignette <- Tasic_counts_vignette[which(rownames(Tasic_counts_vignette) %in% txInfo$isoform_id), ]
 ```
 
 # Filtering
 
 ```{r}
 filter_all_edgeR_stringent <- filterByExpr(Tasic_counts_vignette,
-             design = NULL,
-             group = Tasic_metadata_vignette$brain_region,
-             lib.size = NULL,
-             min.count = 10,
-             min.total.count = 0,
-             large.n = 0,
-             min.prop = 0.7)
+    design = NULL,
+    group = Tasic_metadata_vignette$brain_region,
+    lib.size = NULL,
+    min.count = 10,
+    min.total.count = 0,
+    large.n = 0,
+    min.prop = 0.7
+)
 
 table(filter_all_edgeR_stringent)
-Tasic_counts_vignette <- Tasic_counts_vignette[filter_all_edgeR_stringent,]
+Tasic_counts_vignette <- Tasic_counts_vignette[filter_all_edgeR_stringent, ]
 
 # Update txInfo according to the filtering procedure
-txInfo <- txInfo[which(txInfo$isoform_id %in% rownames(Tasic_counts_vignette)),]
+txInfo <- txInfo[which(txInfo$isoform_id %in% rownames(Tasic_counts_vignette)), ]
 
 # remove transcripts that are the only isoform expressed of a certain gene (after filtering)
-txInfo <- subset(txInfo,duplicated(gene_id) | duplicated(gene_id, fromLast=TRUE))
+txInfo <- subset(txInfo, duplicated(gene_id) | duplicated(gene_id, fromLast = TRUE))
 
-Tasic_counts_vignette <- Tasic_counts_vignette[which(rownames(Tasic_counts_vignette) %in% txInfo$isoform_id),]
+Tasic_counts_vignette <- Tasic_counts_vignette[which(rownames(Tasic_counts_vignette) %in% txInfo$isoform_id), ]
 
 # satuRn requires the transcripts in the rowData and the transcripts in the count matrix to be in the same order.
-txInfo <- txInfo[match(rownames(Tasic_counts_vignette),txInfo$isoform_id),]
+txInfo <- txInfo[match(rownames(Tasic_counts_vignette), txInfo$isoform_id), ]
 ```
 
 # Generate SummarizeExperiment
 
 ```{r, message=F}
-sumExp <- SummarizedExperiment::SummarizedExperiment(assays=list(counts=Tasic_counts_vignette),
-                                                     colData = Tasic_metadata_vignette, 
-                                                     rowData = txInfo)
+sumExp <- SummarizedExperiment::SummarizedExperiment(
+    assays = list(counts = Tasic_counts_vignette),
+    colData = Tasic_metadata_vignette,
+    rowData = txInfo
+)
 ```
 
 # Create design matrix
@@ -107,10 +110,12 @@ Runs ± 10 seconds.
 
 ```{r}
 Sys.time()
-sumExp <- satuRn::fitDTU(object = sumExp,
-                         parallel = TRUE,
-                         BPPARAM = BiocParallel::bpparam(),
-                         verbose = TRUE)
+sumExp <- satuRn::fitDTU(
+    object = sumExp,
+    parallel = TRUE,
+    BPPARAM = BiocParallel::bpparam(),
+    verbose = TRUE
+)
 Sys.time()
 ```
 
@@ -120,22 +125,22 @@ Sys.time()
 
 ```{r}
 group <- as.factor(Tasic_metadata_vignette$group)
-design <- model.matrix(~0+group)
+design <- model.matrix(~ 0 + group)
 colnames(design) <- levels(group)
 
 L <- matrix(0, ncol = 2, nrow = ncol(design))
 rownames(L) <- colnames(design)
-colnames(L) <- c("Contrast1","Contrast2")
+colnames(L) <- c("Contrast1", "Contrast2")
 
-L[c("VISp.L5_IT_VISp_Hsd11b1_Endou","ALM.L5_IT_ALM_Tnc"), 1] <- c(1,-1)
-L[c("VISp.L5_IT_VISp_Hsd11b1_Endou","ALM.L5_IT_ALM_Tmem163_Dmrtb1"), 2] <- c(1,-1)
+L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tnc"), 1] <- c(1, -1)
+L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tmem163_Dmrtb1"), 2] <- c(1, -1)
 L
 ```
 
 ## Test for DTU
 
 ```{r}
-sumExp <- satuRn::testDTU(object = sumExp, contrasts = L, plot=T, sort = T)
+sumExp <- satuRn::testDTU(object = sumExp, contrasts = L, plot = T, sort = T)
 ```
 
 ```{r}
@@ -152,15 +157,15 @@ head(rowData(sumExp)[["fitQBResult_Contrast2"]])
 group1 <- rownames(colData(sumExp))[colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
 group2 <- rownames(colData(sumExp))[colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
 
-plots <- satuRn::plotDTU(object = sumExp, contrast = "Contrast1", groups = list(group1,group2), coefficients = list(c(0,0,1),c(0,1,0)), summaryStat = "model", transcripts = c("ENSMUST00000081554","ENSMUST00000195963","ENSMUST00000132062"),genes = NULL,top.n = 6)
+plots <- satuRn::plotDTU(object = sumExp, contrast = "Contrast1", groups = list(group1, group2), coefficients = list(c(0, 0, 1), c(0, 1, 0)), summaryStat = "model", transcripts = c("ENSMUST00000081554", "ENSMUST00000195963", "ENSMUST00000132062"), genes = NULL, top.n = 6)
 
 # to have same layout as in our paper
 for (i in seq_along(plots)) {
-  current_plot <- plots[[i]]  + 
-  scale_fill_manual(labels = c("VISp","ALM"), values=c("royalblue4", "firebrick")) +
-  scale_x_discrete(labels= c("Hsd11b1_Endou","Tnc"))
-  
-  print(current_plot)
+    current_plot <- plots[[i]] +
+        scale_fill_manual(labels = c("VISp", "ALM"), values = c("royalblue4", "firebrick")) +
+        scale_x_discrete(labels = c("Hsd11b1_Endou", "Tnc"))
+
+    print(current_plot)
 }
 ```
 

@@ -49,15 +49,14 @@ was specified, this argument leads to the visualization of the `n` most
 significant DTU transcripts in the contrast. Defaults to 6 transcripts}
 }
 \value{
-A ggplot object that can be directly displayed in the current R session 
+A ggplot object that can be directly displayed in the current R session
         or stored in a list.
 }
 \description{
 Plot function to visualize differential transcript usage (DTU)
 }
 \examples{
-#TODO
-
+# TODO
 }
 \author{
 Jeroen Gilis

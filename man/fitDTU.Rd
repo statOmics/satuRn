@@ -32,8 +32,7 @@ by rowData(object)[["fitDTUModels"]].
 Parameter estimation of quasi-binomial models.
 }
 \examples{
-#TODO
-
+# TODO
 }
 \author{
 Jeroen Gilis

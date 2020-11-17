@@ -14,7 +14,7 @@ distribution will bee displayed.}
 
 \item{sort}{`boolean(1)` Logical, defaults to FALSE. If set to TRUE, the output}
 
-\item{models}{A `SummarizedExperiment` instance containing a list of objects of 
+\item{models}{A `SummarizedExperiment` instance containing a list of objects of
 the `StatModel` class as obtained by the `fitDTU` function of the `satuRn` package.}
 
 \item{contrast}{`numeric` matrix specifying one or more contrasts of
@@ -25,15 +25,14 @@ The column names of the matrix will be used to construct names to store
 the results in the rowData of the SummarizedExperiment.}
 }
 \value{
-An updated `SummarizedExperiment` that contains the `Dataframes` displaying 
+An updated `SummarizedExperiment` that contains the `Dataframes` displaying
      the significance of DTU for each transcript in each contrast of interest.
 }
 \description{
 Function to test for differential transcript usage (DTU)
 }
 \examples{
-#TODO
-
+# TODO
 }
 \author{
 Jeroen Gilis

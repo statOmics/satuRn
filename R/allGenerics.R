@@ -1,16 +1,14 @@
 #' @export
-setGeneric("getModel",function(object) standardGeneric("getModel"))
+setGeneric("getModel", function(object) standardGeneric("getModel"))
 #' @export
-setGeneric("getDF",function(object) standardGeneric("getDF"))
+setGeneric("getDF", function(object) standardGeneric("getDF"))
 #' @export
-setGeneric("getDfPosterior",function(object) standardGeneric("getDfPosterior"))
+setGeneric("getDfPosterior", function(object) standardGeneric("getDfPosterior"))
 #' @export
-setGeneric("calcDispersion",function(model,type) standardGeneric("calcDispersion"))
+setGeneric("calcDispersion", function(model, type) standardGeneric("calcDispersion"))
 #' @export
-setGeneric("getDispersion",function(object) standardGeneric("getDispersion"))
+setGeneric("getDispersion", function(object) standardGeneric("getDispersion"))
 #' @export
-setGeneric("getCoef",function(object) standardGeneric("getCoef"))
+setGeneric("getCoef", function(object) standardGeneric("getCoef"))
 #' @export
-setGeneric("fitDTU",function(object,...) standardGeneric("fitDTU"))
-
-
+setGeneric("fitDTU", function(object, ...) standardGeneric("fitDTU"))

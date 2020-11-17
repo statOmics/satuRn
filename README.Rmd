@@ -71,7 +71,7 @@ Below is the citation output from using `citation('satuRn')` in R. Please
 run this yourself to check for any updates on how to cite __satuRn__.
 
 ```{r 'citation', eval = requireNamespace('satuRn')}
-print(citation('satuRn'), bibtex = TRUE)
+print(citation("satuRn"), bibtex = TRUE)
 ```
 
 Please note that the `satuRn` was only made possible thanks to many other R and bioinformatics software authors, which are cited either in the vignettes and/or the paper(s) describing this package.

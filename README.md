@@ -67,7 +67,7 @@ Below is the citation output from using `citation('satuRn')` in R.
 Please run this yourself to check for any updates on how to cite
 **satuRn**.
 
-    print(citation('satuRn'), bibtex = TRUE)
+    print(citation("satuRn"), bibtex = TRUE)
     #> 
     #> jgilis (2020). _Scalable Analysis of Differential Transcript Usage for
     #> Bulk and Single-Cell RNA-sequencing Applications_. doi:
