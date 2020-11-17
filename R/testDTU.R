@@ -85,19 +85,24 @@ p.adjust_empirical <- function(pvalues,tvalues,plot=FALSE){
 #' Test function to obtain a top list of transcripts that are differentially used
 #' in the contrast of interest
 #'
-#' @description Test function to assesss differentially transcript usage (DTU)
+#' @description Function to test for differential transcript usage (DTU)
 #'
-#' @param models A `SummarizedExperiment` containing a list of objects of the `StatModel`
-#'      class as obtained by the `fitDTU` function of the `satuRn` package.
+#' @param models A `SummarizedExperiment` instance containing a list of objects of 
+#'       the `StatModel` class as obtained by the `fitDTU` function of the `satuRn` package.
 #'
-#' @param contrast A `vector` or `matrix` that specifies the contrast of interest.
+#' @param contrast `numeric` matrix specifying one or more contrasts of
+#'        the linear model coefficients to be tested.
+#'        The rownames of the matrix should be equal to the names
+#'        of parameters of the model that are involved in the contrast.
+#'        The column names of the matrix will be used to construct names to store
+#'        the results in the rowData of the SummarizedExperiment.
 #'
 #' @param plot `boolean(1)` Logical, defaults to FALSE. If set to TRUE,
 #'      a plot of the histogram of the empirical z-scores and the standard normal
-#'      distribution.
+#'      distribution will bee displayed.
 #'
 #' @param sort `boolean(1)` Logical, defaults to FALSE. If set to TRUE, the output
-#       output of the topTable test funcion is sorted accoring to the emprical p-values.
+#       output of the topTable test function is sorted according to the empirical p-values.
 #'
 #' @examples #TODO
 #'
@@ -114,7 +119,7 @@ p.adjust_empirical <- function(pvalues,tvalues,plot=FALSE){
 
 testDTU <- function(object,contrasts,plot=FALSE,sort=FALSE) {
 
-  models <- rowData(object)[["fitQBModels"]] # call rowData only once
+  models <- rowData(object)[["fitDTUModels"]] # call rowData only once
 
   for (i in 1:ncol(contrasts)) {
 
@@ -139,7 +144,7 @@ testDTU <- function(object,contrasts,plot=FALSE,sort=FALSE) {
     if (sort == TRUE) {
       result_contrast <- result_contrast[order(result_contrast$empirical_pval),]
     }
-    rowData(object)[[paste0("fitQBResult_",colnames(contrasts)[i])]] <- result_contrast
+    rowData(object)[[paste0("fitDTUResult_",colnames(contrasts)[i])]] <- result_contrast
 
   }
   return(object)

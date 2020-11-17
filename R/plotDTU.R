@@ -77,8 +77,7 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
     gene <- tx2gene[tx2gene$isoform_id == transcript,"gene_id"]
     
     # violin plot
-    gg <- data %>%
-      ggplot(aes(x=group,y=usage,fill=group,width=totalCount)) +
+    gg <- ggplot(data= data, aes(x=group,y=usage,fill=group,width=totalCount)) +
       geom_violin()  +
       geom_point(data = data, aes(x=group,y=usage, size=totalCount), position = position_jitterdodge(jitter.width = 0.7,jitter.height = 0, dodge.width = 0.9)) + scale_radius(name = "expression",range = c(0, 5)) +
       ylim(c(-0.05,1.05)) +
@@ -93,7 +92,7 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
     # add summarystats
     if ("model" %in% summaryStat) {
       
-      model_estimates <- rowData(object)[["fitQBModels"]][transcript][[1]]@params$coefficients
+      model_estimates <- rowData(object)[["fitDTUModels"]][transcript][[1]]@params$coefficients
       
       coefs <- do.call(rbind,coefficients)
       requested_estimates <- boot::inv.logit(coefs %*% model_estimates)
@@ -130,7 +129,14 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 #'      this `satuRn` package, respectively.
 #'
 #' @param contrast Specifies the specific contrast for which the visualization should be
-#'      returned.
+#'      returned. This should be one of the column names of the contrast matrix that
+#'      was provided to the `testDTU` function.
+#'
+#'@param groups A `list` containing two character vectors. Each character vector contains
+#'      the names (sample names or cell names) of one of the groups in the contrast.
+#'      
+#'@param coefficients A `list` containing two numeric vectors. Each numeric vector specifies
+#'      the model coefficient of the corresponding groups in the selected contrast.
 #'
 #' @param summaryStat Which summaryStatistic for the relative usage of the transcript
 #'      should be displayed. `Character` or `character vector`, must be any of following
@@ -152,7 +158,8 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 #'
 #' @examples #TODO
 #'
-#' @return A ggplot object that can be directly displayed in the current R session or stored in a list.
+#' @return A ggplot object that can be directly displayed in the current R session 
+#'         or stored in a list.
 #'
 #' @rdname plotDTU
 #'
@@ -171,7 +178,7 @@ plotDTU <- function(object, contrast, groups, coefficients, summaryStat = "model
   stopifnot(class(genes) %in% c("character", "NULL"))
   stopifnot(class(top.n) %in% c("numeric"))
   
-  topTable <- rowData(object)[[paste0("fitQBResult_",contrast)]] # select the requested contrast
+  topTable <- rowData(object)[[paste0("fitDTUResult_",contrast)]] # select the requested contrast
   topTable <- topTable[order(topTable$empirical_pval),]
   
   tx2gene <- data.frame(cbind(rowData(object)[["isoform_id"]],rowData(object)[["gene_id"]]))

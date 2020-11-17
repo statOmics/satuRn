@@ -6,20 +6,37 @@
 \alias{.StatModel}
 \title{The StatModel class for satuRn}
 \description{
-classes for satuRn
+The `StatModel` class contains a statistical model generate by the DTU analysis.
+
+Models are created by the dedicated user-level function `fitDTU()`
+or manually, using the `StatModel()` constructor. 
+In the former case, each quantitative feature is assigned its statistical model 
+and the models are stored as a variable in a `DataFrame` object, that in turn will
+be stored in the `RowData` slot of an `SummarizedExperiment object`.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{type}}{The type of the used model}
+\item{\code{type}}{`character(1)` defining type of the used model. Default is
+`"fitError"`, i.e. a error model. If not an error, class type will be `"glm"`.}
 
-\item{\code{params}}{A list containing information of the used model}
+\item{\code{params}}{A `list()` containing the parameters of the fitted model.}
 
-\item{\code{varPosterior}}{A vector of posterior variance}
+\item{\code{varPosterior}}{`numeric()` of posterior variance.}
 
-\item{\code{dfPosterior}}{A vector of posterior degrees of freedom}
+\item{\code{dfPosterior}}{`numeric()` of posterior degrees of freedom.}
 }}
 
+\examples{
+## A fully specified dummy model
+myModel <- StatModel(type = "glm",
+                     params = list(x = 3, y = 7, b = 4),
+                     varPosterior = c(0.1, 0.2, 0.3),
+                     dfPosterior = c(6, 7, 8))
+myModel
+myModel@params
+
+}
 \author{
 Jeroen Gilis
 }

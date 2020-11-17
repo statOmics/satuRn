@@ -21,7 +21,14 @@ of the DTU analysis as obtained by the `fitDTU` and `testDTU` function from
 this `satuRn` package, respectively.}
 
 \item{contrast}{Specifies the specific contrast for which the visualization should be
-returned.}
+returned. This should be one of the column names of the contrast matrix that
+was provided to the `testDTU` function.}
+
+\item{groups}{A `list` containing two character vectors. Each character vector contains
+the names (sample names or cell names) of one of the groups in the contrast.}
+
+\item{coefficients}{A `list` containing two numeric vectors. Each numeric vector specifies
+the model coefficient of the corresponding groups in the selected contrast.}
 
 \item{summaryStat}{Which summaryStatistic for the relative usage of the transcript
 should be displayed. `Character` or `character vector`, must be any of following
@@ -42,7 +49,8 @@ was specified, this argument leads to the visualization of the `n` most
 significant DTU transcripts in the contrast. Defaults to 6 transcripts}
 }
 \value{
-A ggplot object that can be directly displayed in the current R session or stored in a list.
+A ggplot object that can be directly displayed in the current R session 
+        or stored in a list.
 }
 \description{
 Plot function to visualize differential transcript usage (DTU)

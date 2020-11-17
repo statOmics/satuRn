@@ -50,8 +50,8 @@ getOtherCount <- function(countData, tx2gene){
   return(otherCount)
 }
 
-# Worker function that fits quasi-binomial models, wrapped inside the fitQB function
-fitQB_internal <- function(countData, tx2gene, design, parallel, BPPARAM, verbose){
+# Worker function that fits quasi-binomial models, wrapped inside the fitDTU function
+fitDTU_internal <- function(countData, tx2gene, design, parallel, BPPARAM, verbose){
 
   if (parallel) {
     BiocParallel::register(BPPARAM)
@@ -136,23 +136,28 @@ fitQB_internal <- function(countData, tx2gene, design, parallel, BPPARAM, verbos
   return(models)
 }
 
-
-
 #' Function to fit quasi-binomial models
 #'
 #' @description Parameter estimation of quasi-binomial models.
 #'
-#' @param object `SummarizedExperiment` instance
+#' @param object A `SummarizedExperiment` instance
 #'
-#' @param modelColumnName `character` to indicate the variable name that is used
-#'        to store the fitQB models in the rowData of the SummarizedExperiment
-#'        instance or of the assay of the Features instance. Default is "fitQBModels".
+#' @param parallel Logical, defaults to FALSE. Set to TRUE if you want to
+#' parallellize the fitting.
+#' 
+#' @param BPPARAM object of class \code{bpparamClass} that specifies the
+#'   back-end to be used for computations. See
+#'   \code{bpparam} in \code{BiocParallel} package for details.  
+#'   
+#' @param verbose Logical, should progress be printed?   
 #'
 #' @examples #TODO
 #'
-#' @return A list of objects of the `StatModel` class.
+#' @return An updated `SummarizedExperiment` instance. The instance now includes
+#' a new list of models ("fitDTUModels") in its rowData slot, which can be accessed
+#' by rowData(object)[["fitDTUModels"]].
 #'
-#' @rdname fitQB
+#' @rdname fitDTU
 #'
 #' @author Jeroen Gilis
 #'
@@ -165,7 +170,7 @@ fitQB_internal <- function(countData, tx2gene, design, parallel, BPPARAM, verbos
 #' @export
 
 # Wrapper function
-setMethod("fitQB","SummarizedExperiment",
+setMethod("fitDTU","SummarizedExperiment",
       function(object,
               parallel = FALSE,
               BPPARAM = BiocParallel::bpparam(),
@@ -173,7 +178,7 @@ setMethod("fitQB","SummarizedExperiment",
           if (ncol(colData(object))==0) stop("error: colData is empty")
           design <- model.matrix(object@metadata$formula, colData(object))
 
-          rowData(object)[["fitQBModels"]] <- fitQB_internal(countData = assay(object),
+          rowData(object)[["fitDTUModels"]] <- fitDTU_internal(countData = assay(object),
                                                       tx2gene = rowData(object)[,c("isoform_id", "gene_id")],
                                                       design = design,
                                                       parallel = parallel,

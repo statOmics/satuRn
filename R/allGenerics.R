@@ -11,9 +11,6 @@ setGeneric("getDispersion",function(object) standardGeneric("getDispersion"))
 #' @export
 setGeneric("getCoef",function(object) standardGeneric("getCoef"))
 #' @export
-setGeneric("fitQB",function(object,...) standardGeneric("fitQB"))
-
-# I currently only export the accessors fucntions;
-# should probably add the other functions as well
+setGeneric("fitDTU",function(object,...) standardGeneric("fitDTU"))
 
 

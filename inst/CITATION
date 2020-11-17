@@ -1,0 +1,29 @@
+pkgVer <- function(pkg) {
+    if (!exists("meta") || is.null(meta)) meta <- packageDescription(pkg)
+    ver <- meta$Version
+    paste0('https://github.com/jgilis/', pkg, ' - R package version ', ver)
+}
+
+c(
+
+    bibentry(bibtype="manual",
+        title = "Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell RNA-sequencing Applications",
+        author = personList(
+            as.person("jgilis")
+        ),
+        year = format(Sys.Date(), "%Y"),
+        url = "http://www.bioconductor.org/packages/satuRn",
+        note = pkgVer('satuRn'),
+        doi = '10.18129/B9.bioc.satuRn'
+    ),
+    bibentry(bibtype="article",
+        title = "Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell RNA-sequencing Applications",
+        author = personList(
+            as.person("jgilis")
+        ),
+        year = 2020,
+        journal = "bioRxiv",
+        doi = "10.1101/TODO",
+        url = "https://www.biorxiv.org/content/10.1101/TODO"
+    )
+)

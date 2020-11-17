@@ -10,13 +10,13 @@ vignette: >
 # Load libraries
 
 ```{r,message=FALSE,warning=FALSE}
-devtools::install_local("/Users/jg/Desktop/PhD/DTU_project/satuRn", force = TRUE, quiet = FALSE)
-library(satuRnRestore)
+library(satuRn)
 library(AnnotationHub)
 library(ensembldb)
 library(edgeR)
 library(SummarizedExperiment)
 library(ggplot2)
+library(dplyr)
 ```
 
 # Load counts
@@ -33,7 +33,7 @@ data(Tasic_metadata_vignette)
 
 # Import transcript information
 
-```{r, message=FALSE}
+```{r, message=FALSE, warning=FALSE}
 ah <- AnnotationHub() # Load the annotation resource.
 all <- query(ah, "EnsDb") # Query for all available EnsDb databases
 ahEdb <- all[["AH75036"]] # for Mus musculus
@@ -107,10 +107,10 @@ Runs ± 10 seconds.
 
 ```{r}
 Sys.time()
-sumExp <- satuRn::fitQB(object = sumExp,
-                       parallel = TRUE,
-                       BPPARAM = BiocParallel::bpparam(),
-                       verbose = TRUE)
+sumExp <- satuRn::fitDTU(object = sumExp,
+                         parallel = TRUE,
+                         BPPARAM = BiocParallel::bpparam(),
+                         verbose = TRUE)
 Sys.time()
 ```
 
