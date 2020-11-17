@@ -24,7 +24,7 @@ getTotalCount <- function(countData, tx2gene){
 # Helper function for creating the facet header in the figure
 label_facet <- function(txID, padj){
   lev <- levels(as.factor(txID))
-  lab <- paste0("empFDR = ", padj)
+  lab <- paste0("satuRn empFDR = ", padj)
   names(lab) <- lev
   return(lab)
 }
@@ -82,7 +82,7 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
       geom_violin()  +
       geom_point(data = data, aes(x=group,y=usage, size=totalCount), position = position_jitterdodge(jitter.width = 0.7,jitter.height = 0, dodge.width = 0.9)) + scale_radius(name = "expression",range = c(0, 5)) +
       ylim(c(-0.05,1.05)) +
-      ylab("proportion of usage") +
+      ylab("Fraction of usage") +
       theme_bw() +
       ggtitle(paste0(transcript, "  -  ", gene)) +
       theme(plot.title = element_text(size = 9.5,face="bold")) +

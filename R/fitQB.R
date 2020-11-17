@@ -1,6 +1,6 @@
 # Compute the dispersion parameter of the quasi-binomial GLM
 calcDispersion <- function(model,type){
-  
+
   model$dispersion <- NA
   if(type != "fitError") {
     df.r <- model$df.residual
@@ -13,7 +13,7 @@ calcDispersion <- function(model,type){
 
 # Compute the unscaled variance-covariance matrix of the quasi-binomial GLM
 calcVcovUnscaled <- function(model,type) {
-  
+
   if (!type=="fitError") {
     p1 <- 1L:model$rank
     p <- length(model$coef)
@@ -36,7 +36,7 @@ getOtherCount <- function(countData, tx2gene){
   geneForEachTx <- as.character(geneForEachTx)
   stopifnot(class(geneForEachTx) %in% c("character", "factor"))
   stopifnot(length(geneForEachTx) == nrow(countData))
-  
+
   forCycle <- split(1:nrow(countData), as.character(geneForEachTx))
   all <- lapply(forCycle, function(i) {
     sct <- countData[i, , drop = FALSE]
@@ -44,7 +44,7 @@ getOtherCount <- function(countData, tx2gene){
     rownames(rs) <- rownames(sct)
     rs
   })
-  
+
   otherCount <- do.call(rbind, all)
   otherCount <- otherCount[rownames(countData), ]
   return(otherCount)
@@ -52,7 +52,7 @@ getOtherCount <- function(countData, tx2gene){
 
 # Worker function that fits quasi-binomial models, wrapped inside the fitQB function
 fitQB_internal <- function(countData, tx2gene, design, parallel, BPPARAM, verbose){
-  
+
   if (parallel) {
     BiocParallel::register(BPPARAM)
     if (verbose) {
@@ -62,25 +62,25 @@ fitQB_internal <- function(countData, tx2gene, design, parallel, BPPARAM, verbos
       BPPARAM$progressbar = TRUE
     }
   }
-  
+
   stopifnot(class(countData)[1] %in% c("matrix", "data.frame"))
   countData <- as.matrix(countData)
-  
+
   # Get the "other" counts, i.e. the counts for all other transcripts belonging to
   # the same gene as the current transcript
   otherCount <- getOtherCount(countData, tx2gene)
   stopifnot(all(rownames(countData) %in% rownames(otherCount)))
-  
+
   # The actual fit function
   fitQuasiLogistic <- function(countData, otherCount, design){
-    
+
     countsAll <- cbind(countData, otherCount)
     drop <- rowSums(countsAll) == 0 ## gene count is zero in this cell
     countsAll <- countsAll + 1
     countsAll[drop,] <- NA
-    
+
     model <- try(glm(countsAll ~ -1+design, family="quasibinomial"))
-    
+
     if (class(model)[1]=="try-error"){
       model <- list()
       type <- "fitError"
@@ -89,20 +89,20 @@ fitQB_internal <- function(countData, tx2gene, design, parallel, BPPARAM, verbos
       type <- "glm"
       class(model) <- "list"
     }
-    
+
     model <- satuRn:::calcDispersion(model,type) ## calculate disp slot
     model <- satuRn:::calcVcovUnscaled(model,type) ## calculate vcov slot
-    
+
     model <- model[c("coefficients","df.residual", "dispersion", "vcovUnsc")]
-    
-    
+
+
     .out  <- .StatModel(type = type,
                         params = model,
                         varPosterior = as.numeric(NA),
                         dfPosterior = as.numeric(NA))
     return(.out)
   }
-  
+
   # Fit the models
   if (parallel) {
     models <- BiocParallel::bplapply(seq_len(nrow(countData)), function(i) fitQuasiLogistic(countData=countData[i,], otherCount=otherCount[i,], design = design), BPPARAM = BPPARAM
@@ -116,22 +116,22 @@ fitQB_internal <- function(countData, tx2gene, design, parallel, BPPARAM, verbos
       )
     }
   }
-  
+
   # retain transcript names
   names(models) <- rownames(countData)
-  
+
   # Squeeze a set of sample variances together by computing empirical Bayes posterior means
-  hlp <- limma::squeezeVar(var = unlist(sapply(models, getDispersion)),
-                           df = unlist(sapply(models, getDF)),
+  hlp <- limma::squeezeVar(var = unlist(sapply(models, satuRn:::getDispersion)),
+                           df = unlist(sapply(models, satuRn:::getDF)),
                            robust = FALSE)
-  
+
   # put variance and degrees of freedom in appropriate slots
   for (i in 1:length(models)) {
     mydf <- hlp$df.prior + getDF(models[[i]])
     models[[i]]@varPosterior <- as.numeric(hlp$var.post[i])
     models[[i]]@dfPosterior <- as.numeric(mydf)
   }
-  
+
   # return object of class StatModel
   return(models)
 }

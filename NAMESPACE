@@ -11,11 +11,9 @@ export(getModel)
 export(plotDTU)
 export(testDTU)
 exportClasses(StatModel)
-
 exportMethods(fitQB)
-
-import(ggplot2)
 import(SummarizedExperiment)
+import(ggplot2)
 importFrom(BiocParallel,bplapply)
 importFrom(BiocParallel,register)
 importFrom(limma,squeezeVar)
