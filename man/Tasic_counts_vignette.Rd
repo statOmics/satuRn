@@ -5,7 +5,7 @@
 \alias{Tasic_counts_vignette}
 \title{A DataFrame with counts derived from Tasic case study (explain how).}
 \format{
-An object of class \code{matrix} with 35423 rows and 150 columns.
+An object of class \code{matrix} (inherits from \code{array}) with 35423 rows and 150 columns.
 }
 \usage{
 data(Tasic_counts_vignette)

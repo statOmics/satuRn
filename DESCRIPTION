@@ -22,10 +22,10 @@ Suggests:
     BiocStyle
 VignetteBuilder: knitr
 License: MIT + file LICENSE
-Collate: 'data.R' 'satuRn-framework.R' 'allGenerics.R'
+Collate:'data.R' 'satuRn-framework.R' 'allGenerics.R'
         'accessors.R' 'fitDTU.R' 'testDTU.R' 'plotDTU.R'
 Encoding: UTF-8
-LazyData: true
+LazyData: false
 RoxygenNote: 7.1.1
 biocViews:
     Regression,
