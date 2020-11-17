@@ -1,4 +1,4 @@
-Package: satuRnRestore
+Package: satuRn
 Type: Package
 Title: Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell RNA-sequencing Applications
 Version: 0.1.0

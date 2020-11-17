@@ -10,7 +10,7 @@ vignette: >
 # Load libraries
 
 ```{r,message=FALSE,warning=FALSE}
-devtools::install_local("/Users/jg/Desktop/PhD/DTU_project/satuRnRestore", force = TRUE, quiet = FALSE)
+devtools::install_local("/Users/jg/Desktop/PhD/DTU_project/satuRn", force = TRUE, quiet = FALSE)
 library(satuRnRestore)
 library(AnnotationHub)
 library(ensembldb)
@@ -107,7 +107,7 @@ Runs ± 10 seconds.
 
 ```{r}
 Sys.time()
-sumExp <- satuRnRestore::fitQB(object = sumExp,
+sumExp <- satuRn::fitQB(object = sumExp,
                        parallel = TRUE,
                        BPPARAM = BiocParallel::bpparam(),
                        verbose = TRUE)
@@ -135,7 +135,7 @@ L
 ## Test for DTU
 
 ```{r}
-sumExp <- satuRnRestore::testDTU(object = sumExp, contrasts = L, plot=T, sort = T)
+sumExp <- satuRn::testDTU(object = sumExp, contrasts = L, plot=T, sort = T)
 ```
 
 ```{r}
@@ -152,7 +152,7 @@ head(rowData(sumExp)[["fitQBResult_Contrast2"]])
 group1 <- rownames(colData(sumExp))[colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
 group2 <- rownames(colData(sumExp))[colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
 
-plots <- satuRnRestore::plotDTU(object = sumExp, contrast = "Contrast1", groups = list(group1,group2), coefficients = list(c(0,0,1),c(0,1,0)), summaryStat = "model", transcripts = c("ENSMUST00000081554","ENSMUST00000195963","ENSMUST00000132062"),genes = NULL,top.n = 6)
+plots <- satuRn::plotDTU(object = sumExp, contrast = "Contrast1", groups = list(group1,group2), coefficients = list(c(0,0,1),c(0,1,0)), summaryStat = "model", transcripts = c("ENSMUST00000081554","ENSMUST00000195963","ENSMUST00000132062"),genes = NULL,top.n = 6)
 
 # to have same layout as in our paper
 for (i in seq_along(plots)) {
