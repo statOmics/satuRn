@@ -144,11 +144,11 @@ sumExp <- satuRn::testDTU(object = sumExp, contrasts = L, plot = T, sort = T)
 ```
 
 ```{r}
-head(rowData(sumExp)[["fitQBResult_Contrast1"]])
+head(rowData(sumExp)[["fitDTUResult_Contrast1"]])
 ```
 
 ```{r}
-head(rowData(sumExp)[["fitQBResult_Contrast2"]])
+head(rowData(sumExp)[["fitDTUResult_Contrast2"]])
 ```
 
 # Visualize DTU

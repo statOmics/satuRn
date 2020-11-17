@@ -11,4 +11,4 @@ setGeneric("getDispersion", function(object) standardGeneric("getDispersion"))
 #' @export
 setGeneric("getCoef", function(object) standardGeneric("getCoef"))
 #' @export
-setGeneric("fitDTU", function(object, ...) standardGeneric("fitDTU"))
+setGeneric("fitDTU", function(object,...) standardGeneric("fitDTU"))

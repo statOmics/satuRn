@@ -1,5 +1,5 @@
 # Compute the dispersion parameter of the quasi-binomial GLM
-calcDispersion <- function(model, type) {
+.calcDispersion <- function(model, type) {
     model$dispersion <- NA
     if (type != "fitError") {
         df.r <- model$df.residual
@@ -11,7 +11,7 @@ calcDispersion <- function(model, type) {
 }
 
 # Compute the unscaled variance-covariance matrix of the quasi-binomial GLM
-calcVcovUnscaled <- function(model, type) {
+.calcVcovUnscaled <- function(model, type) {
     if (!type == "fitError") {
         p1 <- 1L:model$rank
         p <- length(model$coef)
@@ -28,13 +28,13 @@ calcVcovUnscaled <- function(model, type) {
 # Computes the "other count" for all in each sample or cell in the data.
 # Essentially taking the sum of the counts for each of the transcripts within a gene except the target transcript.
 # Can be thought as the difference between the gene-level count and current transcript-level count.
-getOtherCount <- function(countData, tx2gene) {
+.getOtherCount <- function(countData, tx2gene) {
     # get tx2gene in better format
     geneForEachTx <- tx2gene$gene_id[match(rownames(countData), tx2gene$isoform_id)]
     geneForEachTx <- as.character(geneForEachTx)
     stopifnot(class(geneForEachTx) %in% c("character", "factor"))
     stopifnot(length(geneForEachTx) == nrow(countData))
-
+    
     forCycle <- split(1:nrow(countData), as.character(geneForEachTx))
     all <- lapply(forCycle, function(i) {
         sct <- countData[i, , drop = FALSE]
@@ -42,14 +42,14 @@ getOtherCount <- function(countData, tx2gene) {
         rownames(rs) <- rownames(sct)
         rs
     })
-
+    
     otherCount <- do.call(rbind, all)
     otherCount <- otherCount[rownames(countData), ]
     return(otherCount)
 }
 
 # Worker function that fits quasi-binomial models, wrapped inside the fitDTU function
-fitDTU_internal <- function(countData, tx2gene, design, parallel, BPPARAM, verbose) {
+.fitDTU_internal <- function(countData, tx2gene, design, parallel, BPPARAM, verbose) {
     if (parallel) {
         BiocParallel::register(BPPARAM)
         if (verbose) {
@@ -59,24 +59,24 @@ fitDTU_internal <- function(countData, tx2gene, design, parallel, BPPARAM, verbo
             BPPARAM$progressbar <- TRUE
         }
     }
-
+    
     stopifnot(class(countData)[1] %in% c("matrix", "data.frame"))
     countData <- as.matrix(countData)
-
+    
     # Get the "other" counts, i.e. the counts for all other transcripts belonging to
     # the same gene as the current transcript
-    otherCount <- getOtherCount(countData, tx2gene)
+    otherCount <- satuRn:::.getOtherCount(countData, tx2gene)
     stopifnot(all(rownames(countData) %in% rownames(otherCount)))
-
+    
     # The actual fit function
     fitQuasiLogistic <- function(countData, otherCount, design) {
         countsAll <- cbind(countData, otherCount)
         drop <- rowSums(countsAll) == 0 ## gene count is zero in this cell
         countsAll <- countsAll + 1
         countsAll[drop, ] <- NA
-
+        
         model <- try(glm(countsAll ~ -1 + design, family = "quasibinomial"))
-
+        
         if (class(model)[1] == "try-error") {
             model <- list()
             type <- "fitError"
@@ -85,13 +85,13 @@ fitDTU_internal <- function(countData, tx2gene, design, parallel, BPPARAM, verbo
             type <- "glm"
             class(model) <- "list"
         }
-
-        model <- satuRn:::calcDispersion(model, type) ## calculate disp slot
-        model <- satuRn:::calcVcovUnscaled(model, type) ## calculate vcov slot
-
+        
+        model <- satuRn:::.calcDispersion(model, type) ## calculate disp slot
+        model <- satuRn:::.calcVcovUnscaled(model, type) ## calculate vcov slot
+        
         model <- model[c("coefficients", "df.residual", "dispersion", "vcovUnsc")]
-
-
+        
+        
         .out <- .StatModel(
             type = type,
             params = model,
@@ -100,7 +100,7 @@ fitDTU_internal <- function(countData, tx2gene, design, parallel, BPPARAM, verbo
         )
         return(.out)
     }
-
+    
     # Fit the models
     if (parallel) {
         models <- BiocParallel::bplapply(seq_len(nrow(countData)), function(i) fitQuasiLogistic(countData = countData[i, ], otherCount = otherCount[i, ], design = design), BPPARAM = BPPARAM)
@@ -111,24 +111,24 @@ fitDTU_internal <- function(countData, tx2gene, design, parallel, BPPARAM, verbo
             models <- lapply(seq_len(nrow(countData)), function(i) fitQuasiLogistic(countData = countData[i, ], otherCount = otherCount[i, ], design = design))
         }
     }
-
+    
     # retain transcript names
     names(models) <- rownames(countData)
-
+    
     # Squeeze a set of sample variances together by computing empirical Bayes posterior means
     hlp <- limma::squeezeVar(
         var = unlist(sapply(models, satuRn:::getDispersion)),
         df = unlist(sapply(models, satuRn:::getDF)),
         robust = FALSE
     )
-
+    
     # put variance and degrees of freedom in appropriate slots
     for (i in 1:length(models)) {
         mydf <- hlp$df.prior + getDF(models[[i]])
         models[[i]]@varPosterior <- as.numeric(hlp$var.post[i])
         models[[i]]@dfPosterior <- as.numeric(mydf)
     }
-
+    
     # return object of class StatModel
     return(models)
 }
@@ -168,7 +168,8 @@ fitDTU_internal <- function(countData, tx2gene, design, parallel, BPPARAM, verbo
 
 # Wrapper function
 setMethod(
-    "fitDTU", "SummarizedExperiment",
+    f = "fitDTU",
+    signature = "SummarizedExperiment",
     function(object,
     parallel = FALSE,
     BPPARAM = BiocParallel::bpparam(),
@@ -176,7 +177,7 @@ setMethod(
         if (ncol(colData(object)) == 0) stop("error: colData is empty")
         design <- model.matrix(object@metadata$formula, colData(object))
 
-        rowData(object)[["fitDTUModels"]] <- fitDTU_internal(
+        rowData(object)[["fitDTUModels"]] <- satuRn:::.fitDTU_internal(
             countData = assay(object),
             tx2gene = rowData(object)[, c("isoform_id", "gene_id")],
             design = design,
