@@ -8,21 +8,21 @@ in the contrast of interest}
 testDTU(object, contrasts, plot = FALSE, sort = FALSE)
 }
 \arguments{
-\item{plot}{`boolean(1)` Logical, defaults to FALSE. If set to TRUE,
-a plot of the histogram of the empirical z-scores and the standard normal
-distribution will bee displayed.}
-
-\item{sort}{`boolean(1)` Logical, defaults to FALSE. If set to TRUE, the output}
-
-\item{models}{A `SummarizedExperiment` instance containing a list of objects of
+\item{object}{A `SummarizedExperiment` instance containing a list of objects of
 the `StatModel` class as obtained by the `fitDTU` function of the `satuRn` package.}
 
-\item{contrast}{`numeric` matrix specifying one or more contrasts of
+\item{contrasts}{`numeric` matrix specifying one or more contrasts of
 the linear model coefficients to be tested.
 The rownames of the matrix should be equal to the names
 of parameters of the model that are involved in the contrast.
 The column names of the matrix will be used to construct names to store
 the results in the rowData of the SummarizedExperiment.}
+
+\item{plot}{`boolean(1)` Logical, defaults to FALSE. If set to TRUE,
+a plot of the histogram of the empirical z-scores and the standard normal
+distribution will bee displayed.}
+
+\item{sort}{`boolean(1)` Logical, defaults to FALSE. If set to TRUE, the output}
 }
 \value{
 An updated `SummarizedExperiment` that contains the `Dataframes` displaying

@@ -2,7 +2,7 @@ Package: satuRn
 Type: Package
 Title: Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell RNA-sequencing Applications
 Date: 2020-11-17
-Version: 0.1.0
+Version: 0.99.0
 Authors@R: c(person("Jeroen", "Gilis", role = c("aut","cre"),
                      email = "jeroen.gilis@ugent.be"),
              person("Kristoffer", "Vitting-Seerup", role = "ctb",
@@ -21,7 +21,11 @@ Imports: locfdr,
 	 limma,
 	 pbapply,
 	 ggplot2,
-	 boot
+	 boot,
+	 AnnotationHub,
+	 ensembldb,
+	 edgeR,
+	 dplyr
 Suggests:
     knitr,
     rmarkdown,
@@ -29,9 +33,11 @@ Suggests:
     covr,
     BiocStyle
 VignetteBuilder: knitr
-License: MIT + file LICENSE
 Collate:'data.R' 'satuRn-framework.R' 'allGenerics.R'
         'accessors.R' 'fitDTU.R' 'testDTU.R' 'plotDTU.R'
+License: Artistic-2.0
+URL: https://github.com/jgilis/satuRn
+BugReports: https://support.bioconductor.org/t/satuRn
 Encoding: UTF-8
 LazyData: false
 RoxygenNote: 7.1.1

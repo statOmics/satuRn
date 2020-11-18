@@ -88,10 +88,10 @@ p.adjust_empirical <- function(pvalues, tvalues, plot = FALSE) {
 #'
 #' @description Function to test for differential transcript usage (DTU)
 #'
-#' @param models A `SummarizedExperiment` instance containing a list of objects of
+#' @param object A `SummarizedExperiment` instance containing a list of objects of
 #'       the `StatModel` class as obtained by the `fitDTU` function of the `satuRn` package.
 #'
-#' @param contrast `numeric` matrix specifying one or more contrasts of
+#' @param contrasts `numeric` matrix specifying one or more contrasts of
 #'        the linear model coefficients to be tested.
 #'        The rownames of the matrix should be equal to the names
 #'        of parameters of the model that are involved in the contrast.
