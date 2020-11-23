@@ -8,12 +8,24 @@
 \alias{getDfPosterior}
 \alias{getDispersion}
 \alias{getCoef}
+\alias{getDF,StatModel-method}
+\alias{getDfPosterior,StatModel-method}
+\alias{getDispersion,StatModel-method}
+\alias{getCoef,StatModel-method}
 \title{Accessor functions for StatModel class}
 \usage{
 \S4method{getModel}{StatModel}(object)
+
+\S4method{getDF}{StatModel}(object)
+
+\S4method{getDfPosterior}{StatModel}(object)
+
+\S4method{getDispersion}{StatModel}(object)
+
+\S4method{getCoef}{StatModel}(object)
 }
 \arguments{
-\item{object}{`StatModel` object}
+\item{object}{StatModel object}
 }
 \description{
 Accessor functions for StatModel class

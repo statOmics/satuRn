@@ -36,7 +36,6 @@ myModel <- StatModel(
     dfPosterior = c(6, 7, 8)
 )
 myModel
-myModel@params
 }
 \author{
 Jeroen Gilis

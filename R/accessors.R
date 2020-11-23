@@ -9,32 +9,39 @@
 #'              \item{getDispersion(object)}{to get the dispersion estimate of the model}
 #'              \item{getCoef(object)}{to get the parameter estimates of the mean model}
 #'              }
-#'
-#' @rdname statModelAccessors
 #' @aliases statModelAccessors getModel getDF getDfPosterior getDispersion getCoef
+#' @rdname statModelAccessors
 #'
-#' @param object `StatModel` object
+#' @param object StatModel object
 
 setMethod("getModel",
     signature = "StatModel",
     definition = function(object) object@params
 )
 
+#' @rdname statModelAccessors
+#' @param object StatModel object
 setMethod("getDF",
     signature = "StatModel",
     definition = function(object) object@params$df.residual
 )
 
+#' @rdname statModelAccessors
+#' @param object StatModel object
 setMethod("getDfPosterior",
     signature = "StatModel",
     definition = function(object) object@dfPosterior
 )
 
+#' @rdname statModelAccessors
+#' @param object StatModel object
 setMethod("getDispersion",
     signature = "StatModel",
     definition = function(object) object@params$dispersion
 )
 
+#' @rdname statModelAccessors
+#' @param object StatModel object
 setMethod("getCoef",
     signature = "StatModel",
     definition = function(object) object@params$coefficients
