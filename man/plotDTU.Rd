@@ -56,7 +56,37 @@ A ggplot object that can be directly displayed in the current R session
 Plot function to visualize differential transcript usage (DTU)
 }
 \examples{
-# TODO
+data(sumExp_vignette, package = "satuRn")
+data(Tasic_metadata_vignette, package = "satuRn")
+Tasic_metadata_vignette$group <- paste(Tasic_metadata_vignette$brain_region, Tasic_metadata_vignette$cluster, sep = ".")
+sumExp <- fitDTU(
+   object = sumExp_vignette,
+   parallel = TRUE,
+   BPPARAM = BiocParallel::bpparam(),
+   verbose = TRUE)
+group <- as.factor(Tasic_metadata_vignette$group)
+design <- model.matrix(~ 0 + group)
+colnames(design) <- levels(group)
+L <- matrix(0, ncol = 2, nrow = ncol(design))
+rownames(L) <- colnames(design)
+colnames(L) <- c("Contrast1", "Contrast2")
+L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tnc"), 1] <- c(1, -1)
+L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tmem163_Dmrtb1"), 2] <- c(1, -1)
+
+sumExp <- satuRn::testDTU(object = sumExp, contrasts = L, plot = TRUE, sort = TRUE)
+
+group1 <- rownames(SummarizedExperiment::colData(sumExp))[SummarizedExperiment::colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
+group2 <- rownames(SummarizedExperiment::colData(sumExp))[SummarizedExperiment::colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
+
+plots <- plotDTU(object = sumExp, 
+   contrast = "Contrast1", 
+   groups = list(group1, group2), 
+   coefficients = list(c(0, 0, 1), c(0, 1, 0)), 
+   summaryStat = "model", 
+   transcripts = c("ENSMUST00000081554", "ENSMUST00000195963", "ENSMUST00000132062"), 
+   genes = NULL, 
+   top.n = 6)
+   
 }
 \author{
 Jeroen Gilis

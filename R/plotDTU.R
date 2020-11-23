@@ -40,7 +40,7 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
     # Required to keep transcripts in the requested order (and not necessarily the order by which they are in tx2gene or alphabetical)
     transcripts_all <- sapply(genes, function(i) {
         as.character(tx2gene[which(tx2gene$gene_id == i), "isoform_id"])
-    }, simplify = T)
+    }, simplify = TRUE)
     transcripts_all <- unname(unlist(transcripts_all))
 
     # assign cells to a certain group (violin)
@@ -154,7 +154,37 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 #'     significant DTU transcripts in the contrast. Defaults to 6 transcripts
 #'
 #' @examples
-#' # TODO
+#' data(sumExp_vignette, package = "satuRn")
+#' data(Tasic_metadata_vignette, package = "satuRn")
+#' Tasic_metadata_vignette$group <- paste(Tasic_metadata_vignette$brain_region, Tasic_metadata_vignette$cluster, sep = ".")
+#' sumExp <- fitDTU(
+#'    object = sumExp_vignette,
+#'    parallel = TRUE,
+#'    BPPARAM = BiocParallel::bpparam(),
+#'    verbose = TRUE)
+#' group <- as.factor(Tasic_metadata_vignette$group)
+#' design <- model.matrix(~ 0 + group)
+#' colnames(design) <- levels(group)
+#' L <- matrix(0, ncol = 2, nrow = ncol(design))
+#' rownames(L) <- colnames(design)
+#' colnames(L) <- c("Contrast1", "Contrast2")
+#' L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tnc"), 1] <- c(1, -1)
+#' L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tmem163_Dmrtb1"), 2] <- c(1, -1)
+#' 
+#' sumExp <- satuRn::testDTU(object = sumExp, contrasts = L, plot = TRUE, sort = TRUE)
+#' 
+#' group1 <- rownames(SummarizedExperiment::colData(sumExp))[SummarizedExperiment::colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
+#' group2 <- rownames(SummarizedExperiment::colData(sumExp))[SummarizedExperiment::colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
+#'
+#' plots <- plotDTU(object = sumExp, 
+#'    contrast = "Contrast1", 
+#'    groups = list(group1, group2), 
+#'    coefficients = list(c(0, 0, 1), c(0, 1, 0)), 
+#'    summaryStat = "model", 
+#'    transcripts = c("ENSMUST00000081554", "ENSMUST00000195963", "ENSMUST00000132062"), 
+#'    genes = NULL, 
+#'    top.n = 6)
+#'    
 #' @return A ggplot object that can be directly displayed in the current R session
 #'         or stored in a list.
 #'
@@ -163,6 +193,10 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 #' @author Jeroen Gilis
 #'
 #' @import ggplot2
+#' @import AnnotationHub
+#' @import dplyr
+#' @import ensembldb
+#' @import edgeR
 #'
 #' @export
 
@@ -170,7 +204,7 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 plotDTU <- function(object, contrast, groups, coefficients, summaryStat = "model", transcripts = NULL, genes = NULL, top.n = 6) {
 
     ## Stop if some input is not provided or not in the correct format
-    stopifnot(class(object) == "SummarizedExperiment")
+    stopifnot(is(object,"SummarizedExperiment"))
     stopifnot(class(transcripts) %in% c("character", "NULL"))
     stopifnot(class(genes) %in% c("character", "NULL"))
     stopifnot(class(top.n) %in% c("numeric"))

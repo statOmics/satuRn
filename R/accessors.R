@@ -13,6 +13,7 @@
 #' @rdname statModelAccessors
 #'
 #' @param object StatModel object
+#' @return The requested parameter of the StatModel object
 
 setMethod("getModel",
     signature = "StatModel",

@@ -5,7 +5,7 @@
 \alias{Tasic_metadata_vignette}
 \title{A DataFrame with metadata derived from Tasic case study (explain how).}
 \format{
-An object of class \code{data.frame} with 150 rows and 3 columns.
+An object of class \code{data.frame} with 60 rows and 3 columns.
 }
 \usage{
 data(Tasic_metadata_vignette)

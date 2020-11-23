@@ -38,11 +38,11 @@ p.adjust_empirical <- function(pvalues, tvalues, plot = FALSE) {
     bre <- 120
     breaks <- seq(lo, up, length = bre)
     zzz <- pmax(pmin(zvalues_mid, up), lo)
-    zh <- hist(zzz, breaks = breaks, plot = F)
+    zh <- hist(zzz, breaks = breaks, plot = FALSE)
     x <- (breaks[-1] + breaks[-length(breaks)]) / 2
     sw <- 0
     X <- cbind(1, poly(x, df = 7))
-    zh <- hist(zzz, breaks = breaks, plot = F)
+    zh <- hist(zzz, breaks = breaks, plot = FALSE)
     y <- zh$counts
     f <- glm(y ~ poly(x, df = 7), poisson)$fit
 
@@ -68,11 +68,11 @@ p.adjust_empirical <- function(pvalues, tvalues, plot = FALSE) {
         bre <- 120
         breaks <- seq(lo, up, length = bre)
         zzz <- pmax(pmin(zval_empirical, up), lo)
-        zh <- hist(zzz, breaks = breaks, plot = F)
+        zh <- hist(zzz, breaks = breaks, plot = FALSE)
         yall <- zh$counts
         K <- length(yall)
 
-        hist(zzz, breaks = breaks, xlab = "z-scores", main = "Empirical distribution of z-scores", freq = F)
+        hist(zzz, breaks = breaks, xlab = "z-scores", main = "Empirical distribution of z-scores", freq = FALSE)
         xfit <- seq(min(zzz), max(zzz), length = 4000)
         yfit <- dnorm(xfit / mlests[3], mean = 0, sd = 1)
         lines(xfit, yfit, col = "darkgreen", lwd = 2)
@@ -106,7 +106,25 @@ p.adjust_empirical <- function(pvalues, tvalues, plot = FALSE) {
 #       output of the topTable test function is sorted according to the empirical p-values.
 #'
 #' @examples
-#' # TODO
+#' data(sumExp_vignette, package = "satuRn")
+#' data(Tasic_metadata_vignette, package = "satuRn")
+#' Tasic_metadata_vignette$group <- paste(Tasic_metadata_vignette$brain_region, Tasic_metadata_vignette$cluster, sep = ".")
+#' sumExp <- fitDTU(
+#'    object = sumExp_vignette,
+#'    parallel = TRUE,
+#'    BPPARAM = BiocParallel::bpparam(),
+#'    verbose = TRUE)
+#' group <- as.factor(Tasic_metadata_vignette$group)
+#' design <- model.matrix(~ 0 + group)
+#' colnames(design) <- levels(group)
+#' L <- matrix(0, ncol = 2, nrow = ncol(design))
+#' rownames(L) <- colnames(design)
+#' colnames(L) <- c("Contrast1", "Contrast2")
+#' L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tnc"), 1] <- c(1, -1)
+#' L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tmem163_Dmrtb1"), 2] <- c(1, -1)
+#' 
+#' sumExp <- testDTU(object = sumExp, contrasts = L, plot = TRUE, sort = TRUE)
+#' 
 #' @return An updated `SummarizedExperiment` that contains the `Dataframes` displaying
 #'      the significance of DTU for each transcript in each contrast of interest.
 #'

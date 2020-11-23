@@ -7,3 +7,8 @@
 #'
 #' @usage data(Tasic_metadata_vignette)
 "Tasic_metadata_vignette"
+
+#' A summarizedExperiment derived from Tasic case study (explain how).
+#'
+#' @usage data(sumExp_vignette)
+"sumExp_vignette"

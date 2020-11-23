@@ -11,9 +11,12 @@ Authors@R: c(person("Jeroen", "Gilis", role = c("aut","cre"),
 		     email = "koen.vandenberge@ugent.be"),
 	     person("Lieven","Clement", role="ctb",
 		     email = "Lieven.Clement@ugent.be"))
-Maintainer: Jeroen Gilis <jeroen.gilis@ugent.be>
 Description: satuRn provides a higly performant and scalable framework for perforing
-    differential transcript usage analyses.
+    differential transcript usage analyses. The package consists of three main functions.
+    The first function, fitDTU, fits quasi-binomial generalized linear models that model
+    transcript usage in different groups of interest. The second function, testDTU, tests    
+    for differential usage of transcripts between groups of interest. Finally, plotDTU  
+    visualizes the usage profiles of transcripts in groups of interest.
 Depends: R (>= 3.6.0)
 Imports: locfdr,
 	 SummarizedExperiment,

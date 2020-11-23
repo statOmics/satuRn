@@ -140,7 +140,7 @@ L
 ## Test for DTU
 
 ```{r}
-sumExp <- satuRn::testDTU(object = sumExp, contrasts = L, plot = T, sort = T)
+sumExp <- satuRn::testDTU(object = sumExp, contrasts = L, plot = TRUE, sort = TRUE)
 ```
 
 ```{r}

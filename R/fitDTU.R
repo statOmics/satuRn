@@ -149,7 +149,15 @@
 #' @param verbose Logical, should progress be printed?
 #'
 #' @examples
-#' # TODO
+#' data(sumExp_vignette, package = "satuRn")
+#' data(Tasic_metadata_vignette, package = "satuRn")
+#' Tasic_metadata_vignette$group <- paste(Tasic_metadata_vignette$brain_region, Tasic_metadata_vignette$cluster, sep = ".")
+#' sumExp <- fitDTU(
+#'    object = sumExp_vignette,
+#'    parallel = TRUE,
+#'    BPPARAM = BiocParallel::bpparam(),
+#'    verbose = TRUE)
+#' 
 #' @return An updated `SummarizedExperiment` instance. The instance now includes
 #' a new list of models ("fitDTUModels") in its rowData slot, which can be accessed
 #' by rowData(object)[["fitDTUModels"]].

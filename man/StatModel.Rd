@@ -20,6 +20,20 @@ StatModel(
 
 \item{dfPosterior}{Numeric, posterior degrees of freedom of the glm, default is NA}
 }
+\value{
+A StatModel object
+}
 \description{
 Function for contstructing a new `StatModel` object.
+}
+\examples{
+## A fully specified dummy model
+myModel <- StatModel(
+    type = "glm",
+    params = list(x = 3, y = 7, b = 4),
+    varPosterior = c(0.1, 0.2, 0.3),
+    dfPosterior = c(6, 7, 8)
+)
+myModel
+
 }
