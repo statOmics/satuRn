@@ -11,7 +11,7 @@ Authors@R: c(person("Jeroen", "Gilis", role = c("aut","cre"),
 		     email = "koen.vandenberge@ugent.be"),
 	     person("Lieven","Clement", role="ctb",
 		     email = "Lieven.Clement@ugent.be"))
-Description: satuRn provides a higly performant and scalable framework for perforing
+Description: satuRn provides a higly performant and scalable framework for performing
     differential transcript usage analyses. The package consists of three main functions.
     The first function, fitDTU, fits quasi-binomial generalized linear models that model
     transcript usage in different groups of interest. The second function, testDTU, tests    
