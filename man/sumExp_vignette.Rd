@@ -5,7 +5,7 @@
 \alias{sumExp_vignette}
 \title{A summarizedExperiment derived from Tasic case study (explain how).}
 \format{
-An object of class \code{SummarizedExperiment} with 13042 rows and 60 columns.
+An object of class \code{SummarizedExperiment} with 10857 rows and 60 columns.
 }
 \usage{
 data(sumExp_vignette)

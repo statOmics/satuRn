@@ -42,7 +42,7 @@ data(Tasic_metadata_vignette, package = "satuRn")
 Tasic_metadata_vignette$group <- paste(Tasic_metadata_vignette$brain_region, Tasic_metadata_vignette$cluster, sep = ".")
 sumExp <- fitDTU(
    object = sumExp_vignette,
-   parallel = TRUE,
+   parallel = FALSE,
    BPPARAM = BiocParallel::bpparam(),
    verbose = TRUE)
 

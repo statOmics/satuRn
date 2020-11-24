@@ -16,7 +16,6 @@ library(ensembldb)
 library(edgeR)
 library(SummarizedExperiment)
 library(ggplot2)
-library(dplyr)
 ```
 
 # Load counts
@@ -68,8 +67,8 @@ filter_all_edgeR_stringent <- filterByExpr(Tasic_counts_vignette,
     group = Tasic_metadata_vignette$brain_region,
     lib.size = NULL,
     min.count = 10,
-    min.total.count = 0,
-    large.n = 0,
+    min.total.count = 15,
+    large.n = 10,
     min.prop = 0.7
 )
 
@@ -106,13 +105,13 @@ metadata(sumExp)$formula <- ~ 0 + as.factor(Tasic_metadata_vignette$group)
 
 # Fit quasi-binomial models
 
-Runs ± 10 seconds.
+Runs ± 20 seconds.
 
 ```{r}
 Sys.time()
 sumExp <- satuRn::fitDTU(
     object = sumExp,
-    parallel = TRUE,
+    parallel = FALSE,
     BPPARAM = BiocParallel::bpparam(),
     verbose = TRUE
 )
@@ -157,7 +156,14 @@ head(rowData(sumExp)[["fitDTUResult_Contrast2"]])
 group1 <- rownames(colData(sumExp))[colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
 group2 <- rownames(colData(sumExp))[colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
 
-plots <- satuRn::plotDTU(object = sumExp, contrast = "Contrast1", groups = list(group1, group2), coefficients = list(c(0, 0, 1), c(0, 1, 0)), summaryStat = "model", transcripts = c("ENSMUST00000081554", "ENSMUST00000195963", "ENSMUST00000132062"), genes = NULL, top.n = 6)
+plots <- satuRn::plotDTU(object = sumExp, 
+                         contrast = "Contrast1", 
+                         groups = list(group1, group2), 
+                         coefficients = list(c(0, 0, 1), c(0, 1, 0)), 
+                         summaryStat = "model", 
+                         transcripts = c("ENSMUST00000081554", "ENSMUST00000195963", "ENSMUST00000132062"), 
+                         genes = NULL, 
+                         top.n = 6)
 
 # to have same layout as in our paper
 for (i in seq_along(plots)) {

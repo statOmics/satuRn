@@ -35,10 +35,10 @@
     stopifnot(class(geneForEachTx) %in% c("character", "factor"))
     stopifnot(length(geneForEachTx) == nrow(countData))
     
-    forCycle <- split(1:nrow(countData), as.character(geneForEachTx))
+    forCycle <- split(seq_len(nrow(countData)), as.character(geneForEachTx))
     all <- lapply(forCycle, function(i) {
         sct <- countData[i, , drop = FALSE]
-        rs <- t(sapply(1:nrow(sct), function(r) colSums(sct[-r, , drop = FALSE])))
+        rs <- t(vapply(seq_len(nrow(sct)), function(r) colSums(sct[-r, , drop = FALSE]), numeric(ncol(countData))))
         rownames(rs) <- rownames(sct)
         rs
     })
@@ -117,13 +117,13 @@
     
     # Squeeze a set of sample variances together by computing empirical Bayes posterior means
     hlp <- limma::squeezeVar(
-        var = unlist(sapply(models, satuRn:::getDispersion)),
-        df = unlist(sapply(models, satuRn:::getDF)),
+        var = unlist(vapply(models, satuRn:::getDispersion, numeric(1))),
+        df = unlist(vapply(models, satuRn:::getDF, numeric(1))),
         robust = FALSE
     )
     
     # put variance and degrees of freedom in appropriate slots
-    for (i in 1:length(models)) {
+    for (i in seq_along(models)) {
         mydf <- hlp$df.prior + getDF(models[[i]])
         models[[i]]@varPosterior <- as.numeric(hlp$var.post[i])
         models[[i]]@dfPosterior <- as.numeric(mydf)
@@ -154,7 +154,7 @@
 #' Tasic_metadata_vignette$group <- paste(Tasic_metadata_vignette$brain_region, Tasic_metadata_vignette$cluster, sep = ".")
 #' sumExp <- fitDTU(
 #'    object = sumExp_vignette,
-#'    parallel = TRUE,
+#'    parallel = FALSE,
 #'    BPPARAM = BiocParallel::bpparam(),
 #'    verbose = TRUE)
 #' 

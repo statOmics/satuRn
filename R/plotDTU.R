@@ -6,16 +6,16 @@ getTotalCount <- function(countData, tx2gene) {
     geneForEachTx <- as.character(geneForEachTx)
     stopifnot(class(geneForEachTx) %in% c("character", "factor"))
     stopifnot(length(geneForEachTx) == nrow(countData))
-
+    
     # adapted from DEXSeq source code
-    forCycle <- split(1:nrow(countData), as.character(geneForEachTx))
+    forCycle <- split(seq_len(nrow(countData)), as.character(geneForEachTx))
     all <- lapply(forCycle, function(i) {
         sct <- countData[i, , drop = FALSE]
-        rs <- t(sapply(1:nrow(sct), function(r) colSums(sct[, , drop = FALSE])))
+        rs <- t(vapply(seq_len(nrow(sct)), function(r) colSums(sct[, , drop = FALSE]), numeric(ncol(countData))))
         rownames(rs) <- rownames(sct)
         rs
     })
-
+    
     totalCount <- do.call(rbind, all)
     totalCount <- totalCount[rownames(countData), ]
     return(totalCount)
@@ -36,15 +36,10 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 
     # To calculate usages, we also need the info of transcripts that we don't want to visualize, i.e. all transcripts of all corresponding genes
     genes <- unique(tx2gene[match(transcripts, tx2gene$isoform_id), "gene_id"])
-
-    # Required to keep transcripts in the requested order (and not necessarily the order by which they are in tx2gene or alphabetical)
-    transcripts_all <- sapply(genes, function(i) {
-        as.character(tx2gene[which(tx2gene$gene_id == i), "isoform_id"])
-    }, simplify = TRUE)
-    transcripts_all <- unname(unlist(transcripts_all))
+    transcripts_all <- tx2gene[tx2gene$gene_id %in% genes, "isoform_id"]
 
     # assign cells to a certain group (violin)
-    names(groups) <- c(1:length(groups))
+    names(groups) <- seq_along(groups)
     cell_to_group <- unlist(groups)
     names(cell_to_group) <- rep(paste0("violin", names(groups)), times = lengths(groups))
 
@@ -159,7 +154,7 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 #' Tasic_metadata_vignette$group <- paste(Tasic_metadata_vignette$brain_region, Tasic_metadata_vignette$cluster, sep = ".")
 #' sumExp <- fitDTU(
 #'    object = sumExp_vignette,
-#'    parallel = TRUE,
+#'    parallel = FALSE,
 #'    BPPARAM = BiocParallel::bpparam(),
 #'    verbose = TRUE)
 #' group <- as.factor(Tasic_metadata_vignette$group)
@@ -193,10 +188,9 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 #' @author Jeroen Gilis
 #'
 #' @import ggplot2
-#' @import AnnotationHub
-#' @import dplyr
-#' @import ensembldb
-#' @import edgeR
+#' @importFrom AnnotationHub AnnotationHub query
+#' @importFrom ensembldb transcripts
+#' @importFrom edgeR filterByExpr
 #'
 #' @export
 
@@ -219,7 +213,7 @@ plotDTU <- function(object, contrast, groups, coefficients, summaryStat = "model
 
     # If both transcripts and genes are null, plot the top n DTU transcripts (default = 6)
     if (is.null(transcripts) & is.null(genes)) {
-        transcripts <- rownames(topTable)[1:top.n]
+        transcripts <- rownames(topTable)[seq_len(top.n)]
         return(plotDTU_internal(object, topTable, contrast, coefficients, groups, summaryStat, tx2gene, transcripts))
     }
 
