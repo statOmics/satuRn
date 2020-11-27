@@ -191,6 +191,7 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 #' @importFrom AnnotationHub AnnotationHub query
 #' @importFrom ensembldb transcripts
 #' @importFrom edgeR filterByExpr
+#' @importFrom boot inv.logit
 #'
 #' @export
 
