@@ -43,7 +43,9 @@ for a more elaborate and reproducible example.
 
     library("satuRn")
 
-    # Provide a transcript expression matrix and corresponding colData and rowData
+Provide a transcript expression matrix and corresponding `colData` and
+`rowData`
+
     sumExp <- SummarizedExperiment::SummarizedExperiment(
         assays = list(counts = Tasic_counts_vignette),
         colData = Tasic_metadata_vignette,
@@ -53,7 +55,9 @@ for a more elaborate and reproducible example.
     # Specify design formula from colData
     metadata(sumExp)$formula <- ~ 0 + as.factor(colData(sumExp)$group)
 
-    # The fitDTU function is used to model transcript usage in different groups of samples or cells.
+The `fitDTU` function is used to model transcript usage in different
+groups of samples or cells.
+
     sumExp <- satuRn::fitDTU(
         object = sumExp,
         formula = ~0 + group, 
@@ -62,13 +66,16 @@ for a more elaborate and reproducible example.
         verbose = TRUE
     )
 
-    # Next we perform differential usage testing using with testDTU
+Next we perform differential usage testing using with `testDTU`
+
     sumExp <- satuRn::testDTU(object = sumExp, 
                               contrasts = L, 
                               plot = FALSE, 
                               sort = FALSE)
 
-    # Finally, we may visualize the usage of select transcripts in select groups of interest.
+Finally, we may visualize the usage of select transcripts in select
+groups of interest.
+
     group1 <- rownames(colData(sumExp))[colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
     group2 <- rownames(colData(sumExp))[colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
 
