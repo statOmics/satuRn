@@ -1,7 +1,7 @@
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# satuRn
+satuRn
+======
 
 <!-- badges: start -->
 
@@ -14,52 +14,79 @@ status](https://github.com/jgilis/satuRn/workflows/R-CMD-check-bioc/badge.svg)](
 satuRn is a highly performant and scalable method for performing
 differential transcript usage analyses.
 
-## Installation instructions
+Installation instructions
+-------------------------
 
-Get the latest stable `R` release from
-[CRAN](http://cran.r-project.org/). Then install `satuRn` using from
-[Bioconductor](http://bioconductor.org/) the following code:
+Get the development version of `satuRn` from
+[GitHub](https://github.com/) with:
 
-    if (!requireNamespace("BiocManager", quietly = TRUE)) {
-        install.packages("BiocManager")
-    }
+    devtools::install_github("statOmics/satuRn")
 
-    BiocManager::install("satuRn")
+The installation should only take a few seconds. The dependencies of the
+package are listed in the DESCRIPTION file of the package.
 
-And the development version from [GitHub](https://github.com/) with:
+Issues and bug reports
+----------------------
 
-    BiocManager::install("jgilis/satuRn")
+Please use
+<a href="https://github.com/statOmics/satuRn/issues" class="uri">https://github.com/statOmics/satuRn/issues</a>
+to submit issues, bug reports, and comments.
 
-## Example
+Usage
+-----
 
-This is a basic example which shows you how to solve a common problem:
+A minimal example of the different functions for `modelling`, `testing`
+and `visualizing` differential transcript usage is provided. See the
+online
+[vignette](https://github.com/jgilis/satuRn/blob/master/vignettes/Vignette.Rmd)
+for a more elaborate and reproducible example.
 
     library("satuRn")
-    ## basic example code
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+    # Provide a transcript expression matrix and corresponding colData and rowData
+    sumExp <- SummarizedExperiment::SummarizedExperiment(
+        assays = list(counts = Tasic_counts_vignette),
+        colData = Tasic_metadata_vignette,
+        rowData = txInfo
+    )
 
-    summary(cars)
-    #>      speed           dist       
-    #>  Min.   : 4.0   Min.   :  2.00  
-    #>  1st Qu.:12.0   1st Qu.: 26.00  
-    #>  Median :15.0   Median : 36.00  
-    #>  Mean   :15.4   Mean   : 42.98  
-    #>  3rd Qu.:19.0   3rd Qu.: 56.00  
-    #>  Max.   :25.0   Max.   :120.00
+    # Specify design formula from colData
+    metadata(sumExp)$formula <- ~ 0 + as.factor(colData(sumExp)$group)
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date.
+    # The fitDTU function is used to model transcript usage in different groups of samples or cells.
+    sumExp <- satuRn::fitDTU(
+        object = sumExp,
+        formula = ~0 + group, 
+        parallel = FALSE,
+        BPPARAM = BiocParallel::bpparam(),
+        verbose = TRUE
+    )
 
-You can also embed plots, for example:
+    # Next we perform differential usage testing using with testDTU
+    sumExp <- satuRn::testDTU(object = sumExp, 
+                              contrasts = L, 
+                              plot = FALSE, 
+                              sort = FALSE)
 
-<img src="man/figures/README-pressure-1.png" width="100%" />
+    # Finally, we may visualize the usage of select transcripts in select groups of interest.
+    group1 <- rownames(colData(sumExp))[colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
+    group2 <- rownames(colData(sumExp))[colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
 
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub!
+    plots <- satuRn::plotDTU(object = sumExp, 
+                             contrast = "Contrast1", 
+                             groups = list(group1, group2), 
+                             coefficients = list(c(0, 0, 1), c(0, 1, 0)), 
+                             summaryStat = "model", 
+                             transcripts = c("ENSMUST00000081554", "ENSMUST00000195963", "ENSMUST00000132062"), 
+                             genes = NULL, 
+                             top.n = 6)
 
-## Citation
+    # Example plot from our publication:
+
+![](man/figures/README-DTU_plot.png)
+
+Citation
+--------
 
 Below is the citation output from using `citation('satuRn')` in R.
 Please run this yourself to check for any updates on how to cite
@@ -67,26 +94,24 @@ Please run this yourself to check for any updates on how to cite
 
     print(citation("satuRn"), bibtex = TRUE)
     #> 
-    #> jgilis (2020). _Scalable Analysis of Differential Transcript Usage for
-    #> Bulk and Single-Cell RNA-sequencing Applications_. doi:
-    #> 10.18129/B9.bioc.satuRn (URL: https://doi.org/10.18129/B9.bioc.satuRn),
-    #> https://github.com/jgilis/satuRn - R package version 0.1.0, <URL:
-    #> http://www.bioconductor.org/packages/satuRn>.
+    #> jgilis (2021). _Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell
+    #> RNA-sequencing Applications_. doi: 10.18129/B9.bioc.satuRn (URL:
+    #> https://doi.org/10.18129/B9.bioc.satuRn), https://github.com/jgilis/satuRn - R package version 0.99.0,
+    #> <URL: http://www.bioconductor.org/packages/satuRn>.
     #> 
     #> A BibTeX entry for LaTeX users is
     #> 
     #>   @Manual{,
     #>     title = {Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell RNA-sequencing Applications},
     #>     author = {{jgilis}},
-    #>     year = {2020},
+    #>     year = {2021},
     #>     url = {http://www.bioconductor.org/packages/satuRn},
-    #>     note = {https://github.com/jgilis/satuRn - R package version 0.1.0},
+    #>     note = {https://github.com/jgilis/satuRn - R package version 0.99.0},
     #>     doi = {10.18129/B9.bioc.satuRn},
     #>   }
     #> 
-    #> jgilis (2020). "Scalable Analysis of Differential Transcript Usage for
-    #> Bulk and Single-Cell RNA-sequencing Applications." _bioRxiv_. doi:
-    #> 10.1101/TODO (URL: https://doi.org/10.1101/TODO), <URL:
+    #> jgilis (2020). "Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell
+    #> RNA-sequencing Applications." _bioRxiv_. doi: 10.1101/TODO (URL: https://doi.org/10.1101/TODO), <URL:
     #> https://www.biorxiv.org/content/10.1101/TODO>.
     #> 
     #> A BibTeX entry for LaTeX users is
@@ -104,14 +129,16 @@ Please note that the `satuRn` was only made possible thanks to many
 other R and bioinformatics software authors, which are cited either in
 the vignettes and/or the paper(s) describing this package.
 
-## Code of Conduct
+Code of Conduct
+---------------
 
 Please note that the `satuRn` project is released with a [Contributor
 Code of
 Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).
 By contributing to this project, you agree to abide by its terms.
 
-## Development tools
+Development tools
+-----------------
 
 -   Continuous code testing is possible thanks to [GitHub
     actions](https://www.tidyverse.org/blog/2020/04/usethis-1-6-0/)
