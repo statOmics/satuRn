@@ -74,7 +74,7 @@ Next we perform differential usage testing using with `testDTU`
                               sort = FALSE)
 
 Finally, we may visualize the usage of select transcripts in select
-groups of interest.
+groups of interest with `plotDTU`
 
     group1 <- rownames(colData(sumExp))[colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
     group2 <- rownames(colData(sumExp))[colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
@@ -84,7 +84,9 @@ groups of interest.
                              groups = list(group1, group2), 
                              coefficients = list(c(0, 0, 1), c(0, 1, 0)), 
                              summaryStat = "model", 
-                             transcripts = c("ENSMUST00000081554", "ENSMUST00000195963", "ENSMUST00000132062"), 
+                             transcripts = c("ENSMUST00000081554", 
+                                             "ENSMUST00000195963", 
+                                             "ENSMUST00000132062"), 
                              genes = NULL, 
                              top.n = 6)
 

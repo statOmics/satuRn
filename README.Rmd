@@ -79,7 +79,8 @@ sumExp <- satuRn::testDTU(object = sumExp,
                           sort = FALSE)
 ```
 
-Finally, we may visualize the usage of select transcripts in select groups of interest.
+Finally, we may visualize the usage of select transcripts 
+in select groups of interest with `plotDTU`
 
 ```{r, eval = FALSE}
 group1 <- rownames(colData(sumExp))[colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
@@ -90,7 +91,9 @@ plots <- satuRn::plotDTU(object = sumExp,
                          groups = list(group1, group2), 
                          coefficients = list(c(0, 0, 1), c(0, 1, 0)), 
                          summaryStat = "model", 
-                         transcripts = c("ENSMUST00000081554", "ENSMUST00000195963", "ENSMUST00000132062"), 
+                         transcripts = c("ENSMUST00000081554", 
+                                         "ENSMUST00000195963", 
+                                         "ENSMUST00000132062"), 
                          genes = NULL, 
                          top.n = 6)
 
