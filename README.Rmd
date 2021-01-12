@@ -24,45 +24,68 @@ satuRn is a highly performant and scalable method for performing differential tr
 
 ## Installation instructions
 
-Get the latest stable `R` release from [CRAN](http://cran.r-project.org/). Then install `satuRn` using from [Bioconductor](http://bioconductor.org/) the following code:
-
-```{r 'install', eval = FALSE}
-if (!requireNamespace("BiocManager", quietly = TRUE)) {
-    install.packages("BiocManager")
-}
-
-BiocManager::install("satuRn")
-```
-
-And the development version from [GitHub](https://github.com/) with:
+Get the development version of `satuRn` from [GitHub](https://github.com/) with:
 
 ```{r 'install_dev', eval = FALSE}
-BiocManager::install("jgilis/satuRn")
+devtools::install_github("statOmics/satuRn")
 ```
-## Example
 
-This is a basic example which shows you how to solve a common problem:
+The installation should only take a few seconds.
+The dependencies of the package are listed in the DESCRIPTION file of the package.
 
-```{r example, eval = requireNamespace('satuRn')}
+## Issues and bug reports
+
+Please use https://github.com/statOmics/satuRn/issues to submit issues, bug reports, and comments.
+
+## Usage 
+
+A minimal example of the different functions for `modelling`, `testing` and `visualizing` differential transcript usage is provided. See the online [vignette](https://github.com/jgilis/satuRn/blob/master/vignettes/Vignette.Rmd) for a more elaborate and reproducible example.
+
+```{r minimal example, eval = FALSE}
 library("satuRn")
-## basic example code
+
+# Provide a transcript expression matrix and corresponding colData and rowData
+sumExp <- SummarizedExperiment::SummarizedExperiment(
+    assays = list(counts = Tasic_counts_vignette),
+    colData = Tasic_metadata_vignette,
+    rowData = txInfo
+)
+
+# Specify design formula from colData
+metadata(sumExp)$formula <- ~ 0 + as.factor(colData(sumExp)$group)
+
+# The fitDTU function is used to model transcript usage in different groups of samples or cells.
+sumExp <- satuRn::fitDTU(
+    object = sumExp,
+    formula = ~0 + group, 
+    parallel = FALSE,
+    BPPARAM = BiocParallel::bpparam(),
+    verbose = TRUE
+)
+
+# Next we perform differential usage testing using with testDTU
+sumExp <- satuRn::testDTU(object = sumExp, 
+                          contrasts = L, 
+                          plot = FALSE, 
+                          sort = FALSE)
+
+# Finally, we may visualize the usage of select transcripts in select groups of interest.
+group1 <- rownames(colData(sumExp))[colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
+group2 <- rownames(colData(sumExp))[colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
+
+plots <- satuRn::plotDTU(object = sumExp, 
+                         contrast = "Contrast1", 
+                         groups = list(group1, group2), 
+                         coefficients = list(c(0, 0, 1), c(0, 1, 0)), 
+                         summaryStat = "model", 
+                         transcripts = c("ENSMUST00000081554", "ENSMUST00000195963", "ENSMUST00000132062"), 
+                         genes = NULL, 
+                         top.n = 6)
+
+# Example plot from our publication:
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
-
-```{r cars}
-summary(cars)
-```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub!
+![](man/figures/README-DTU_plot.png)
 
 ## Citation
 
