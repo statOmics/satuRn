@@ -9,7 +9,7 @@ knitr::opts_chunk$set(
     collapse = TRUE,
     comment = "#>",
     fig.path = "man/figures/README-",
-    out.width = "60%"
+    out.width = "100%"
 )
 ```
 
@@ -98,6 +98,12 @@ plots <- satuRn::plotDTU(object = sumExp,
 ```
 
 ![](man/figures/README-DTU_plot.png)
+
+<img src="https://github.com/jgilis/satuRn/blob/master/man/figures/README-DTU_plot.png" width="200" />
+
+
+<img src="https://github.com/jgilis/satuRn/blob/master/man/figures/README-DTU_plot.png" width="48" />
+
 
 ## Citation
 

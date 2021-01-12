@@ -92,6 +92,10 @@ groups of interest.
 
 ![](man/figures/README-DTU_plot.png)
 
+<img src="https://github.com/jgilis/satuRn/blob/master/man/figures/README-DTU_plot.png" width="200" />
+
+<img src="https://github.com/jgilis/satuRn/blob/master/man/figures/README-DTU_plot.png" width="48" />
+
 Citation
 --------
 
