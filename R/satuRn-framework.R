@@ -68,7 +68,10 @@
 #' 
 #' @export
 
-StatModel <- function(type = "fitError", params = list(), varPosterior = is.numeric(NA), dfPosterior = is.numeric(NA)) {
+StatModel <- function(type = "fitError", 
+                      params = list(), 
+                      varPosterior = NA_real_, 
+                      dfPosterior = NA_real_) {
     out <- new("StatModel")
     out@type <- type
     out@params <- params

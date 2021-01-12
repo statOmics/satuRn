@@ -7,8 +7,8 @@
 StatModel(
   type = "fitError",
   params = list(),
-  varPosterior = is.numeric(NA),
-  dfPosterior = is.numeric(NA)
+  varPosterior = NA_real_,
+  dfPosterior = NA_real_
 )
 }
 \arguments{

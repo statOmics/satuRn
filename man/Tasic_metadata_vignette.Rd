@@ -3,7 +3,8 @@
 \docType{data}
 \name{Tasic_metadata_vignette}
 \alias{Tasic_metadata_vignette}
-\title{A DataFrame with metadata derived from Tasic case study (explain how).}
+\title{Metadata associated with the expression matrix `Tasic_counts_vignette`. See `?Tasic_counts_vignette` for more information
+on the dataset.}
 \format{
 An object of class \code{data.frame} with 60 rows and 3 columns.
 }
@@ -11,6 +12,7 @@ An object of class \code{data.frame} with 60 rows and 3 columns.
 data(Tasic_metadata_vignette)
 }
 \description{
-A DataFrame with metadata derived from Tasic case study (explain how).
+Metadata associated with the expression matrix `Tasic_counts_vignette`. See `?Tasic_counts_vignette` for more information
+on the dataset.
 }
 \keyword{datasets}

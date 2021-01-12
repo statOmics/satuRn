@@ -25,12 +25,12 @@ returned. This should be one of the column names of the contrast matrix that
 was provided to the `testDTU` function.}
 
 \item{groups}{A `list` containing two character vectors. Each character vector contains
-the names (sample names or cell names) of one of the groups in the contrast.}
+the names (sample names or cell names) of the respective groups in the target contrast.}
 
 \item{coefficients}{A `list` containing two numeric vectors. Each numeric vector specifies
 the model coefficient of the corresponding groups in the selected contrast.}
 
-\item{summaryStat}{Which summaryStatistic for the relative usage of the transcript
+\item{summaryStat}{Which summary statistic for the relative usage of the transcript
 should be displayed. `Character` or `character vector`, must be any of following
 summary statistics; model (default), mean or median.}
 
@@ -46,7 +46,7 @@ if the `transcripts` slot is specified.}
 
 \item{top.n}{A `numeric` value. If neither `transcripts` nor `genes` was
 was specified, this argument leads to the visualization of the `n` most
-significant DTU transcripts in the contrast. Defaults to 6 transcripts}
+significant DTU transcripts in the contrast. Defaults to 6 transcripts.}
 }
 \value{
 A ggplot object that can be directly displayed in the current R session
@@ -56,15 +56,14 @@ A ggplot object that can be directly displayed in the current R session
 Plot function to visualize differential transcript usage (DTU)
 }
 \examples{
-data(sumExp_vignette, package = "satuRn")
-data(Tasic_metadata_vignette, package = "satuRn")
-Tasic_metadata_vignette$group <- paste(Tasic_metadata_vignette$brain_region, Tasic_metadata_vignette$cluster, sep = ".")
+data(sumExp_example, package = "satuRn")
 sumExp <- fitDTU(
-   object = sumExp_vignette,
+   object = sumExp_example,
+   formula = ~0+group,
    parallel = FALSE,
    BPPARAM = BiocParallel::bpparam(),
    verbose = TRUE)
-group <- as.factor(Tasic_metadata_vignette$group)
+group <- as.factor(SummarizedExperiment::colData(sumExp)$group)
 design <- model.matrix(~ 0 + group)
 colnames(design) <- levels(group)
 L <- matrix(0, ncol = 2, nrow = ncol(design))
@@ -73,7 +72,7 @@ colnames(L) <- c("Contrast1", "Contrast2")
 L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tnc"), 1] <- c(1, -1)
 L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tmem163_Dmrtb1"), 2] <- c(1, -1)
 
-sumExp <- satuRn::testDTU(object = sumExp, contrasts = L, plot = TRUE, sort = TRUE)
+sumExp <- satuRn::testDTU(object = sumExp, contrasts = L, plot = FALSE, sort = FALSE)
 
 group1 <- rownames(SummarizedExperiment::colData(sumExp))[SummarizedExperiment::colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
 group2 <- rownames(SummarizedExperiment::colData(sumExp))[SummarizedExperiment::colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
@@ -83,7 +82,7 @@ plots <- plotDTU(object = sumExp,
    groups = list(group1, group2), 
    coefficients = list(c(0, 0, 1), c(0, 1, 0)), 
    summaryStat = "model", 
-   transcripts = c("ENSMUST00000081554", "ENSMUST00000195963", "ENSMUST00000132062"), 
+   transcripts = c("ENSMUST00000165123", "ENSMUST00000165721", "ENSMUST00000005067"), 
    genes = NULL, 
    top.n = 6)
    

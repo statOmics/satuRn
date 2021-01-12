@@ -9,18 +9,29 @@ fitDTU(object, ...)
 
 \S4method{fitDTU}{SummarizedExperiment}(
   object,
+  formula,
   parallel = FALSE,
   BPPARAM = BiocParallel::bpparam(),
   verbose = TRUE
 )
 }
 \arguments{
-\item{object}{A `SummarizedExperiment` instance}
+\item{object}{A `SummarizedExperiment` instance generated with the SummarizedExperiment function of the SummarizedExperiment
+package. In the assay slot, provide the transcript-level expression counts as an ordinary `matrix`, `DataFrame` a 
+`sparseMatrix` or a `DelayedMatrix`. The `rowData` slot must be a `DataFrame` object describing the rows, which must contain 
+a column `isoform_id` with the row names of the expression matrix and a column `gene_id` with 
+the corresponding gene identifiers of each transcript.
+`colData` is a `DataFrame` describing the samples or cells in the experiment. Finally, specify the experimental design as
+a formula in the metadata slot. This formula must be based on the colData. See the documentation examples and 
+the vignette for more details.}
 
 \item{...}{parameters including:}
 
+\item{formula}{Model formula. The model is built based on the
+covariates in the data object.}
+
 \item{parallel}{Logical, defaults to FALSE. Set to TRUE if you want to
-parallellize the fitting.}
+parallellize the fitting procedure.}
 
 \item{BPPARAM}{object of class \code{bpparamClass} that specifies the
 back-end to be used for computations. See
@@ -37,11 +48,10 @@ by rowData(object)[["fitDTUModels"]].
 Parameter estimation of quasi-binomial models.
 }
 \examples{
-data(sumExp_vignette, package = "satuRn")
-data(Tasic_metadata_vignette, package = "satuRn")
-Tasic_metadata_vignette$group <- paste(Tasic_metadata_vignette$brain_region, Tasic_metadata_vignette$cluster, sep = ".")
+data(sumExp_example, package = "satuRn") # testDTU
 sumExp <- fitDTU(
-   object = sumExp_vignette,
+   object = sumExp_example,
+   formula = ~0+group,
    parallel = FALSE,
    BPPARAM = BiocParallel::bpparam(),
    verbose = TRUE)

@@ -125,12 +125,12 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 #'      was provided to the `testDTU` function.
 #'
 #' @param groups A `list` containing two character vectors. Each character vector contains
-#'      the names (sample names or cell names) of one of the groups in the contrast.
+#'      the names (sample names or cell names) of the respective groups in the target contrast.
 #'
 #' @param coefficients A `list` containing two numeric vectors. Each numeric vector specifies
 #'      the model coefficient of the corresponding groups in the selected contrast.
 #'
-#' @param summaryStat Which summaryStatistic for the relative usage of the transcript
+#' @param summaryStat Which summary statistic for the relative usage of the transcript
 #'      should be displayed. `Character` or `character vector`, must be any of following
 #'      summary statistics; model (default), mean or median.
 #'
@@ -146,18 +146,17 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 #'
 #' @param top.n A `numeric` value. If neither `transcripts` nor `genes` was
 #'     was specified, this argument leads to the visualization of the `n` most
-#'     significant DTU transcripts in the contrast. Defaults to 6 transcripts
+#'     significant DTU transcripts in the contrast. Defaults to 6 transcripts.
 #'
 #' @examples
-#' data(sumExp_vignette, package = "satuRn")
-#' data(Tasic_metadata_vignette, package = "satuRn")
-#' Tasic_metadata_vignette$group <- paste(Tasic_metadata_vignette$brain_region, Tasic_metadata_vignette$cluster, sep = ".")
+#' data(sumExp_example, package = "satuRn")
 #' sumExp <- fitDTU(
-#'    object = sumExp_vignette,
+#'    object = sumExp_example,
+#'    formula = ~0+group,
 #'    parallel = FALSE,
 #'    BPPARAM = BiocParallel::bpparam(),
 #'    verbose = TRUE)
-#' group <- as.factor(Tasic_metadata_vignette$group)
+#' group <- as.factor(SummarizedExperiment::colData(sumExp)$group)
 #' design <- model.matrix(~ 0 + group)
 #' colnames(design) <- levels(group)
 #' L <- matrix(0, ncol = 2, nrow = ncol(design))
@@ -166,7 +165,7 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 #' L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tnc"), 1] <- c(1, -1)
 #' L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tmem163_Dmrtb1"), 2] <- c(1, -1)
 #' 
-#' sumExp <- satuRn::testDTU(object = sumExp, contrasts = L, plot = TRUE, sort = TRUE)
+#' sumExp <- satuRn::testDTU(object = sumExp, contrasts = L, plot = FALSE, sort = FALSE)
 #' 
 #' group1 <- rownames(SummarizedExperiment::colData(sumExp))[SummarizedExperiment::colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
 #' group2 <- rownames(SummarizedExperiment::colData(sumExp))[SummarizedExperiment::colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
@@ -176,7 +175,7 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 #'    groups = list(group1, group2), 
 #'    coefficients = list(c(0, 0, 1), c(0, 1, 0)), 
 #'    summaryStat = "model", 
-#'    transcripts = c("ENSMUST00000081554", "ENSMUST00000195963", "ENSMUST00000132062"), 
+#'    transcripts = c("ENSMUST00000165123", "ENSMUST00000165721", "ENSMUST00000005067"), 
 #'    genes = NULL, 
 #'    top.n = 6)
 #'    
@@ -192,6 +191,10 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 #' @importFrom ensembldb transcripts
 #' @importFrom edgeR filterByExpr
 #' @importFrom boot inv.logit
+#' @importFrom DelayedArray DelayedArray
+#' @importFrom Matrix Matrix
+#' @importFrom stats median
+#' @importFrom SummarizedExperiment colData
 #'
 #' @export
 
@@ -203,6 +206,13 @@ plotDTU <- function(object, contrast, groups, coefficients, summaryStat = "model
     stopifnot(class(transcripts) %in% c("character", "NULL"))
     stopifnot(class(genes) %in% c("character", "NULL"))
     stopifnot(class(top.n) %in% c("numeric"))
+    if (is.null(rowData(object)[["fitDTUModels"]])){
+        stop("fitDTUModels is empty. Did you run fitDTU first?")
+    } 
+    if (!any(grepl("fitDTUResult", names(rowData(object))))){
+        stop("fitDTUResult is empty. Did you run testDTU first?")
+    }
+    ##
 
     topTable <- rowData(object)[[paste0("fitDTUResult_", contrast)]] # select the requested contrast
     topTable <- topTable[order(topTable$empirical_pval), ]

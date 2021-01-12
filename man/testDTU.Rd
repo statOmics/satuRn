@@ -32,15 +32,14 @@ An updated `SummarizedExperiment` that contains the `Dataframes` displaying
 Function to test for differential transcript usage (DTU)
 }
 \examples{
-data(sumExp_vignette, package = "satuRn")
-data(Tasic_metadata_vignette, package = "satuRn")
-Tasic_metadata_vignette$group <- paste(Tasic_metadata_vignette$brain_region, Tasic_metadata_vignette$cluster, sep = ".")
+data(sumExp_example, package = "satuRn") # testDTU
 sumExp <- fitDTU(
-   object = sumExp_vignette,
+   object = sumExp_example,
+   formula = ~0+group,
    parallel = FALSE,
    BPPARAM = BiocParallel::bpparam(),
    verbose = TRUE)
-group <- as.factor(Tasic_metadata_vignette$group)
+group <- as.factor(SummarizedExperiment::colData(sumExp)$group)
 design <- model.matrix(~ 0 + group)
 colnames(design) <- levels(group)
 L <- matrix(0, ncol = 2, nrow = ncol(design))
@@ -49,7 +48,7 @@ colnames(L) <- c("Contrast1", "Contrast2")
 L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tnc"), 1] <- c(1, -1)
 L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tmem163_Dmrtb1"), 2] <- c(1, -1)
 
-sumExp <- testDTU(object = sumExp, contrasts = L, plot = TRUE, sort = TRUE)
+sumExp <- testDTU(object = sumExp, contrasts = L, plot = FALSE, sort = FALSE)
 
 }
 \author{
