@@ -136,10 +136,6 @@ jobs:
           ## Helps compile RCurl from source
           brew uninstall curl
 
-	  brew update
-          brew upgrade
-          brew install ace boost cmake eigen gsl ipopt jpeg libedit opencv pkg-config qt5 sqlite swig tinyxml
-
       - name: Install Windows system dependencies
         if: runner.os == 'Windows'
         run: |
