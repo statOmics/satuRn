@@ -41,7 +41,7 @@ VignetteBuilder: knitr
 Collate:'data.R' 'satuRn-framework.R' 'allGenerics.R'
         'accessors.R' 'fitDTU.R' 'testDTU.R' 'plotDTU.R'
 License: Artistic-2.0
-URL: https://github.com/jgilis/satuRn
+URL: https://github.com/statOmics/satuRn
 BugReports: https://support.bioconductor.org/t/satuRn
 Encoding: UTF-8
 LazyData: false
