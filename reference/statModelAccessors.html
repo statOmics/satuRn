@@ -81,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">satuRn</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
       </span>
     </div>
 
@@ -89,7 +89,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -104,7 +104,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/Vignette.html">satuRn vignette</a>
+      <a href="../articles/Vignette.html">satuRn - vignette</a>
     </li>
   </ul>
 </li>
@@ -113,7 +113,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/jgilis/satuRn/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -128,7 +133,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Accessor functions for StatModel class</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/jgilis/satuRn/blob/master/R/accessors.R'><code>R/accessors.R</code></a></small>
     <div class="hidden name"><code>statModelAccessors.Rd</code></div>
     </div>
 
@@ -146,17 +151,32 @@
     </div>
 
     <pre class="usage"><span class='co'># S4 method for StatModel</span>
-<span class='fu'>getModel</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span></pre>
+<span class='fu'>getModel</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span>
+
+<span class='co'># S4 method for StatModel</span>
+<span class='fu'>getDF</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span>
+
+<span class='co'># S4 method for StatModel</span>
+<span class='fu'>getDfPosterior</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span>
+
+<span class='co'># S4 method for StatModel</span>
+<span class='fu'>getDispersion</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span>
+
+<span class='co'># S4 method for StatModel</span>
+<span class='fu'>getCoef</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>`StatModel` object</p></td>
+      <td><p>StatModel object</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>The requested parameter of the StatModel object</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

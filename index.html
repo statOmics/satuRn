@@ -12,8 +12,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell RNA-sequencing Applications">
-<meta property="og:description" content="satuRn provides a higly performant and scalable framework for perforing
-    differential transcript usage analyses.">
+<meta property="og:description" content="satuRn provides a higly performant and scalable framework for performing
+    differential transcript usage analyses. The package consists of three main functions.
+    The first function, fitDTU, fits quasi-binomial generalized linear models that model
+    transcript usage in different groups of interest. The second function, testDTU, tests    
+    for differential usage of transcripts between groups of interest. Finally, plotDTU  
+    visualizes the usage profiles of transcripts in groups of interest.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -32,7 +36,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">satuRn</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
       </span>
     </div>
 
@@ -40,7 +44,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -55,7 +59,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/Vignette.html">satuRn vignette</a>
+      <a href="articles/Vignette.html">satuRn - vignette</a>
     </li>
   </ul>
 </li>
@@ -63,7 +67,14 @@
   <a href="news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/jgilis/satuRn/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -84,73 +95,96 @@
 <div id="installation-instructions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation-instructions" class="anchor"></a>Installation instructions</h2>
-<p>Get the latest stable <code>R</code> release from <a href="http://cran.r-project.org/">CRAN</a>. Then install <code>satuRn</code> using from <a href="http://bioconductor.org/">Bioconductor</a> the following code:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="cf">if</span> (<span class="op">!</span><span class="kw">requireNamespace</span>(<span class="st">"BiocManager"</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)) {</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>    <span class="kw">install.packages</span>(<span class="st">"BiocManager"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a>}</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a>BiocManager<span class="op">::</span><span class="kw">install</span>(<span class="st">"satuRn"</span>)</span></code></pre></div>
-<p>And the development version from <a href="https://github.com/">GitHub</a> with:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>BiocManager<span class="op">::</span><span class="kw">install</span>(<span class="st">"jgilis/satuRn"</span>)</span></code></pre></div>
+<p>Get the development version of <code>satuRn</code> from <a href="https://github.com/">GitHub</a> with:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"statOmics/satuRn"</span>)</span></code></pre></div>
+<p>The installation should only take a few seconds. The dependencies of the package are listed in the DESCRIPTION file of the package.</p>
 </div>
-<div id="example" class="section level2">
+<div id="issues-and-bug-reports" class="section level2">
 <h2 class="hasAnchor">
-<a href="#example" class="anchor"></a>Example</h2>
-<p>This is a basic example which shows you how to solve a common problem:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="kw">library</span>(<span class="st">"satuRn"</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="co">## basic example code</span></span></code></pre></div>
-<p>What is special about using <code>README.Rmd</code> instead of just <code>README.md</code>? You can include R chunks like so:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="kw">summary</span>(cars)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="co">#&gt;      speed           dist       </span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="co">#&gt;  Min.   : 4.0   Min.   :  2.00  </span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a><span class="co">#&gt;  1st Qu.:12.0   1st Qu.: 26.00  </span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a><span class="co">#&gt;  Median :15.0   Median : 36.00  </span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a><span class="co">#&gt;  Mean   :15.4   Mean   : 42.98  </span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a><span class="co">#&gt;  3rd Qu.:19.0   3rd Qu.: 56.00  </span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a><span class="co">#&gt;  Max.   :25.0   Max.   :120.00</span></span></code></pre></div>
-<p>You’ll still need to render <code>README.Rmd</code> regularly, to keep <code>README.md</code> up-to-date.</p>
-<p>You can also embed plots, for example:</p>
-<p><img src="reference/figures/README-pressure-1.png" width="100%"></p>
-<p>In that case, don’t forget to commit and push the resulting figure files, so they display on GitHub!</p>
+<a href="#issues-and-bug-reports" class="anchor"></a>Issues and bug reports</h2>
+<p>Please use <a href="https://github.com/statOmics/satuRn/issues" class="uri">https://github.com/statOmics/satuRn/issues</a> to submit issues, bug reports, and comments.</p>
+</div>
+<div id="usage" class="section level2">
+<h2 class="hasAnchor">
+<a href="#usage" class="anchor"></a>Usage</h2>
+<p>A minimal example of the different functions for <code>modelling</code>, <code>testing</code> and <code>visualizing</code> differential transcript usage is provided. See the online <a href="https://github.com/jgilis/satuRn/blob/master/vignettes/Vignette.Rmd">vignette</a> for a more elaborate and reproducible example.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"satuRn"</span>)</span></code></pre></div>
+<p>Provide a transcript expression matrix and corresponding <code>colData</code> and <code>rowData</code></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sumExp <span class="ot">&lt;-</span> SummarizedExperiment<span class="sc">::</span><span class="fu">SummarizedExperiment</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">assays =</span> <span class="fu">list</span>(<span class="at">counts =</span> Tasic_counts_vignette),</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">colData =</span> Tasic_metadata_vignette,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">rowData =</span> txInfo</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify design formula from colData</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">metadata</span>(sumExp)<span class="sc">$</span>formula <span class="ot">&lt;-</span> <span class="er">~</span> <span class="dv">0</span> <span class="sc">+</span> <span class="fu">as.factor</span>(<span class="fu">colData</span>(sumExp)<span class="sc">$</span>group)</span></code></pre></div>
+<p>The <code>fitDTU</code> function is used to model transcript usage in different groups of samples or cells.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>sumExp <span class="ot">&lt;-</span> satuRn<span class="sc">::</span><span class="fu">fitDTU</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> sumExp,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> <span class="sc">~</span><span class="dv">0</span> <span class="sc">+</span> group, </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">parallel =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">BPPARAM =</span> BiocParallel<span class="sc">::</span><span class="fu">bpparam</span>(),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">verbose =</span> <span class="cn">TRUE</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>Next we perform differential usage testing using with <code>testDTU</code></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>sumExp <span class="ot">&lt;-</span> satuRn<span class="sc">::</span><span class="fu">testDTU</span>(<span class="at">object =</span> sumExp, </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">contrasts =</span> L, </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">plot =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                          <span class="at">sort =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>Finally, we may visualize the usage of select transcripts in select groups of interest with <code>plotDTU</code></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>group1 <span class="ot">&lt;-</span> <span class="fu">rownames</span>(<span class="fu">colData</span>(sumExp))[<span class="fu">colData</span>(sumExp)<span class="sc">$</span>group <span class="sc">==</span> <span class="st">"VISp.L5_IT_VISp_Hsd11b1_Endou"</span>]</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>group2 <span class="ot">&lt;-</span> <span class="fu">rownames</span>(<span class="fu">colData</span>(sumExp))[<span class="fu">colData</span>(sumExp)<span class="sc">$</span>group <span class="sc">==</span> <span class="st">"ALM.L5_IT_ALM_Tnc"</span>]</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>plots <span class="ot">&lt;-</span> satuRn<span class="sc">::</span><span class="fu">plotDTU</span>(<span class="at">object =</span> sumExp, </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>                         <span class="at">contrast =</span> <span class="st">"Contrast1"</span>, </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">groups =</span> <span class="fu">list</span>(group1, group2), </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>                         <span class="at">coefficients =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)), </span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>                         <span class="at">summaryStat =</span> <span class="st">"model"</span>, </span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>                         <span class="at">transcripts =</span> <span class="fu">c</span>(<span class="st">"ENSMUST00000081554"</span>, </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"ENSMUST00000195963"</span>, </span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"ENSMUST00000132062"</span>), </span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>                         <span class="at">genes =</span> <span class="cn">NULL</span>, </span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>                         <span class="at">top.n =</span> <span class="dv">6</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Example plot from our publication:</span></span></code></pre></div>
+<p><img src="https://github.com/jgilis/satuRn/blob/master/man/figures/README-DTU_plot.png" width="400"></p>
 </div>
 <div id="citation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#citation" class="anchor"></a>Citation</h2>
 <p>Below is the citation output from using <code><a href="https://rdrr.io/r/utils/citation.html">citation('satuRn')</a></code> in R. Please run this yourself to check for any updates on how to cite <strong>satuRn</strong>.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="kw">print</span>(<span class="kw">citation</span>(<span class="st">'satuRn'</span>), <span class="dt">bibtex =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a><span class="co">#&gt; </span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a><span class="co">#&gt; jgilis (2020). _Scalable Analysis of Differential Transcript Usage for</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true"></a><span class="co">#&gt; Bulk and Single-Cell RNA-sequencing Applications_. doi:</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true"></a><span class="co">#&gt; 10.18129/B9.bioc.satuRn (URL: https://doi.org/10.18129/B9.bioc.satuRn),</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true"></a><span class="co">#&gt; https://github.com/jgilis/satuRn - R package version 0.1.0, &lt;URL:</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true"></a><span class="co">#&gt; http://www.bioconductor.org/packages/satuRn&gt;.</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true"></a><span class="co">#&gt; </span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true"></a><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true"></a><span class="co">#&gt; </span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true"></a><span class="co">#&gt;   @Manual{,</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true"></a><span class="co">#&gt;     title = {Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell RNA-sequencing Applications},</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true"></a><span class="co">#&gt;     author = {{jgilis}},</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true"></a><span class="co">#&gt;     year = {2020},</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true"></a><span class="co">#&gt;     url = {http://www.bioconductor.org/packages/satuRn},</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true"></a><span class="co">#&gt;     note = {https://github.com/jgilis/satuRn - R package version 0.1.0},</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true"></a><span class="co">#&gt;     doi = {10.18129/B9.bioc.satuRn},</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true"></a><span class="co">#&gt;   }</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true"></a><span class="co">#&gt; </span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true"></a><span class="co">#&gt; jgilis (2020). "Scalable Analysis of Differential Transcript Usage for</span></span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true"></a><span class="co">#&gt; Bulk and Single-Cell RNA-sequencing Applications." _bioRxiv_. doi:</span></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true"></a><span class="co">#&gt; 10.1101/</span><span class="al">TODO</span><span class="co"> (URL: https://doi.org/10.1101/</span><span class="al">TODO</span><span class="co">), &lt;URL:</span></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true"></a><span class="co">#&gt; https://www.biorxiv.org/content/10.1101/</span><span class="al">TODO</span><span class="co">&gt;.</span></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true"></a><span class="co">#&gt; </span></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true"></a><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true"></a><span class="co">#&gt; </span></span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true"></a><span class="co">#&gt;   @Article{,</span></span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true"></a><span class="co">#&gt;     title = {Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell RNA-sequencing Applications},</span></span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true"></a><span class="co">#&gt;     author = {{jgilis}},</span></span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true"></a><span class="co">#&gt;     year = {2020},</span></span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true"></a><span class="co">#&gt;     journal = {bioRxiv},</span></span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true"></a><span class="co">#&gt;     doi = {10.1101/</span><span class="al">TODO</span><span class="co">},</span></span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true"></a><span class="co">#&gt;     url = {https://www.biorxiv.org/content/10.1101/</span><span class="al">TODO</span><span class="co">},</span></span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true"></a><span class="co">#&gt;   }</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">citation</span>(<span class="st">"satuRn"</span>), <span class="at">bibtex =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; jgilis (2021). _Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; RNA-sequencing Applications_. doi: 10.18129/B9.bioc.satuRn (URL:</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; https://doi.org/10.18129/B9.bioc.satuRn), https://github.com/jgilis/satuRn - R package version 0.99.0,</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;URL: http://www.bioconductor.org/packages/satuRn&gt;.</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   @Manual{,</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     title = {Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell RNA-sequencing Applications},</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     author = {{jgilis}},</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     year = {2021},</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     url = {http://www.bioconductor.org/packages/satuRn},</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     note = {https://github.com/jgilis/satuRn - R package version 0.99.0},</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     doi = {10.18129/B9.bioc.satuRn},</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   }</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; jgilis (2020). "Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; RNA-sequencing Applications." _bioRxiv_. doi: 10.1101/</span><span class="al">TODO</span><span class="co"> (URL: https://doi.org/10.1101/</span><span class="al">TODO</span><span class="co">), &lt;URL:</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; https://www.biorxiv.org/content/10.1101/</span><span class="al">TODO</span><span class="co">&gt;.</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   @Article{,</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     title = {Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell RNA-sequencing Applications},</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     author = {{jgilis}},</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     year = {2020},</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     journal = {bioRxiv},</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     doi = {10.1101/</span><span class="al">TODO</span><span class="co">},</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     url = {https://www.biorxiv.org/content/10.1101/</span><span class="al">TODO</span><span class="co">},</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   }</span></span></code></pre></div>
 <p>Please note that the <code>satuRn</code> was only made possible thanks to many other R and bioinformatics software authors, which are cited either in the vignettes and/or the paper(s) describing this package.</p>
 </div>
 <div id="code-of-conduct" class="section level2">
@@ -175,12 +209,19 @@
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="license">
+    <div class="links">
+<h2>Links</h2>
+<ul class="list-unstyled">
+<li>Browse source code at <br><a href="https://github.com/jgilis/satuRn/">https://​github.com/​jgilis/​satuRn/​</a>
+</li>
+<li>Report a bug at <br><a href="https://support.bioconductor.org/t/satuRn">https://​support.bioconductor.org/​t/​satuRn</a>
+</li>
+</ul>
+</div>
+<div class="license">
 <h2>License</h2>
 <ul class="list-unstyled">
-<li>
-<a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
-</li>
+<li><a href="https://www.r-project.org/Licenses/Artistic-2.0">Artistic-2.0</a></li>
 </ul>
 </div>
 <div class="community">
@@ -199,7 +240,8 @@
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
-<li>Jeroen Gilis <br><small class="roles"> Maintainer </small>  </li>
+<li>Jeroen Gilis <br><small class="roles"> Author, maintainer </small>  </li>
+<li><a href="authors.html">All authors...</a></li>
 </ul>
 </div>
 
@@ -207,7 +249,6 @@
 <h2>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://www.tidyverse.org/lifecycle/#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing"></a></li>
-<li><a href="https://bioconductor.org/checkResults/release/bioc-LATEST/satuRn"><img src="http://www.bioconductor.org/shields/build/release/bioc/satuRn.svg" alt="BioC status"></a></li>
 <li><a href="https://github.com/jgilis/satuRn/actions"><img src="https://github.com/jgilis/satuRn/workflows/R-CMD-check-bioc/badge.svg" alt="R build status"></a></li>
 </ul>
 </div>

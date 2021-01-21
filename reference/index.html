@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">satuRn</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
       </span>
     </div>
 
@@ -79,7 +79,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -94,7 +94,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/Vignette.html">satuRn vignette</a>
+      <a href="../articles/Vignette.html">satuRn - vignette</a>
     </li>
   </ul>
 </li>
@@ -103,7 +103,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/jgilis/satuRn/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -143,21 +148,32 @@
       <tr>
         
         <td>
+          <p><code><a href="StatModel.html">StatModel()</a></code> </p>
+        </td>
+        <td><p>StatModel</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="Tasic_counts_vignette.html">Tasic_counts_vignette</a></code> </p>
         </td>
-        <td><p>A DataFrame with counts derived from Tasic case study (explain how).</p></td>
+        <td><p>A `Matrix` with transcript-level counts derived from our case study which builds on the dataset of Tasic et al. 
+We used Salmon (V1.1.0) to quantify all L5IT cells (both for ALM and VISp tissue) from mice with a normal eye condition. 
+From these cells, we randomly sampled 20 cells of each of the following cell types to use for this vignette;
+L5_IT_VISp_Hsd11b1_Endou, L5_IT_ALM_Tmem163_Dmrtb1 and L5_IT_ALM_Tnc. The data has already been leniently filtered
+with the `filterByExpr` function of edgeR.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="Tasic_metadata_vignette.html">Tasic_metadata_vignette</a></code> </p>
         </td>
-        <td><p>A DataFrame with metadata derived from Tasic case study (explain how).</p></td>
+        <td><p>Metadata associated with the expression matrix `Tasic_counts_vignette`. See `?Tasic_counts_vignette` for more information
+on the dataset.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="fitDTU.html">fitDTU(<i>&lt;SummarizedExperiment&gt;</i>)</a></code> </p>
+          <p><code><a href="fitDTU.html">fitDTU()</a></code> </p>
         </td>
-        <td><p>Function to fit quasi-binomial models</p></td>
+        <td><p>fitDTU</p></td>
       </tr><tr>
         
         <td>
@@ -173,9 +189,19 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="statModelAccessors.html">getModel(<i>&lt;StatModel&gt;</i>)</a></code> </p>
+          <p><code><a href="statModelAccessors.html">getModel(<i>&lt;StatModel&gt;</i>)</a></code> <code><a href="statModelAccessors.html">getDF(<i>&lt;StatModel&gt;</i>)</a></code> <code><a href="statModelAccessors.html">getDfPosterior(<i>&lt;StatModel&gt;</i>)</a></code> <code><a href="statModelAccessors.html">getDispersion(<i>&lt;StatModel&gt;</i>)</a></code> <code><a href="statModelAccessors.html">getCoef(<i>&lt;StatModel&gt;</i>)</a></code> </p>
         </td>
         <td><p>Accessor functions for StatModel class</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sumExp_example.html">sumExp_example</a></code> </p>
+        </td>
+        <td><p>A `SummarizedExperiment` derived from our case study which builds on the dataset of Tasic et al. It contains the same cells 
+as the data object used in the vignette (see `?Tasic_counts_vignette` for more information). In this SummarizedExperiment, we
+performed a filtering with the `filterByExpr` of edgeR with more stringent than default parameter settings (min.count = 100,
+min.total.count = 200, large.n = 50, min.prop = 0.9) to reduced the number of retained transcripts. We used this object to
+create an executable example in the help files of satuRn.</p></td>
       </tr><tr>
         
         <td>

@@ -6,7 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Changelog • satuRn</title>
+<title>A `SummarizedExperiment` derived from our case study which builds on the dataset of Tasic et al. It contains the same cells 
+as the data object used in the vignette (see `?Tasic_counts_vignette` for more information). In this SummarizedExperiment, we
+performed a filtering with the `filterByExpr` of edgeR with more stringent than default parameter settings (min.count = 100,
+min.total.count = 200, large.n = 50, min.prop = 0.9) to reduced the number of retained transcripts. We used this object to
+create an executable example in the help files of satuRn. — sumExp_example • satuRn</title>
 
 
 <!-- jquery -->
@@ -39,7 +43,16 @@
 
 
 
-<meta property="og:title" content="Changelog" />
+<meta property="og:title" content="A `SummarizedExperiment` derived from our case study which builds on the dataset of Tasic et al. It contains the same cells 
+as the data object used in the vignette (see `?Tasic_counts_vignette` for more information). In this SummarizedExperiment, we
+performed a filtering with the `filterByExpr` of edgeR with more stringent than default parameter settings (min.count = 100,
+min.total.count = 200, large.n = 50, min.prop = 0.9) to reduced the number of retained transcripts. We used this object to
+create an executable example in the help files of satuRn. — sumExp_example" />
+<meta property="og:description" content="A `SummarizedExperiment` derived from our case study which builds on the dataset of Tasic et al. It contains the same cells 
+as the data object used in the vignette (see `?Tasic_counts_vignette` for more information). In this SummarizedExperiment, we
+performed a filtering with the `filterByExpr` of edgeR with more stringent than default parameter settings (min.count = 100,
+min.total.count = 200, large.n = 50, min.prop = 0.9) to reduced the number of retained transcripts. We used this object to
+create an executable example in the help files of satuRn." />
 
 
 
@@ -58,7 +71,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-news">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -122,34 +135,36 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1 data-toc-skip>Changelog <small></small></h1>
-      <small>Source: <a href='https://github.com/jgilis/satuRn/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
+    <h1>A `SummarizedExperiment` derived from our case study which builds on the dataset of Tasic et al. It contains the same cells 
+as the data object used in the vignette (see `?Tasic_counts_vignette` for more information). In this SummarizedExperiment, we
+performed a filtering with the `filterByExpr` of edgeR with more stringent than default parameter settings (min.count = 100,
+min.total.count = 200, large.n = 50, min.prop = 0.9) to reduced the number of retained transcripts. We used this object to
+create an executable example in the help files of satuRn.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jgilis/satuRn/blob/master/R/data.R'><code>R/data.R</code></a></small>
+    <div class="hidden name"><code>sumExp_example.Rd</code></div>
     </div>
 
-    <div id="saturn-010" class="section level1">
-<h1 class="page-header" data-toc-text="0.1.0">
-<a href="#saturn-010" class="anchor"></a>satuRn 0.1.0</h1>
-<p>NEW FEATURES</p>
-<ul>
-<li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
-</ul>
-<p>SIGNIFICANT USER-VISIBLE CHANGES</p>
-<ul>
-<li>Your main changes to a function <code>foo()</code> or parameter <code>param</code>.</li>
-</ul>
-<p>BUG FIXES</p>
-<ul>
-<li>Your bug fixes. See more details at <a href="http://bioconductor.org/developers/package-guidelines/#news" class="uri">http://bioconductor.org/developers/package-guidelines/#news</a>.</li>
-</ul>
-</div>
-  </div>
+    <div class="ref-description">
+    <p>A `SummarizedExperiment` derived from our case study which builds on the dataset of Tasic et al. It contains the same cells 
+as the data object used in the vignette (see `?Tasic_counts_vignette` for more information). In this SummarizedExperiment, we
+performed a filtering with the `filterByExpr` of edgeR with more stringent than default parameter settings (min.count = 100,
+min.total.count = 200, large.n = 50, min.prop = 0.9) to reduced the number of retained transcripts. We used this object to
+create an executable example in the help files of satuRn.</p>
+    </div>
 
+    <pre class="usage"><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>sumExp_example</span><span class='op'>)</span></pre>
+
+
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+
+    <p>An object of class <code>SummarizedExperiment</code> with 1286 rows and 60 columns.</p>
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
     </nav>
   </div>
-
 </div>
 
 
