@@ -4,3 +4,5 @@ Meta
 .RData
 .DS_Store
 .Rproj.user
+^\.Rproj\.user$
+docs
