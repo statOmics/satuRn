@@ -1,0 +1,4 @@
+"0","ah <- AnnotationHub() # load the annotation resource."
+"0","all <- query(ah, ""EnsDb"") # query for all available EnsDb databases"
+"0","ahEdb <- all[[""AH75036""]] # for Mus musculus (choose correct release date)"
+"0","txs <- transcripts(ahEdb)"
