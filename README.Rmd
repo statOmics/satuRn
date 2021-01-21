@@ -101,7 +101,7 @@ plots <- satuRn::plotDTU(object = sumExp,
 ```
 
 ```{r  out.width = "60%"}
-knitr::include_graphics("https://github.com/statOmics/satuRn/blob/master/man/figures/README-DTU_plot.png") 
+knitr::include_graphics("./man/figures/README-DTU_plot.png") 
 ```
 
 ## Citation
