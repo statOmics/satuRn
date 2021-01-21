@@ -7,7 +7,7 @@ pkgVer <- function(pkg) {
 c(
 
     bibentry(bibtype="manual",
-        title = "Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell RNA-sequencing Applications",
+        title = "Scalable Analysis of differential Transcript Usage for bulk and single-Cell RNA-sequencing applications",
         author = personList(
             as.person("Jeroen Gilis")
         ),
