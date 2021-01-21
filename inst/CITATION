@@ -1,7 +1,7 @@
 pkgVer <- function(pkg) {
     if (!exists("meta") || is.null(meta)) meta <- packageDescription(pkg)
     ver <- meta$Version
-    paste0('https://github.com/jgilis/', pkg, ' - R package version ', ver)
+    paste0('https://github.com/statOmics/', pkg, ' - R package version ', ver)
 }
 
 c(
@@ -9,7 +9,7 @@ c(
     bibentry(bibtype="manual",
         title = "Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell RNA-sequencing Applications",
         author = personList(
-            as.person("jgilis")
+            as.person("Jeroen Gilis")
         ),
         year = format(Sys.Date(), "%Y"),
         url = "http://www.bioconductor.org/packages/satuRn",
@@ -19,11 +19,14 @@ c(
     bibentry(bibtype="article",
         title = "Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell RNA-sequencing Applications",
         author = personList(
-            as.person("jgilis")
+            as.person("Jeroen Gilis"),
+	    as.person("Kristoffer Vitting-Seerup"),
+	    as.person("Koen Van den Berge"),
+	    as.person("Lieven Clement")
         ),
-        year = 2020,
+        year = 2021,
         journal = "bioRxiv",
-        doi = "10.1101/TODO",
-        url = "https://www.biorxiv.org/content/10.1101/TODO"
+        doi = "https://doi.org/10.1101/2021.01.14.426636",
+        url = "https://www.biorxiv.org/content/10.1101/2021.01.14.426636v1"
     )
 )
