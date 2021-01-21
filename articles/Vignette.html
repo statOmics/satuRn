@@ -226,7 +226,7 @@
 <p>The <code>fitDTU</code> function of <code>satuRn</code> is used to model transcript usage in different groups of samples or cells. Here we adopt the default settings of the function. Without parallel execution, this code runs for approximately 15 seconds on a 2018 macbook pro laptop.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.time</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "2021-01-21 08:20:19 CET"</code></pre>
+<pre><code>## [1] "2021-01-21 09:28:13 CET"</code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sumExp</span> <span class="op">&lt;-</span> <span class="fu">satuRn</span><span class="fu">::</span><span class="fu"><a href="../reference/fitDTU.html">fitDTU</a></span><span class="op">(</span>
     object <span class="op">=</span> <span class="va">sumExp</span>,
@@ -236,7 +236,7 @@
     verbose <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.time</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "2021-01-21 08:20:35 CET"</code></pre>
+<pre><code>## [1] "2021-01-21 09:28:29 CET"</code></pre>
 <p>The resulting model fits are now saved into the <code>rowData</code> of our SummarizedExperiment object under the name <code>fitDTUModels</code>. These models can be accessed as follows:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">[[</span><span class="st">"fitDTUModels"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="st">"ENSMUST00000037739"</span>
