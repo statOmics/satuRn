@@ -187,11 +187,7 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 #' @author Jeroen Gilis
 #'
 #' @import ggplot2
-#' @importFrom AnnotationHub AnnotationHub query
-#' @importFrom ensembldb transcripts
-#' @importFrom edgeR filterByExpr
 #' @importFrom boot inv.logit
-#' @importFrom DelayedArray DelayedArray
 #' @importFrom Matrix Matrix
 #' @importFrom stats median
 #' @importFrom SummarizedExperiment colData

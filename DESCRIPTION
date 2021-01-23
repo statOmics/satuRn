@@ -25,7 +25,6 @@ Imports: locfdr,
 	 pbapply,
 	 ggplot2,
 	 boot,
-	 DelayedArray,
 	 Matrix,
 	 stats
 Suggests:
@@ -36,7 +35,8 @@ Suggests:
     BiocStyle,
     AnnotationHub,
     ensembldb,
-    edgeR
+    edgeR,
+    DelayedArray
 VignetteBuilder: knitr
 Collate:'data.R' 'satuRn-framework.R' 'allGenerics.R'
         'accessors.R' 'fitDTU.R' 'testDTU.R' 'plotDTU.R'
