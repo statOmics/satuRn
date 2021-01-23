@@ -101,10 +101,10 @@ plots <- satuRn::plotDTU(object = sumExp,
 ```
 
 ``` r
-knitr::include_graphics("./man/figures/README-DTU_plot.png") 
+knitr::include_graphics("https://raw.githubusercontent.com/statOmics/satuRn/master/man/figures/README-DTU_plot.png") 
 ```
 
-<img src="./man/figures/README-DTU_plot.png" width="60%" />
+<img src="https://raw.githubusercontent.com/statOmics/satuRn/master/man/figures/README-DTU_plot.png" width="75%" />
 
 ## Citation
 
@@ -114,41 +114,42 @@ Please run this yourself to check for any updates on how to cite
 
 ``` r
 print(citation("satuRn"), bibtex = TRUE)
-#> 
-#> Gilis J (2021). _Scalable Analysis of differential Transcript Usage for
-#> bulk and single-Cell RNA-sequencing applications_. doi:
-#> 10.18129/B9.bioc.satuRn (URL: https://doi.org/10.18129/B9.bioc.satuRn),
-#> https://github.com/statOmics/satuRn - R package version 0.99.0, <URL:
-#> http://www.bioconductor.org/packages/satuRn>.
-#> 
-#> A BibTeX entry for LaTeX users is
-#> 
-#>   @Manual{,
-#>     title = {Scalable Analysis of differential Transcript Usage for bulk and single-Cell RNA-sequencing applications},
-#>     author = {Jeroen Gilis},
-#>     year = {2021},
-#>     url = {http://www.bioconductor.org/packages/satuRn},
-#>     note = {https://github.com/statOmics/satuRn - R package version 0.99.0},
-#>     doi = {10.18129/B9.bioc.satuRn},
-#>   }
-#> 
-#> Gilis J, Vitting-Seerup K, Van den Berge K, Clement L (2021). "Scalable
-#> Analysis of Differential Transcript Usage for Bulk and Single-Cell
-#> RNA-sequencing Applications." _bioRxiv_. doi: 10.1101/2021.01.14.426636
-#> (URL: https://doi.org/10.1101/2021.01.14.426636), <URL:
-#> https://www.biorxiv.org/content/10.1101/2021.01.14.426636v1>.
-#> 
-#> A BibTeX entry for LaTeX users is
-#> 
-#>   @Article{,
-#>     title = {Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell RNA-sequencing Applications},
-#>     author = {Jeroen Gilis and Kristoffer Vitting-Seerup and Koen {Van den Berge} and Lieven Clement},
-#>     year = {2021},
-#>     journal = {bioRxiv},
-#>     doi = {https://doi.org/10.1101/2021.01.14.426636},
-#>     url = {https://www.biorxiv.org/content/10.1101/2021.01.14.426636v1},
-#>   }
 ```
+
+    ## 
+    ## Gilis J (2021). _Scalable Analysis of differential Transcript Usage for
+    ## bulk and single-Cell RNA-sequencing applications_. doi:
+    ## 10.18129/B9.bioc.satuRn (URL: https://doi.org/10.18129/B9.bioc.satuRn),
+    ## https://github.com/statOmics/satuRn - R package version 0.99.0, <URL:
+    ## http://www.bioconductor.org/packages/satuRn>.
+    ## 
+    ## A BibTeX entry for LaTeX users is
+    ## 
+    ##   @Manual{,
+    ##     title = {Scalable Analysis of differential Transcript Usage for bulk and single-Cell RNA-sequencing applications},
+    ##     author = {Jeroen Gilis},
+    ##     year = {2021},
+    ##     url = {http://www.bioconductor.org/packages/satuRn},
+    ##     note = {https://github.com/statOmics/satuRn - R package version 0.99.0},
+    ##     doi = {10.18129/B9.bioc.satuRn},
+    ##   }
+    ## 
+    ## Gilis J, Vitting-Seerup K, Van den Berge K, Clement L (2021). "Scalable
+    ## Analysis of Differential Transcript Usage for Bulk and Single-Cell
+    ## RNA-sequencing Applications." _bioRxiv_. doi: 10.1101/2021.01.14.426636
+    ## (URL: https://doi.org/10.1101/2021.01.14.426636), <URL:
+    ## https://www.biorxiv.org/content/10.1101/2021.01.14.426636v1>.
+    ## 
+    ## A BibTeX entry for LaTeX users is
+    ## 
+    ##   @Article{,
+    ##     title = {Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell RNA-sequencing Applications},
+    ##     author = {Jeroen Gilis and Kristoffer Vitting-Seerup and Koen {Van den Berge} and Lieven Clement},
+    ##     year = {2021},
+    ##     journal = {bioRxiv},
+    ##     doi = {https://doi.org/10.1101/2021.01.14.426636},
+    ##     url = {https://www.biorxiv.org/content/10.1101/2021.01.14.426636v1},
+    ##   }
 
 Please note that the `satuRn` was only made possible thanks to many
 other R and bioinformatics software authors, which are cited either in
