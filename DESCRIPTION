@@ -25,18 +25,18 @@ Imports: locfdr,
 	 pbapply,
 	 ggplot2,
 	 boot,
-	 AnnotationHub,
-	 ensembldb,
-	 edgeR,
 	 Matrix,
-	 DelayedArray,
 	 stats
 Suggests:
     knitr,
     rmarkdown,
     testthat,
     covr,
-    BiocStyle
+    BiocStyle,
+    AnnotationHub,
+    ensembldb,
+    edgeR,
+    DelayedArray
 VignetteBuilder: knitr
 Collate:'data.R' 'satuRn-framework.R' 'allGenerics.R'
         'accessors.R' 'fitDTU.R' 'testDTU.R' 'plotDTU.R'
