@@ -4,15 +4,6 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-    collapse = TRUE,
-    comment = "#>",
-    fig.path = "man/figures/README-",
-    out.width = "100%"
-)
-```
-
 # satuRn
 
 <!-- badges: start -->
@@ -100,8 +91,8 @@ plots <- satuRn::plotDTU(object = sumExp,
 # Example plot from our publication:
 ```
 
-```{r  out.width = "60%"}
-knitr::include_graphics("./man/figures/README-DTU_plot.png") 
+```{r out.width = "75%"}
+knitr::include_graphics("https://raw.githubusercontent.com/statOmics/satuRn/master/man/figures/README-DTU_plot.png") 
 ```
 
 ## Citation
