@@ -140,7 +140,7 @@ sumExp
 
 # Fit quasi-binomial generalized linear models models
 
-The `fitDTU` function of `satuRn` is used to model transcript usage in different groups of samples or cells. Here we adopt the default settings of the function. Without parallel execution, this code runs for approximately 15 seconds on a 2018 macbook pro laptop. 
+The `fitDTU` function of `satuRn` is used to model transcript usage in different groups of samples or cells. Here we adopt the default settings of the function. Without parallelized execution, this code runs for approximately 15 seconds on a 2018 macbook pro laptop. 
 
 ```{r}
 Sys.time()
@@ -210,7 +210,7 @@ head(rowData(sumExp)[["fitDTUResult_Contrast2"]]) # second contrast
 
 Finally, we may visualize the usage of select transcripts in select groups of interest.
 
-```{r}
+```{r, warning=FALSE}
 group1 <- rownames(colData(sumExp))[colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
 group2 <- rownames(colData(sumExp))[colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
 

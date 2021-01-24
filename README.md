@@ -37,10 +37,12 @@ A minimal example of the different functions for `modelling`, `testing`
 and `visualizing` differential transcript usage is provided. See the
 online
 [vignette](https://github.com/statOmics/satuRn/blob/master/vignettes/Vignette.Rmd)
-for a more elaborate and reproducible example.
+or the satuRn [website](https://statomics.github.io/satuRn/) for a more
+elaborate and reproducible example.
 
 ``` r
-library("satuRn")
+library(satuRn)
+library(SummarizedExperiment)
 ```
 
 Provide a transcript expression matrix and corresponding `colData` and
@@ -70,7 +72,7 @@ sumExp <- satuRn::fitDTU(
 )
 ```
 
-Next we perform differential usage testing using with `testDTU`
+Next we perform differential usage testing with `testDTU`:
 
 ``` r
 sumExp <- satuRn::testDTU(object = sumExp, 
@@ -80,7 +82,7 @@ sumExp <- satuRn::testDTU(object = sumExp,
 ```
 
 Finally, we may visualize the usage of select transcripts in select
-groups of interest with `plotDTU`
+groups of interest with `plotDTU`:
 
 ``` r
 group1 <- rownames(colData(sumExp))[colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
@@ -96,11 +98,10 @@ plots <- satuRn::plotDTU(object = sumExp,
                                          "ENSMUST00000132062"), 
                          genes = NULL, 
                          top.n = 6)
-
-# Example plot from our publication:
 ```
 
 ``` r
+# Example plot from our publication:
 knitr::include_graphics("https://raw.githubusercontent.com/statOmics/satuRn/master/man/figures/README-DTU_plot.png") 
 ```
 
