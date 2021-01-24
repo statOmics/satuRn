@@ -25,9 +25,8 @@ In this vignette, we analyze a small subset of the data from [@Tasic2018]. More 
 
 For the moment, `satuRn` is only available from our GitHub page https://github.com/statOmics/satuRn. We hope to make a submission to the Bioconductor project soon.
 
-```{r}
-#devtools::install_github("statOmics/satuRn")
-#test when no longer private
+```
+devtools::install_github("statOmics/satuRn")
 ```
 
 # Load libraries
