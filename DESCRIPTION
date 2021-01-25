@@ -36,8 +36,6 @@ Suggests:
     AnnotationHub,
     ensembldb,
     edgeR,
-    DEXSeq,
-    stageR,
     DelayedArray
 VignetteBuilder: knitr
 Collate:'data.R' 'satuRn-framework.R' 'allGenerics.R'
