@@ -37,6 +37,8 @@ library(AnnotationHub)
 library(ensembldb)
 library(edgeR)
 library(SummarizedExperiment)
+library(DEXSeq)
+library(stageR)
 library(ggplot2)
 ```
 
