@@ -259,27 +259,29 @@ for (i in seq_along(plots)) {
 
 # Two-stage testing procedure
 
-`satuRn` returns transcript-level p-values for each of the specified contrasts. While we have shown that `satuRn` is able to adequately control the false discovery rate (FDR) at the transcript level [@Gilis2021], [@VandenBerge2017] argued that it is often desired to control the FDR at the gene level. This boosts statistical power and eases downstream biological interpretation and validation, which typically occur at the gene level. 
+`satuRn` returns transcript-level p-values for each of the specified contrasts. While we have shown that `satuRn` is able to adequately control the false discovery rate (FDR) at the transcript level [@Gilis2021], [@VandenBerge2017] argued that it is often desirable to control the FDR at the gene level. This boosts statistical power and eases downstream biological interpretation and validation, which typically occur at the gene level. 
 
-To this end, [@VandenBerge2017] developed a testing procedure that is implemented in the BioConductor R package `stageR`. The procedure consists of two stages; a screening stage and a confirmation stage. In the screening stage, gene-level FDR-adjusted p-values are computed, which aggregate the evidence for differential transcript usage over all transcripts within the gene. Only genes with an FDR below the desired significance level are further considered in the second stage. In the confirmation stage, transcript-level p-values are computed. These transcript-level p-values are now expected to (globally) control the family-wise error rate at imposed significance threshold.
+To this end, [@VandenBerge2017] developed a testing procedure that is implemented in the BioConductor R package `stageR`. The procedure consists of two stages; a screening stage and a confirmation stage. In the screening stage, gene-level FDR-adjusted p-values are computed, which aggregate the evidence for differential transcript usage over all transcripts within the gene. Only genes with an FDR below the desired nominal level are further considered in the second stage. In the confirmation stage, transcript-level p-values are adjusted for those genes, using a FWER-controlling method on the FDR-adjusted significance level.
 
-Below, we demonstrate how the transcript-level p-values for the first contrast as returned by `satuRn` can be post-processed using `stageR`:
+In its current implementation, `stageR` only has implemented a procedure for stage-wise testing if only one contrast is of interest in a DTU setting. An analogous correction for the assessment of multiple contrasts for multiple transcripts per gene has not yeet been implemented. 
+
+Below, we demonstrate how the transcript-level p-values for the first contrast as returned by `satuRn` can be post-processed using `stageR`. We rely on the `perGeneQValue` function:
 
 ```{r, stage-wise testing}
 # transcript level p-values from satuRn
 pvals <- rowData(sumExp)[["fitDTUResult_Contrast1"]]$empirical_pval
 
-# compute gene level p-values
+# compute gene level q-values
 geneID <- factor(rowData(sumExp)$gene_id)
 geneSplit <- split(seq(along = geneID), geneID)
 pGene <- sapply(geneSplit, function(i) min(pvals[i]))
 pGene[is.na(pGene)] <- 1
 theta <- unique(sort(pGene))
 q <- DEXSeq:::perGeneQValueExact(pGene, theta, geneSplit) # gene-level significance testing
-pScreen <- rep(NA_real_, length(pGene))
-pScreen <- q[match(pGene, theta)]
-pScreen <- pmin(1, pScreen)
-names(pScreen) <- names(geneSplit)
+qScreen <- rep(NA_real_, length(pGene))
+qScreen <- q[match(pGene, theta)]
+qScreen <- pmin(1, pScreen)
+names(qScreen) <- names(geneSplit)
 
 # prepare stageR input
 tx2gene <- as.data.frame(rowData(sumExp)[c("isoform_id","gene_id")])
@@ -290,7 +292,7 @@ pConfirmation <- matrix(matrix(pvals),
                         dimnames = list(rownames(tx2gene),"transcript"))
 
 # create a stageRTx object
-stageRObj <- stageR::stageRTx(pScreen = pScreen, 
+stageRObj <- stageR::stageRTx(pScreen = qScreen, 
                               pConfirmation = pConfirmation, 
                               pScreenAdjusted = TRUE, 
                               tx2gene = tx2gene)
