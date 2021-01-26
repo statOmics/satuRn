@@ -17,7 +17,15 @@ vignette: >
 library(knitr)
 ```
 
-`satuRn` is an R package to perform differential transcript usage analyses in bulk and single-cell transcriptomics datasets. The package has three main functions. The first function, `fitDTU`, is used to model transcript usage profiles by means of a quasi-binomial generalized linear model. Second, the `testDTU` function tests for differential usage of transcripts between certain groups of interest (e.g. different treatment groups or cell types). Finally, the `plotDTU` can be used to visualize the usage profiles of selected transcripts in different groups of interest. All details about the `satuRn` model and statistical tests are described in our preprint [...].
+`satuRn` is an R package to perform differential transcript usage analyses in bulk and single-cell transcriptomics datasets. The package has three main functions. 
+
+1. The first function, `fitDTU`, is used to model transcript usage profiles by means of a quasi-binomial generalized linear model. 
+
+2. Second, the `testDTU` function tests for differential usage of transcripts between certain groups of interest (e.g. different treatment groups or cell types). 
+
+3. Finally, the `plotDTU` can be used to visualize the usage profiles of selected transcripts in different groups of interest. 
+
+All details about the `satuRn` model and statistical tests are described in our preprint [@Gilis2021].
 
 In this vignette, we analyze a small subset of the data from [@Tasic2018]. More specifically, an expression matrix and the corresponding metadata of the subset data has been provided with the `satuRn` package. We will adopt this dataset to showcase the different functionalities of `satuRn`.
 
@@ -31,13 +39,15 @@ devtools::install_github("statOmics/satuRn")
 
 # Load libraries
 
-```{r,message=FALSE,warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(satuRn)
 library(AnnotationHub)
 library(ensembldb)
 library(edgeR)
 library(SummarizedExperiment)
 library(ggplot2)
+library(DEXSeq)
+library(stageR)
 ```
 
 # Load data
@@ -55,7 +65,7 @@ We start the analysis from scratch, in order to additionally showcase some of th
 
 # Import transcript information
 
-First, we need an object that links the transcripts the expression matrix to their corresponding genes. We suggest using `AnnotationHub` and `ensembldb` for this purpose.  
+First, we need an object that links transcripts to their corresponding genes. We suggest using the BioConductor R packages `AnnotationHub` and `ensembldb` for this purpose.  
 
 ```{r, message=FALSE, warning=FALSE}
 ah <- AnnotationHub() # load the annotation resource.
@@ -78,7 +88,7 @@ txInfo$gene_id <- txs$gene_id
 rownames(txInfo) <- txInfo$isoform_id
 
 # Remove transcripts that are the only isoform expressed of a certain gene
-rownames(Tasic_counts_vignette) <- sub("\\..*", "", rownames(Tasic_counts_vignette))
+rownames(Tasic_counts_vignette) <- sub("\\..*", "", rownames(Tasic_counts_vignette)) # remove transcript version identifiers
 txInfo <- txInfo[txInfo$isoform_id %in% rownames(Tasic_counts_vignette), ]
 txInfo <- subset(txInfo, duplicated(gene_id) | duplicated(gene_id, fromLast = TRUE))
 
@@ -87,7 +97,7 @@ Tasic_counts_vignette <- Tasic_counts_vignette[which(rownames(Tasic_counts_vigne
 
 ## Filtering
 
-Here we perform some feature-level filtering. For this task, we adopt the filtering criterium that is implemented in the R package `edgeR`. Alternatively, one could adopt the `dmFilter` criterium from the `DRIMSeq` R package, which provides a more stringent filtering when both methods are run in default settings. After filtering, we again remove transcripts that are the only isoform expressed of a certain gene.
+Here we perform some feature-level filtering. For this task, we adopt the filtering criterion that is implemented in the R package `edgeR`. Alternatively, one could adopt the `dmFilter` criterion from the `DRIMSeq` R package, which provides a more stringent filtering when both methods are run in default settings. After filtering, we again remove transcripts that are the only isoform expressed of a certain gene.
 
 ```{r}
 filter_edgeR <- filterByExpr(Tasic_counts_vignette,
@@ -165,15 +175,17 @@ The models are instances of the `StatModel` class as defined in the `satuRn` pac
 
 # Test for DTU
 
-Here we test for differential transcript usage between select groups of interest.
+Here we test for differential transcript usage between select groups of interest. In this example, the groups of interest are the three different cell types that are present in the dataset associated with this vignette.
 
 ## Set up contrast matrix
 
 First, we set up a contrast matrix. This allows us to test for differential transcript usage between groups of interest. The `group` factor in this toy example contains three levels; (1) ALM.L5_IT_ALM_Tmem163_Dmrtb1, (2) ALM.L5_IT_ALM_Tnc, (3) VISp.L5_IT_VISp_Hsd11b1_Endou. Here we show to assess DTU between cells of the groups 1 and 3 and between cells of groups 2 and 3.
 
+The contrast matrix can be constructed manually;
+
 ```{r}
 group <- as.factor(Tasic_metadata_vignette$group)
-design <- model.matrix(~ 0 + group)
+design <- model.matrix(~ 0 + group) # construct design matrix
 colnames(design) <- levels(group)
 
 L <- matrix(0, ncol = 2, nrow = ncol(design)) # initialize contrast matrix
@@ -182,7 +194,19 @@ colnames(L) <- c("Contrast1", "Contrast2")
 
 L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tnc"), 1] <- c(1, -1)
 L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tmem163_Dmrtb1"), 2] <- c(1, -1)
-L # final contrast matrix
+L # contrast matrix
+```
+
+This can also be done automatically with the `makeContrasts` function of the `limma` R package.
+
+```{r, eval = FALSE}
+group <- as.factor(Tasic_metadata_vignette$group)
+design <- model.matrix(~ 0 + group) # construct design matrix
+colnames(design) <- levels(group)
+
+L <-limma::makeContrasts(Contrast1=VISp.L5_IT_VISp_Hsd11b1_Endou-ALM.L5_IT_ALM_Tnc,
+                         Contrast2=VISp.L5_IT_VISp_Hsd11b1_Endou-ALM.L5_IT_ALM_Tmem163_Dmrtb1, 
+                         levels=design) # construct contrast matrix
 ```
 
 ## Perform the test
@@ -231,6 +255,59 @@ for (i in seq_along(plots)) {
 
     print(current_plot)
 }
+```
+
+# Two-stage testing procedure
+
+`satuRn` returns transcript-level p-values for each of the specified contrasts. While we have shown that `satuRn` is able to adequately control the false discovery rate (FDR) at the transcript level [@Gilis2021], [@VandenBerge2017] argued that it is often desirable to control the FDR at the gene level. This boosts statistical power and eases downstream biological interpretation and validation, which typically occur at the gene level. 
+
+To this end, [@VandenBerge2017] developed a testing procedure that is implemented in the BioConductor R package `stageR`. The procedure consists of two stages; a screening stage and a confirmation stage. In the screening stage, gene-level FDR-adjusted p-values are computed, which aggregate the evidence for differential transcript usage over all transcripts within the gene. Only genes with an FDR below the desired nominal level are further considered in the second stage. In the confirmation stage, transcript-level p-values are adjusted for those genes, using a FWER-controlling method on the FDR-adjusted significance level.
+
+In its current implementation, `stageR` only has implemented a procedure for stage-wise testing if only one contrast is of interest in a DTU setting. An analogous correction for the assessment of multiple contrasts for multiple transcripts per gene has not yeet been implemented. 
+
+Below, we demonstrate how the transcript-level p-values for the first contrast as returned by `satuRn` can be post-processed using `stageR`. We rely on the `perGeneQValue` function:
+
+```{r, stage-wise testing}
+# transcript level p-values from satuRn
+pvals <- rowData(sumExp)[["fitDTUResult_Contrast1"]]$empirical_pval
+
+# compute gene level q-values
+geneID <- factor(rowData(sumExp)$gene_id)
+geneSplit <- split(seq(along = geneID), geneID)
+pGene <- sapply(geneSplit, function(i) min(pvals[i]))
+pGene[is.na(pGene)] <- 1
+theta <- unique(sort(pGene))
+q <- DEXSeq:::perGeneQValueExact(pGene, theta, geneSplit) # gene-level significance testing
+qScreen <- rep(NA_real_, length(pGene))
+qScreen <- q[match(pGene, theta)]
+qScreen <- pmin(1, qScreen)
+names(qScreen) <- names(geneSplit)
+
+# prepare stageR input
+tx2gene <- as.data.frame(rowData(sumExp)[c("isoform_id","gene_id")])
+colnames(tx2gene) <- c("transcript","gene")
+
+pConfirmation <- matrix(matrix(pvals),
+                        ncol = 1,
+                        dimnames = list(rownames(tx2gene),"transcript"))
+
+# create a stageRTx object
+stageRObj <- stageR::stageRTx(pScreen = qScreen, 
+                              pConfirmation = pConfirmation, 
+                              pScreenAdjusted = TRUE, 
+                              tx2gene = tx2gene)
+
+# perform the two-stage testing procedure
+stageRObj <- stageR::stageWiseAdjustment(object = stageRObj, 
+                                         method = "dtu", 
+                                         alpha = 0.05, 
+                                         allowNA = TRUE)
+
+# retrieves the adjusted p-values from the stageRTx object
+padj <- stageR::getAdjustedPValues(stageRObj, 
+                                   order = TRUE, 
+                                   onlySignificantGenes = FALSE)
+head(padj)
 ```
 
 # Session

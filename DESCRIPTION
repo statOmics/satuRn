@@ -1,8 +1,8 @@
 Package: satuRn
 Type: Package
 Title: Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell RNA-sequencing Applications
-Date: 2020-11-17
-Version: 0.99.0
+Date: 2021-01-26
+Version: 0.99.3
 Authors@R: c(person("Jeroen", "Gilis", role = c("aut","cre"),
                      email = "jeroen.gilis@ugent.be"),
              person("Kristoffer", "Vitting-Seerup", role = "ctb",
@@ -36,6 +36,8 @@ Suggests:
     AnnotationHub,
     ensembldb,
     edgeR,
+    DEXSeq,
+    stageR,
     DelayedArray
 VignetteBuilder: knitr
 Collate:'data.R' 'satuRn-framework.R' 'allGenerics.R'
