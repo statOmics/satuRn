@@ -280,7 +280,7 @@ theta <- unique(sort(pGene))
 q <- DEXSeq:::perGeneQValueExact(pGene, theta, geneSplit) # gene-level significance testing
 qScreen <- rep(NA_real_, length(pGene))
 qScreen <- q[match(pGene, theta)]
-qScreen <- pmin(1, pScreen)
+qScreen <- pmin(1, qScreen)
 names(qScreen) <- names(geneSplit)
 
 # prepare stageR input
