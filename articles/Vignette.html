@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">satuRn</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.3</span>
       </span>
     </div>
 
@@ -94,26 +94,32 @@
 
     
     
-<p><code>satuRn</code> is an R package to perform differential transcript usage analyses in bulk and single-cell transcriptomics datasets. The package has three main functions. The first function, <code>fitDTU</code>, is used to model transcript usage profiles by means of a quasi-binomial generalized linear model. Second, the <code>testDTU</code> function tests for differential usage of transcripts between certain groups of interest (e.g. different treatment groups or cell types). Finally, the <code>plotDTU</code> can be used to visualize the usage profiles of selected transcripts in different groups of interest. All details about the <code>satuRn</code> model and statistical tests are described in our preprint […].</p>
+<p><code>satuRn</code> is an R package to perform differential transcript usage analyses in bulk and single-cell transcriptomics datasets. The package has three main functions.</p>
+<ol style="list-style-type: decimal">
+<li><p>The first function, <code>fitDTU</code>, is used to model transcript usage profiles by means of a quasi-binomial generalized linear model.</p></li>
+<li><p>Second, the <code>testDTU</code> function tests for differential usage of transcripts between certain groups of interest (e.g. different treatment groups or cell types).</p></li>
+<li><p>Finally, the <code>plotDTU</code> can be used to visualize the usage profiles of selected transcripts in different groups of interest.</p></li>
+</ol>
+<p>All details about the <code>satuRn</code> model and statistical tests are described in our preprint <span class="citation">(Gilis Jeroen 2021)</span>.</p>
 <p>In this vignette, we analyze a small subset of the data from <span class="citation">(Tasic Bosiljka 2018)</span>. More specifically, an expression matrix and the corresponding metadata of the subset data has been provided with the <code>satuRn</code> package. We will adopt this dataset to showcase the different functionalities of <code>satuRn</code>.</p>
 <div id="installation" class="section level1">
 <h1 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h1>
 <p>For the moment, <code>satuRn</code> is only available from our GitHub page <a href="https://github.com/statOmics/satuRn" class="uri">https://github.com/statOmics/satuRn</a>. We hope to make a submission to the Bioconductor project soon.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#devtools::install_github("statOmics/satuRn")</span>
-<span class="co">#test when no longer private</span></code></pre></div>
+<pre><code><a href="https://devtools.r-lib.org//reference/remote-reexports.html">devtools::install_github("statOmics/satuRn")</a></code></pre>
 </div>
 <div id="load-libraries" class="section level1">
 <h1 class="hasAnchor">
 <a href="#load-libraries" class="anchor"></a>Load libraries</h1>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jgilis/satuRn">satuRn</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/statOmics/satuRn">satuRn</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">AnnotationHub</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jorainer/ensembldb">ensembldb</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://bioinf.wehi.edu.au/edgeR">edgeR</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment">SummarizedExperiment</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">DEXSeq</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">stageR</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="load-data" class="section level1">
 <h1 class="hasAnchor">
@@ -131,7 +137,7 @@
 <div id="import-transcript-information" class="section level1">
 <h1 class="hasAnchor">
 <a href="#import-transcript-information" class="anchor"></a>Import transcript information</h1>
-<p>First, we need an object that links the transcripts the expression matrix to their corresponding genes. We suggest using <code>AnnotationHub</code> and <code>ensembldb</code> for this purpose.</p>
+<p>First, we need an object that links transcripts to their corresponding genes. We suggest using the BioConductor R packages <code>AnnotationHub</code> and <code>ensembldb</code> for this purpose.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ah</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html">AnnotationHub</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># load the annotation resource.</span>
 <span class="va">all</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html">query</a></span><span class="op">(</span><span class="va">ah</span>, <span class="st">"EnsDb"</span><span class="op">)</span> <span class="co"># query for all available EnsDb databases</span>
@@ -150,7 +156,7 @@
 <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">txInfo</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">txInfo</span><span class="op">$</span><span class="va">isoform_id</span>
 
 <span class="co"># Remove transcripts that are the only isoform expressed of a certain gene</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">Tasic_counts_vignette</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">sub</a></span><span class="op">(</span><span class="st">"\\..*"</span>, <span class="st">""</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">Tasic_counts_vignette</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">Tasic_counts_vignette</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">sub</a></span><span class="op">(</span><span class="st">"\\..*"</span>, <span class="st">""</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">Tasic_counts_vignette</span><span class="op">)</span><span class="op">)</span> <span class="co"># remove transcript version identifiers</span>
 <span class="va">txInfo</span> <span class="op">&lt;-</span> <span class="va">txInfo</span><span class="op">[</span><span class="va">txInfo</span><span class="op">$</span><span class="va">isoform_id</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">Tasic_counts_vignette</span><span class="op">)</span>, <span class="op">]</span>
 <span class="va">txInfo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">txInfo</span>, <span class="fu"><a href="https://rdrr.io/r/base/duplicated.html">duplicated</a></span><span class="op">(</span><span class="va">gene_id</span><span class="op">)</span> <span class="op">|</span> <span class="fu"><a href="https://rdrr.io/r/base/duplicated.html">duplicated</a></span><span class="op">(</span><span class="va">gene_id</span>, fromLast <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
 
@@ -159,7 +165,7 @@
 <div id="filtering" class="section level2">
 <h2 class="hasAnchor">
 <a href="#filtering" class="anchor"></a>Filtering</h2>
-<p>Here we perform some feature-level filtering. For this task, we adopt the filtering criterium that is implemented in the R package <code>edgeR</code>. Alternatively, one could adopt the <code>dmFilter</code> criterium from the <code>DRIMSeq</code> R package, which provides a more stringent filtering when both methods are run in default settings. After filtering, we again remove transcripts that are the only isoform expressed of a certain gene.</p>
+<p>Here we perform some feature-level filtering. For this task, we adopt the filtering criterion that is implemented in the R package <code>edgeR</code>. Alternatively, one could adopt the <code>dmFilter</code> criterion from the <code>DRIMSeq</code> R package, which provides a more stringent filtering when both methods are run in default settings. After filtering, we again remove transcripts that are the only isoform expressed of a certain gene.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">filter_edgeR</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/edgeR/man/filterByExpr.html">filterByExpr</a></span><span class="op">(</span><span class="va">Tasic_counts_vignette</span>,
     design <span class="op">=</span> <span class="cn">NULL</span>,
@@ -223,10 +229,10 @@
 <div id="fit-quasi-binomial-generalized-linear-models-models" class="section level1">
 <h1 class="hasAnchor">
 <a href="#fit-quasi-binomial-generalized-linear-models-models" class="anchor"></a>Fit quasi-binomial generalized linear models models</h1>
-<p>The <code>fitDTU</code> function of <code>satuRn</code> is used to model transcript usage in different groups of samples or cells. Here we adopt the default settings of the function. Without parallel execution, this code runs for approximately 15 seconds on a 2018 macbook pro laptop.</p>
+<p>The <code>fitDTU</code> function of <code>satuRn</code> is used to model transcript usage in different groups of samples or cells. Here we adopt the default settings of the function. Without parallelized execution, this code runs for approximately 15 seconds on a 2018 macbook pro laptop.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.time</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "2021-01-23 16:18:12 CET"</code></pre>
+<pre><code>## [1] "2021-01-26 19:05:02 CET"</code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sumExp</span> <span class="op">&lt;-</span> <span class="fu">satuRn</span><span class="fu">::</span><span class="fu"><a href="../reference/fitDTU.html">fitDTU</a></span><span class="op">(</span>
     object <span class="op">=</span> <span class="va">sumExp</span>,
@@ -236,7 +242,7 @@
     verbose <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.time</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "2021-01-23 16:18:28 CET"</code></pre>
+<pre><code>## [1] "2021-01-26 19:05:17 CET"</code></pre>
 <p>The resulting model fits are now saved into the <code>rowData</code> of our SummarizedExperiment object under the name <code>fitDTUModels</code>. These models can be accessed as follows:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">[[</span><span class="st">"fitDTUModels"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="st">"ENSMUST00000037739"</span>
@@ -246,14 +252,15 @@
 <div id="test-for-dtu" class="section level1">
 <h1 class="hasAnchor">
 <a href="#test-for-dtu" class="anchor"></a>Test for DTU</h1>
-<p>Here we test for differential transcript usage between select groups of interest.</p>
+<p>Here we test for differential transcript usage between select groups of interest. In this example, the groups of interest are the three different cell types that are present in the dataset associated with this vignette.</p>
 <div id="set-up-contrast-matrix" class="section level2">
 <h2 class="hasAnchor">
 <a href="#set-up-contrast-matrix" class="anchor"></a>Set up contrast matrix</h2>
 <p>First, we set up a contrast matrix. This allows us to test for differential transcript usage between groups of interest. The <code>group</code> factor in this toy example contains three levels; (1) ALM.L5_IT_ALM_Tmem163_Dmrtb1, (2) ALM.L5_IT_ALM_Tnc, (3) VISp.L5_IT_VISp_Hsd11b1_Endou. Here we show to assess DTU between cells of the groups 1 and 3 and between cells of groups 2 and 3.</p>
+<p>The contrast matrix can be constructed manually;</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">Tasic_metadata_vignette</span><span class="op">$</span><span class="va">group</span><span class="op">)</span>
-<span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">group</span><span class="op">)</span>
+<span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">group</span><span class="op">)</span> <span class="co"># construct design matrix</span>
 <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">design</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span>
 
 <span class="va">L</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">0</span>, ncol <span class="op">=</span> <span class="fl">2</span>, nrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">design</span><span class="op">)</span><span class="op">)</span> <span class="co"># initialize contrast matrix</span>
@@ -262,23 +269,32 @@
 
 <span class="va">L</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"VISp.L5_IT_VISp_Hsd11b1_Endou"</span>, <span class="st">"ALM.L5_IT_ALM_Tnc"</span><span class="op">)</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span>
 <span class="va">L</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"VISp.L5_IT_VISp_Hsd11b1_Endou"</span>, <span class="st">"ALM.L5_IT_ALM_Tmem163_Dmrtb1"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span>
-<span class="va">L</span> <span class="co"># final contrast matrix</span></code></pre></div>
+<span class="va">L</span> <span class="co"># contrast matrix</span></code></pre></div>
 <pre><code>##                               Contrast1 Contrast2
 ## ALM.L5_IT_ALM_Tmem163_Dmrtb1          0        -1
 ## ALM.L5_IT_ALM_Tnc                    -1         0
 ## VISp.L5_IT_VISp_Hsd11b1_Endou         1         1</code></pre>
+<p>This can also be done automatically with the <code>makeContrasts</code> function of the <code>limma</code> R package.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">Tasic_metadata_vignette</span><span class="op">$</span><span class="va">group</span><span class="op">)</span>
+<span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">group</span><span class="op">)</span> <span class="co"># construct design matrix</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">design</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span>
+
+<span class="va">L</span> <span class="op">&lt;-</span><span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/makeContrasts.html">makeContrasts</a></span><span class="op">(</span>Contrast1<span class="op">=</span><span class="va">VISp.L5_IT_VISp_Hsd11b1_Endou</span><span class="op">-</span><span class="va">ALM.L5_IT_ALM_Tnc</span>,
+                         Contrast2<span class="op">=</span><span class="va">VISp.L5_IT_VISp_Hsd11b1_Endou</span><span class="op">-</span><span class="va">ALM.L5_IT_ALM_Tmem163_Dmrtb1</span>, 
+                         levels<span class="op">=</span><span class="va">design</span><span class="op">)</span> <span class="co"># construct contrast matrix</span></code></pre></div>
 </div>
 <div id="perform-the-test" class="section level2">
 <h2 class="hasAnchor">
 <a href="#perform-the-test" class="anchor"></a>Perform the test</h2>
 <p>Next we can perform differential usage testing using <code>testDTU</code>. We again adopt default settings. For more information on the parameter settings, please fitting the help file of the testDTU function.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sumExp</span> <span class="op">&lt;-</span> <span class="fu">satuRn</span><span class="fu">::</span><span class="fu"><a href="../reference/testDTU.html">testDTU</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">sumExp</span>, 
                           contrasts <span class="op">=</span> <span class="va">L</span>, 
                           plot <span class="op">=</span> <span class="cn">FALSE</span>, 
                           sort <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p>The test results are now saved into the <code>rowData</code> of our SummarizedExperiment object under the name <code>fitDTUResult_</code> followed by the name of the contrast of interest (i.e. the column names of the contrast matrix). The results can be accessed as follows:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">[[</span><span class="st">"fitDTUResult_Contrast1"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="co"># first contrast</span></code></pre></div>
 <pre><code>##                     estimates        se      df          t       pval
 ## ENSMUST00000037739 -0.5411265 0.4828721 59.4294 -1.1206416 0.26694865
@@ -294,7 +310,7 @@
 ## ENSMUST00000237499   0.6977858      0.4515026     0.9808231
 ## ENSMUST00000042857   0.3566360      0.1579658     0.9152296
 ## ENSMUST00000114415   0.3566360      0.1685028     0.9203772</code></pre>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">[[</span><span class="st">"fitDTUResult_Contrast2"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="co"># second contrast</span></code></pre></div>
 <pre><code>##                     estimates        se      df         t        pval
 ## ENSMUST00000037739 -0.3801339 0.4941514 59.4294 -0.769266 0.444782126
@@ -316,7 +332,7 @@
 <h1 class="hasAnchor">
 <a href="#visualize-dtu" class="anchor"></a>Visualize DTU</h1>
 <p>Finally, we may visualize the usage of select transcripts in select groups of interest.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">group1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">$</span><span class="va">group</span> <span class="op">==</span> <span class="st">"VISp.L5_IT_VISp_Hsd11b1_Endou"</span><span class="op">]</span>
 <span class="va">group2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">$</span><span class="va">group</span> <span class="op">==</span> <span class="st">"ALM.L5_IT_ALM_Tnc"</span><span class="op">]</span>
 
@@ -337,22 +353,70 @@
 
     <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">current_plot</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
-<pre><code>## Warning: Removed 1 rows containing non-finite values (stat_ydensity).</code></pre>
-<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
-<p><img src="Vignette_files/figure-html/unnamed-chunk-16-1.png" width="700"></p>
-<pre><code>## Warning: Removed 1 rows containing non-finite values (stat_ydensity).
+<p><img src="Vignette_files/figure-html/unnamed-chunk-16-1.png" width="700"><img src="Vignette_files/figure-html/unnamed-chunk-16-2.png" width="700"><img src="Vignette_files/figure-html/unnamed-chunk-16-3.png" width="700"></p>
+</div>
+<div id="two-stage-testing-procedure" class="section level1">
+<h1 class="hasAnchor">
+<a href="#two-stage-testing-procedure" class="anchor"></a>Two-stage testing procedure</h1>
+<p><code>satuRn</code> returns transcript-level p-values for each of the specified contrasts. While we have shown that <code>satuRn</code> is able to adequately control the false discovery rate (FDR) at the transcript level <span class="citation">(Gilis Jeroen 2021)</span>, <span class="citation">(Van den Berge Koen 2017)</span> argued that it is often desirable to control the FDR at the gene level. This boosts statistical power and eases downstream biological interpretation and validation, which typically occur at the gene level.</p>
+<p>To this end, <span class="citation">(Van den Berge Koen 2017)</span> developed a testing procedure that is implemented in the BioConductor R package <code>stageR</code>. The procedure consists of two stages; a screening stage and a confirmation stage. In the screening stage, gene-level FDR-adjusted p-values are computed, which aggregate the evidence for differential transcript usage over all transcripts within the gene. Only genes with an FDR below the desired nominal level are further considered in the second stage. In the confirmation stage, transcript-level p-values are adjusted for those genes, using a FWER-controlling method on the FDR-adjusted significance level.</p>
+<p>In its current implementation, <code>stageR</code> only has implemented a procedure for stage-wise testing if only one contrast is of interest in a DTU setting. An analogous correction for the assessment of multiple contrasts for multiple transcripts per gene has not yeet been implemented.</p>
+<p>Below, we demonstrate how the transcript-level p-values for the first contrast as returned by <code>satuRn</code> can be post-processed using <code>stageR</code>. We rely on the <code>perGeneQValue</code> function:</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># transcript level p-values from satuRn</span>
+<span class="va">pvals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">[[</span><span class="st">"fitDTUResult_Contrast1"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">empirical_pval</span>
 
-## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
-<p><img src="Vignette_files/figure-html/unnamed-chunk-16-2.png" width="700"></p>
-<pre><code>## Warning: Removed 1 rows containing non-finite values (stat_ydensity).
+<span class="co"># compute gene level q-values</span>
+<span class="va">geneID</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">$</span><span class="va">gene_id</span><span class="op">)</span>
+<span class="va">geneSplit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html">split</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span>along <span class="op">=</span> <span class="va">geneID</span><span class="op">)</span>, <span class="va">geneID</span><span class="op">)</span>
+<span class="va">pGene</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">geneSplit</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">pvals</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
+<span class="va">pGene</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">pGene</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span>
+<span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="va">pGene</span><span class="op">)</span><span class="op">)</span>
+<span class="va">q</span> <span class="op">&lt;-</span> <span class="fu">DEXSeq</span><span class="fu">:::</span><span class="fu">perGeneQValueExact</span><span class="op">(</span><span class="va">pGene</span>, <span class="va">theta</span>, <span class="va">geneSplit</span><span class="op">)</span> <span class="co"># gene-level significance testing</span>
+<span class="va">qScreen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="cn">NA_real_</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">pGene</span><span class="op">)</span><span class="op">)</span>
+<span class="va">qScreen</span> <span class="op">&lt;-</span> <span class="va">q</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html">match</a></span><span class="op">(</span><span class="va">pGene</span>, <span class="va">theta</span><span class="op">)</span><span class="op">]</span>
+<span class="va">qScreen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">pmin</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">qScreen</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">qScreen</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">geneSplit</span><span class="op">)</span>
 
-## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
-<p><img src="Vignette_files/figure-html/unnamed-chunk-16-3.png" width="700"></p>
+<span class="co"># prepare stageR input</span>
+<span class="va">tx2gene</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"isoform_id"</span>,<span class="st">"gene_id"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">tx2gene</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"transcript"</span>,<span class="st">"gene"</span><span class="op">)</span>
+
+<span class="va">pConfirmation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">pvals</span><span class="op">)</span>,
+                        ncol <span class="op">=</span> <span class="fl">1</span>,
+                        dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">tx2gene</span><span class="op">)</span>,<span class="st">"transcript"</span><span class="op">)</span><span class="op">)</span>
+
+<span class="co"># create a stageRTx object</span>
+<span class="va">stageRObj</span> <span class="op">&lt;-</span> <span class="fu">stageR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/stageR/man/stageRTx.html">stageRTx</a></span><span class="op">(</span>pScreen <span class="op">=</span> <span class="va">qScreen</span>, 
+                              pConfirmation <span class="op">=</span> <span class="va">pConfirmation</span>, 
+                              pScreenAdjusted <span class="op">=</span> <span class="cn">TRUE</span>, 
+                              tx2gene <span class="op">=</span> <span class="va">tx2gene</span><span class="op">)</span>
+
+<span class="co"># perform the two-stage testing procedure</span>
+<span class="va">stageRObj</span> <span class="op">&lt;-</span> <span class="fu">stageR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/stageR/man/stageWiseAdjustment.html">stageWiseAdjustment</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">stageRObj</span>, 
+                                         method <span class="op">=</span> <span class="st">"dtu"</span>, 
+                                         alpha <span class="op">=</span> <span class="fl">0.05</span>, 
+                                         allowNA <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+
+<span class="co"># retrieves the adjusted p-values from the stageRTx object</span>
+<span class="va">padj</span> <span class="op">&lt;-</span> <span class="fu">stageR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/stageR/man/getAdjustedPValues.html">getAdjustedPValues</a></span><span class="op">(</span><span class="va">stageRObj</span>, 
+                                   order <span class="op">=</span> <span class="cn">TRUE</span>, 
+                                   onlySignificantGenes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<pre><code>## The returned adjusted p-values are based on a stage-wise testing approach and are only valid for the provided target OFDR level of 5%. If a different target OFDR level is of interest,the entire adjustment should be re-run.</code></pre>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">padj</span><span class="op">)</span></code></pre></div>
+<pre><code>##               geneID               txID       gene transcript
+## 1 ENSMUSG00000058013 ENSMUST00000201421 0.03732585 0.05697406
+## 2 ENSMUSG00000058013 ENSMUST00000201700 0.03732585 1.00000000
+## 3 ENSMUSG00000058013 ENSMUST00000074733 0.03732585 1.00000000
+## 4 ENSMUSG00000058013 ENSMUST00000202217 0.03732585 1.00000000
+## 5 ENSMUSG00000058013 ENSMUST00000202196 0.03732585 1.00000000
+## 6 ENSMUSG00000058013 ENSMUST00000202308 0.03732585 1.00000000</code></pre>
 </div>
 <div id="session" class="section level1">
 <h1 class="hasAnchor">
 <a href="#session" class="anchor"></a>Session</h1>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code>## R version 4.0.2 (2020-06-22)
 ## Platform: x86_64-apple-darwin17.0 (64-bit)
@@ -370,74 +434,85 @@
 ## [8] methods   base     
 ## 
 ## other attached packages:
-##  [1] ggplot2_3.3.3               SummarizedExperiment_1.20.0
-##  [3] MatrixGenerics_1.2.0        matrixStats_0.57.0         
-##  [5] edgeR_3.32.1                limma_3.46.0               
-##  [7] ensembldb_2.14.0            AnnotationFilter_1.14.0    
-##  [9] GenomicFeatures_1.42.1      AnnotationDbi_1.52.0       
-## [11] Biobase_2.50.0              GenomicRanges_1.42.0       
-## [13] GenomeInfoDb_1.26.2         IRanges_2.24.1             
-## [15] S4Vectors_0.28.1            AnnotationHub_2.22.0       
-## [17] BiocFileCache_1.14.0        dbplyr_2.0.0               
-## [19] BiocGenerics_0.36.0         satuRn_0.99.0              
-## [21] knitr_1.30                 
+##  [1] stageR_1.12.0               DEXSeq_1.36.0              
+##  [3] RColorBrewer_1.1-2          DESeq2_1.30.0              
+##  [5] BiocParallel_1.24.1         ggplot2_3.3.3              
+##  [7] SummarizedExperiment_1.20.0 MatrixGenerics_1.2.0       
+##  [9] matrixStats_0.57.0          edgeR_3.32.1               
+## [11] limma_3.46.0                ensembldb_2.14.0           
+## [13] AnnotationFilter_1.14.0     GenomicFeatures_1.42.1     
+## [15] AnnotationDbi_1.52.0        Biobase_2.50.0             
+## [17] GenomicRanges_1.42.0        GenomeInfoDb_1.26.2        
+## [19] IRanges_2.24.1              S4Vectors_0.28.1           
+## [21] AnnotationHub_2.22.0        BiocFileCache_1.14.0       
+## [23] dbplyr_2.0.0                BiocGenerics_0.36.0        
+## [25] satuRn_0.99.0               knitr_1.30                 
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] ProtGenerics_1.22.0           bitops_1.0-6                 
-##  [3] fs_1.5.0                      bit64_4.0.5                  
-##  [5] progress_1.2.2                httr_1.4.2                   
-##  [7] rprojroot_2.0.2               tools_4.0.2                  
-##  [9] R6_2.5.0                      lazyeval_0.2.2               
-## [11] DBI_1.1.1                     colorspace_2.0-0             
-## [13] withr_2.4.0                   prettyunits_1.1.1            
-## [15] tidyselect_1.1.0              bit_4.0.4                    
-## [17] curl_4.3                      compiler_4.0.2               
-## [19] textshaping_0.2.1             xml2_1.3.2                   
-## [21] desc_1.2.0                    DelayedArray_0.16.0          
-## [23] labeling_0.4.2                rtracklayer_1.50.0           
-## [25] scales_1.1.1                  pbapply_1.4-3                
-## [27] askpass_1.1                   rappdirs_0.3.1               
-## [29] pkgdown_1.6.1                 Rsamtools_2.6.0              
-## [31] systemfonts_0.3.2             stringr_1.4.0                
-## [33] digest_0.6.27                 rmarkdown_2.6                
-## [35] XVector_0.30.0                pkgconfig_2.0.3              
-## [37] htmltools_0.5.1               fastmap_1.0.1                
-## [39] rlang_0.4.10                  rstudioapi_0.13              
-## [41] RSQLite_2.2.2                 shiny_1.5.0                  
-## [43] farver_2.0.3                  generics_0.1.0               
-## [45] BiocParallel_1.24.1           dplyr_1.0.3                  
-## [47] RCurl_1.98-1.2                magrittr_2.0.1               
-## [49] GenomeInfoDbData_1.2.4        Matrix_1.2-18                
-## [51] Rcpp_1.0.6                    munsell_0.5.0                
-## [53] lifecycle_0.2.0               stringi_1.5.3                
-## [55] yaml_2.2.1                    zlibbioc_1.36.0              
-## [57] grid_4.0.2                    blob_1.2.1                   
-## [59] promises_1.1.1                crayon_1.3.4                 
-## [61] lattice_0.20-41               splines_4.0.2                
-## [63] Biostrings_2.58.0             hms_1.0.0                    
-## [65] locfit_1.5-9.4                pillar_1.4.7                 
-## [67] boot_1.3-25                   biomaRt_2.46.0               
-## [69] XML_3.99-0.5                  glue_1.4.2                   
-## [71] BiocVersion_3.12.0            evaluate_0.14                
-## [73] BiocManager_1.30.10           vctrs_0.3.6                  
-## [75] httpuv_1.5.5                  locfdr_1.1-8                 
-## [77] openssl_1.4.3                 gtable_0.3.0                 
-## [79] purrr_0.3.4                   assertthat_0.2.1             
-## [81] xfun_0.19                     mime_0.9                     
-## [83] xtable_1.8-4                  later_1.1.0.1                
-## [85] ragg_0.4.0                    tibble_3.0.5                 
-## [87] GenomicAlignments_1.26.0      memoise_1.1.0                
-## [89] ellipsis_0.3.1                interactiveDisplayBase_1.28.0</code></pre>
+##  [1] colorspace_2.0-0              hwriter_1.3.2                
+##  [3] ellipsis_0.3.1                rprojroot_2.0.2              
+##  [5] XVector_0.30.0                fs_1.5.0                     
+##  [7] rstudioapi_0.13               farver_2.0.3                 
+##  [9] bit64_4.0.5                   interactiveDisplayBase_1.28.0
+## [11] xml2_1.3.2                    splines_4.0.2                
+## [13] geneplotter_1.68.0            locfdr_1.1-8                 
+## [15] Rsamtools_2.6.0               annotate_1.68.0              
+## [17] shiny_1.5.0                   BiocManager_1.30.10          
+## [19] compiler_4.0.2                httr_1.4.2                   
+## [21] assertthat_0.2.1              Matrix_1.2-18                
+## [23] fastmap_1.0.1                 lazyeval_0.2.2               
+## [25] later_1.1.0.1                 htmltools_0.5.1              
+## [27] prettyunits_1.1.1             tools_4.0.2                  
+## [29] gtable_0.3.0                  glue_1.4.2                   
+## [31] GenomeInfoDbData_1.2.4        dplyr_1.0.3                  
+## [33] rappdirs_0.3.1                Rcpp_1.0.6                   
+## [35] pkgdown_1.6.1                 vctrs_0.3.6                  
+## [37] Biostrings_2.58.0             rtracklayer_1.50.0           
+## [39] xfun_0.19                     stringr_1.4.0                
+## [41] mime_0.9                      lifecycle_0.2.0              
+## [43] statmod_1.4.35                XML_3.99-0.5                 
+## [45] zlibbioc_1.36.0               scales_1.1.1                 
+## [47] ragg_0.4.0                    hms_1.0.0                    
+## [49] promises_1.1.1                ProtGenerics_1.22.0          
+## [51] yaml_2.2.1                    curl_4.3                     
+## [53] memoise_1.1.0                 pbapply_1.4-3                
+## [55] biomaRt_2.46.0                stringi_1.5.3                
+## [57] RSQLite_2.2.2                 genefilter_1.72.0            
+## [59] BiocVersion_3.12.0            desc_1.2.0                   
+## [61] boot_1.3-25                   rlang_0.4.10                 
+## [63] pkgconfig_2.0.3               systemfonts_0.3.2            
+## [65] bitops_1.0-6                  evaluate_0.14                
+## [67] lattice_0.20-41               purrr_0.3.4                  
+## [69] labeling_0.4.2                GenomicAlignments_1.26.0     
+## [71] bit_4.0.4                     tidyselect_1.1.0             
+## [73] magrittr_2.0.1                R6_2.5.0                     
+## [75] generics_0.1.0                DelayedArray_0.16.1          
+## [77] DBI_1.1.1                     pillar_1.4.7                 
+## [79] withr_2.4.0                   survival_3.2-7               
+## [81] RCurl_1.98-1.2                tibble_3.0.5                 
+## [83] crayon_1.3.4                  rmarkdown_2.6                
+## [85] progress_1.2.2                locfit_1.5-9.4               
+## [87] grid_4.0.2                    blob_1.2.1                   
+## [89] digest_0.6.27                 xtable_1.8-4                 
+## [91] httpuv_1.5.5                  textshaping_0.2.1            
+## [93] openssl_1.4.3                 munsell_0.5.0                
+## [95] askpass_1.1</code></pre>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Gilis2021" class="csl-entry">
+Gilis Jeroen, Koen Van den Berge &amp; Lieven Clement, Kristoffer Vitting-Seerup. 2021. <span>“<span class="nocase">satuRn: Scalable Analysis of differential Transcript Usage for bulk and single-cell RNA-sequencing applications</span>.”</span> <em>bioRxiv</em>. <a href="https://doi.org/10.1101/2021.01.14.426636">https://doi.org/10.1101/2021.01.14.426636</a>.
+</div>
 <div id="ref-SummarizedExperiment" class="csl-entry">
 Morgan Martin, Hester Jim, Obenchain Valerie. n.d. <span>“<span>SummarizedExperiment</span>.”</span> <a href="https://bioconductor.org/packages/SummarizedExperiment">https://bioconductor.org/packages/SummarizedExperiment</a>.
 </div>
 <div id="ref-Tasic2018" class="csl-entry">
-Tasic Bosiljka, Lucas T. Graybuck, Zizhen Yao. 2018. <span>“<span class="nocase">Shared and distinct transcriptomic cell types across neocortical areas</span>.”</span> <em>Nature</em>, 72–78. https://doi.org/<a href="https://doi.org/10.1038/s41586-018-0654-5">https://doi.org/10.1038/s41586-018-0654-5</a>.
+Tasic Bosiljka, Lucas T. Graybuck, Zizhen Yao. 2018. <span>“<span class="nocase">Shared and distinct transcriptomic cell types across neocortical areas</span>.”</span> <em>Nature</em>, 72–78. <a href="https://doi.org/10.1038/s41586-018-0654-5">https://doi.org/10.1038/s41586-018-0654-5</a>.
+</div>
+<div id="ref-VandenBerge2017" class="csl-entry">
+Van den Berge Koen, Mark Robinson &amp; Lieven Clement, Charlotte Soneson. 2017. <span>“<span class="nocase">stageR: a general stage-wise method for controlling the gene-level false discovery rate in differential expression and differential transcript usage</span>.”</span> <em>Genome Biology</em>. <a href="https://doi.org/10.1186/s13059-017-1277-0">https://doi.org/10.1186/s13059-017-1277-0</a>.
 </div>
 </div>
 </div>
