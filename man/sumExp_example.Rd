@@ -3,11 +3,14 @@
 \docType{data}
 \name{sumExp_example}
 \alias{sumExp_example}
-\title{A `SummarizedExperiment` derived from our case study which builds on the dataset of Tasic et al. It contains the same cells 
-as the data object used in the vignette (see `?Tasic_counts_vignette` for more information). In this SummarizedExperiment, we
-performed a filtering with the `filterByExpr` of edgeR with more stringent than default parameter settings (min.count = 100,
-min.total.count = 200, large.n = 50, min.prop = 0.9) to reduced the number of retained transcripts. We used this object to
-create an executable example in the help files of satuRn.}
+\title{A `SummarizedExperiment` derived from our case study which builds on 
+the dataset of Tasic et al. It contains the same cells as the data object 
+used in the vignette (see `?Tasic_counts_vignette` for more information). 
+In this SummarizedExperiment, we performed a filtering with `filterByExpr` 
+of edgeR with more stringent than default parameter settings 
+(min.count = 100,min.total.count = 200, large.n = 50, min.prop = 0.9) to 
+reduced the number of retained transcripts. We used this object to create 
+an executable example in the help files of satuRn.}
 \format{
 An object of class \code{SummarizedExperiment} with 1286 rows and 60 columns.
 }
@@ -15,10 +18,13 @@ An object of class \code{SummarizedExperiment} with 1286 rows and 60 columns.
 data(sumExp_example)
 }
 \description{
-A `SummarizedExperiment` derived from our case study which builds on the dataset of Tasic et al. It contains the same cells 
-as the data object used in the vignette (see `?Tasic_counts_vignette` for more information). In this SummarizedExperiment, we
-performed a filtering with the `filterByExpr` of edgeR with more stringent than default parameter settings (min.count = 100,
-min.total.count = 200, large.n = 50, min.prop = 0.9) to reduced the number of retained transcripts. We used this object to
-create an executable example in the help files of satuRn.
+A `SummarizedExperiment` derived from our case study which builds on 
+the dataset of Tasic et al. It contains the same cells as the data object 
+used in the vignette (see `?Tasic_counts_vignette` for more information). 
+In this SummarizedExperiment, we performed a filtering with `filterByExpr` 
+of edgeR with more stringent than default parameter settings 
+(min.count = 100,min.total.count = 200, large.n = 50, min.prop = 0.9) to 
+reduced the number of retained transcripts. We used this object to create 
+an executable example in the help files of satuRn.
 }
 \keyword{datasets}

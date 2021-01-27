@@ -17,5 +17,4 @@ setGeneric("getCoef", function(object) standardGeneric("getCoef"))
 #' @name fitDTU
 #' @title fitDTU
 #' @param ... parameters including:
-setGeneric("fitDTU", function(object,...) standardGeneric("fitDTU"))
-
+setGeneric("fitDTU", function(object, ...) standardGeneric("fitDTU"))

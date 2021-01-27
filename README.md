@@ -93,10 +93,12 @@ Finally, we may visualize the usage of select transcripts in select
 groups of interest with `plotDTU`:
 
 ``` r
-sumExp <- satuRn::testDTU(object = sumExp, 
-                          contrasts = L, 
-                          plot = FALSE, 
-                          sort = FALSE)
+sumExp <- satuRn::testDTU(
+    object = sumExp,
+    contrasts = L,
+    plot = FALSE,
+    sort = FALSE
+)
 ```
 
 Finally, we may visualize the usage of select transcripts in select
@@ -106,21 +108,25 @@ groups of interest with `plotDTU`:
 group1 <- rownames(colData(sumExp))[colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
 group2 <- rownames(colData(sumExp))[colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
 
-plots <- satuRn::plotDTU(object = sumExp, 
-                         contrast = "Contrast1", 
-                         groups = list(group1, group2), 
-                         coefficients = list(c(0, 0, 1), c(0, 1, 0)), 
-                         summaryStat = "model", 
-                         transcripts = c("ENSMUST00000081554", 
-                                         "ENSMUST00000195963", 
-                                         "ENSMUST00000132062"), 
-                         genes = NULL, 
-                         top.n = 6)
+plots <- satuRn::plotDTU(
+    object = sumExp,
+    contrast = "Contrast1",
+    groups = list(group1, group2),
+    coefficients = list(c(0, 0, 1), c(0, 1, 0)),
+    summaryStat = "model",
+    transcripts = c(
+        "ENSMUST00000081554",
+        "ENSMUST00000195963",
+        "ENSMUST00000132062"
+    ),
+    genes = NULL,
+    top.n = 6
+)
 ```
 
 ``` r
 # Example plot from our publication:
-knitr::include_graphics("https://raw.githubusercontent.com/statOmics/satuRn/master/man/figures/README-DTU_plot.png") 
+knitr::include_graphics("https://raw.githubusercontent.com/statOmics/satuRn/master/man/figures/README-DTU_plot.png")
 ```
 
 <img src="https://raw.githubusercontent.com/statOmics/satuRn/master/man/figures/README-DTU_plot.png" width="75%" />
@@ -139,7 +145,7 @@ print(citation("satuRn"), bibtex = TRUE)
     ## Gilis J (2021). _Scalable Analysis of differential Transcript Usage for
     ## bulk and single-Cell RNA-sequencing applications_. doi:
     ## 10.18129/B9.bioc.satuRn (URL: https://doi.org/10.18129/B9.bioc.satuRn),
-    ## https://github.com/statOmics/satuRn - R package version 0.99.0, <URL:
+    ## https://github.com/statOmics/satuRn - R package version 0.99.3, <URL:
     ## http://www.bioconductor.org/packages/satuRn>.
     ## 
     ## A BibTeX entry for LaTeX users is
@@ -149,7 +155,7 @@ print(citation("satuRn"), bibtex = TRUE)
     ##     author = {Jeroen Gilis},
     ##     year = {2021},
     ##     url = {http://www.bioconductor.org/packages/satuRn},
-    ##     note = {https://github.com/statOmics/satuRn - R package version 0.99.0},
+    ##     note = {https://github.com/statOmics/satuRn - R package version 0.99.3},
     ##     doi = {10.18129/B9.bioc.satuRn},
     ##   }
     ## 

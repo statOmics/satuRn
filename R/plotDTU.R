@@ -1,12 +1,12 @@
 # Computes the gene-level count in each sample or cell in the data.
-# Essentially taking the sum of the counts for each of the transcripts within a gene.
+# Essentially taking the sum of the counts for each transcript within a gene.
 getTotalCount <- function(countData, tx2gene) {
     # get tx2gene in better format
     geneForEachTx <- tx2gene$gene_id[match(rownames(countData), tx2gene$isoform_id)]
     geneForEachTx <- as.character(geneForEachTx)
     stopifnot(class(geneForEachTx) %in% c("character", "factor"))
     stopifnot(length(geneForEachTx) == nrow(countData))
-    
+
     # adapted from DEXSeq source code
     forCycle <- split(seq_len(nrow(countData)), as.character(geneForEachTx))
     all <- lapply(forCycle, function(i) {
@@ -15,7 +15,7 @@ getTotalCount <- function(countData, tx2gene) {
         rownames(rs) <- rownames(sct)
         rs
     })
-    
+
     totalCount <- do.call(rbind, all)
     totalCount <- totalCount[rownames(countData), ]
     return(totalCount)
@@ -31,22 +31,26 @@ label_facet <- function(txID, padj) {
 
 # Worker function of the plotDTU wrapper function
 plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, summaryStat, tx2gene, transcripts) {
+    group <- modelled_value <- NULL
     plotList <- list()
     countData <- assay(object)
 
-    # To calculate usages, we also need the info of transcripts that we don't want to visualize, i.e. all transcripts of all corresponding genes
+    # To calculate usages, we also need the info of transcripts that we do not 
+    # want to visualize, i.e. all transcripts of all corresponding genes
     genes <- unique(tx2gene[match(transcripts, tx2gene$isoform_id), "gene_id"])
     transcripts_all <- tx2gene[tx2gene$gene_id %in% genes, "isoform_id"]
 
     # assign cells to a certain group (violin)
     names(groups) <- seq_along(groups)
     cell_to_group <- unlist(groups)
-    names(cell_to_group) <- rep(paste0("violin", names(groups)), times = lengths(groups))
+    names(cell_to_group) <- rep(paste0("violin", names(groups)), 
+                                times = lengths(groups))
 
     countData <- countData[transcripts_all, unlist(groups)]
     tx2gene <- tx2gene[tx2gene$isoform_id %in% transcripts_all, ]
 
-    # get total counts (gene-level count) and usages (relative proportion of expression)
+    # get total counts (gene-level count) and 
+    # usages (relative proportion of expression)
     totalCount <- getTotalCount(countData, tx2gene)
     usage <- countData / totalCount
 
@@ -117,32 +121,35 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 #' @description Plot function to visualize differential transcript usage (DTU)
 #'
 #' @param object A `SummarizedExperiment` containing the models and results
-#'      of the DTU analysis as obtained by the `fitDTU` and `testDTU` function from
-#'      this `satuRn` package, respectively.
+#'     of the DTU analysis as obtained by the `fitDTU` and `testDTU` function 
+#'     from this `satuRn` package, respectively.
 #'
-#' @param contrast Specifies the specific contrast for which the visualization should be
-#'      returned. This should be one of the column names of the contrast matrix that
-#'      was provided to the `testDTU` function.
+#' @param contrast Specifies the specific contrast for which the visualization 
+#'     should be returned. This should be one of the column names of 
+#'     the contrast matrix that was provided to the `testDTU` function.
 #'
-#' @param groups A `list` containing two character vectors. Each character vector contains
-#'      the names (sample names or cell names) of the respective groups in the target contrast.
+#' @param groups A `list` containing two character vectors.
+#'     Each character vector contains the names (sample names or cell names) 
+#'     of the respective groups in the target contrast.
 #'
-#' @param coefficients A `list` containing two numeric vectors. Each numeric vector specifies
-#'      the model coefficient of the corresponding groups in the selected contrast.
+#' @param coefficients A `list` containing two numeric vectors. 
+#'     Each numeric vector specifies the model coefficient of the corresponding 
+#'     groups in the selected contrast.
 #'
-#' @param summaryStat Which summary statistic for the relative usage of the transcript
-#'      should be displayed. `Character` or `character vector`, must be any of following
-#'      summary statistics; model (default), mean or median.
+#' @param summaryStat Which summary statistic for the relative usage of 
+#'     the transcript should be displayed. `Character` or `character vector`, 
+#'     must be any of following summary statistics; model (default), 
+#'     mean or median.
 #'
 #' @param transcripts A `character` or `character vector` of transcript IDs,
-#'     to specify which transcripts should be visualized. Can be used together with
-#'     `genes`. If not specified, `plotDTU` will check if the `genes` slot is
-#'     specified.
+#'     to specify which transcripts should be visualized. Can be used together 
+#'     with `genes`. If not specified, `plotDTU` will check if the `genes` slot 
+#'     is specified.
 #'
 #' @param genes A single `character` or `character vector` of gene IDs,
-#'     to specify the genes for which the individual transcripts should be visualized.
-#'     Can be used together with `transcripts`. If not specified, `plotDTU` will check
-#'     if the `transcripts` slot is specified.
+#'     to specify the genes for which the individual transcripts should be 
+#'     visualized. Can be used together with `transcripts`. If not specified, 
+#'     `plotDTU` will check if the `transcripts` slot is specified.
 #'
 #' @param top.n A `numeric` value. If neither `transcripts` nor `genes` was
 #'     was specified, this argument leads to the visualization of the `n` most
@@ -150,13 +157,15 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 #'
 #' @examples
 #' data(sumExp_example, package = "satuRn")
+#' library(SummarizedExperiment)
 #' sumExp <- fitDTU(
-#'    object = sumExp_example,
-#'    formula = ~0+group,
-#'    parallel = FALSE,
-#'    BPPARAM = BiocParallel::bpparam(),
-#'    verbose = TRUE)
-#' group <- as.factor(SummarizedExperiment::colData(sumExp)$group)
+#'     object = sumExp_example,
+#'     formula = ~ 0 + group,
+#'     parallel = FALSE,
+#'     BPPARAM = BiocParallel::bpparam(),
+#'     verbose = TRUE
+#' )
+#' group <- as.factor(colData(sumExp)$group)
 #' design <- model.matrix(~ 0 + group)
 #' colnames(design) <- levels(group)
 #' L <- matrix(0, ncol = 2, nrow = ncol(design))
@@ -164,21 +173,25 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 #' colnames(L) <- c("Contrast1", "Contrast2")
 #' L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tnc"), 1] <- c(1, -1)
 #' L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tmem163_Dmrtb1"), 2] <- c(1, -1)
-#' 
-#' sumExp <- satuRn::testDTU(object = sumExp, contrasts = L, plot = FALSE, sort = FALSE)
-#' 
-#' group1 <- rownames(SummarizedExperiment::colData(sumExp))[SummarizedExperiment::colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
-#' group2 <- rownames(SummarizedExperiment::colData(sumExp))[SummarizedExperiment::colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
 #'
-#' plots <- plotDTU(object = sumExp, 
-#'    contrast = "Contrast1", 
-#'    groups = list(group1, group2), 
-#'    coefficients = list(c(0, 0, 1), c(0, 1, 0)), 
-#'    summaryStat = "model", 
-#'    transcripts = c("ENSMUST00000165123", "ENSMUST00000165721", "ENSMUST00000005067"), 
-#'    genes = NULL, 
-#'    top.n = 6)
-#'    
+#' sumExp <- satuRn::testDTU(object = sumExp, 
+#'     contrasts = L, 
+#'     plot = FALSE, 
+#'     sort = FALSE)
+#'
+#' group1 <- rownames(colData(sumExp))[colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
+#' group2 <- rownames(colData(sumExp))[colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
+#'
+#' plots <- plotDTU(
+#'     object = sumExp,
+#'     contrast = "Contrast1",
+#'     groups = list(group1, group2),
+#'     coefficients = list(c(0, 0, 1), c(0, 1, 0)),
+#'     summaryStat = "model",
+#'     transcripts = c("ENSMUST00000165123", "ENSMUST00000165721", "ENSMUST00000005067"),
+#'     genes = NULL,
+#'     top.n = 6
+#' )
 #' @return A ggplot object that can be directly displayed in the current R session
 #'         or stored in a list.
 #'
@@ -190,27 +203,29 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 #' @importFrom boot inv.logit
 #' @importFrom Matrix Matrix
 #' @importFrom stats median
+#' @importFrom methods is
 #' @importFrom SummarizedExperiment colData
 #'
 #' @export
 
-# Wrapper function, sanity checks and getting all transcripts + the requested contrast in place
+# Wrapper function, sanity checks and 
+# getting all transcripts + the requested contrast in place
 plotDTU <- function(object, contrast, groups, coefficients, summaryStat = "model", transcripts = NULL, genes = NULL, top.n = 6) {
 
     ## Stop if some input is not provided or not in the correct format
-    stopifnot(is(object,"SummarizedExperiment"))
+    stopifnot(is(object, "SummarizedExperiment"))
     stopifnot(class(transcripts) %in% c("character", "NULL"))
     stopifnot(class(genes) %in% c("character", "NULL"))
     stopifnot(class(top.n) %in% c("numeric"))
-    if (is.null(rowData(object)[["fitDTUModels"]])){
+    if (is.null(rowData(object)[["fitDTUModels"]])) {
         stop("fitDTUModels is empty. Did you run fitDTU first?")
-    } 
-    if (!any(grepl("fitDTUResult", names(rowData(object))))){
+    }
+    if (!any(grepl("fitDTUResult", names(rowData(object))))) {
         stop("fitDTUResult is empty. Did you run testDTU first?")
     }
-    ##
-
-    topTable <- rowData(object)[[paste0("fitDTUResult_", contrast)]] # select the requested contrast
+    
+    # select the requested contrast
+    topTable <- rowData(object)[[paste0("fitDTUResult_", contrast)]] 
     topTable <- topTable[order(topTable$empirical_pval), ]
 
     tx2gene <- data.frame(cbind(rowData(object)[["isoform_id"]], rowData(object)[["gene_id"]]))
@@ -218,7 +233,8 @@ plotDTU <- function(object, contrast, groups, coefficients, summaryStat = "model
     tx2gene$isoform_id <- as.character(tx2gene$isoform_id)
     tx2gene$gene_id <- as.character(tx2gene$gene_id)
 
-    # If both transcripts and genes are null, plot the top n DTU transcripts (default = 6)
+    # If both transcripts and genes are null, 
+    # plot the top n DTU transcripts (default = 6)
     if (is.null(transcripts) & is.null(genes)) {
         transcripts <- rownames(topTable)[seq_len(top.n)]
         return(plotDTU_internal(object, topTable, contrast, coefficients, groups, summaryStat, tx2gene, transcripts))

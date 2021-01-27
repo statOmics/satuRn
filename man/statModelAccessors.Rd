@@ -32,12 +32,25 @@ The requested parameter of the StatModel object
 }
 \description{
 Accessor functions for StatModel class
-             \describe{
-             \item{getModel(object)}{to get model}
-             \item{getDF(object)}{to get the residual degrees of freedom of the model}
-             \item{getDfPosterior(object)}{to get the degrees of freedom of
-               the empirical Bayes variance estimator}
-             \item{getDispersion(object)}{to get the dispersion estimate of the model}
-             \item{getCoef(object)}{to get the parameter estimates of the mean model}
+    \describe{
+        \item{getModel(object)}{to get model}
+        \item{getDF(object)}{to get the residual degrees of freedom 
+                of the model}
+        \item{getDfPosterior(object)}{to get the degrees of freedom of
+                the empirical Bayes variance estimator}
+        \item{getDispersion(object)}{to get the dispersion estimate of 
+                the model}
+        \item{getCoef(object)}{to get the parameter estimates of the mean 
+                model}
              }
+}
+\examples{
+## A fully specified dummy model
+myModel <- StatModel(
+    type = "glm",
+    params = list(x = 3, y = 7, b = 4),
+    varPosterior = c(0.1, 0.2, 0.3),
+    dfPosterior = c(6, 7, 8)
+)
+getModel(myModel)
 }

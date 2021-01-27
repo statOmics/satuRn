@@ -156,7 +156,7 @@ The `fitDTU` function of `satuRn` is used to model transcript usage in different
 Sys.time()
 sumExp <- satuRn::fitDTU(
     object = sumExp,
-    formula = ~0+group, 
+    formula = ~ 0 + group,
     parallel = FALSE,
     BPPARAM = BiocParallel::bpparam(),
     verbose = TRUE
@@ -204,9 +204,11 @@ group <- as.factor(Tasic_metadata_vignette$group)
 design <- model.matrix(~ 0 + group) # construct design matrix
 colnames(design) <- levels(group)
 
-L <-limma::makeContrasts(Contrast1=VISp.L5_IT_VISp_Hsd11b1_Endou-ALM.L5_IT_ALM_Tnc,
-                         Contrast2=VISp.L5_IT_VISp_Hsd11b1_Endou-ALM.L5_IT_ALM_Tmem163_Dmrtb1, 
-                         levels=design) # construct contrast matrix
+L <- limma::makeContrasts(
+    Contrast1 = VISp.L5_IT_VISp_Hsd11b1_Endou - ALM.L5_IT_ALM_Tnc,
+    Contrast2 = VISp.L5_IT_VISp_Hsd11b1_Endou - ALM.L5_IT_ALM_Tmem163_Dmrtb1,
+    levels = design
+) # construct contrast matrix
 ```
 
 ## Perform the test
@@ -214,10 +216,12 @@ L <-limma::makeContrasts(Contrast1=VISp.L5_IT_VISp_Hsd11b1_Endou-ALM.L5_IT_ALM_T
 Next we can perform differential usage testing using `testDTU`. We again adopt default settings. For more information on the parameter settings, please fitting the help file of the testDTU function.
 
 ```{r}
-sumExp <- satuRn::testDTU(object = sumExp, 
-                          contrasts = L, 
-                          plot = FALSE, 
-                          sort = FALSE)
+sumExp <- satuRn::testDTU(
+    object = sumExp,
+    contrasts = L,
+    plot = FALSE,
+    sort = FALSE
+)
 ```
 
 The test results are now saved into the `rowData` of our SummarizedExperiment object under the name `fitDTUResult_` followed by the name of the contrast of interest (i.e. the column names of the contrast matrix). The results can be accessed as follows:
@@ -238,14 +242,16 @@ Finally, we may visualize the usage of select transcripts in select groups of in
 group1 <- rownames(colData(sumExp))[colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
 group2 <- rownames(colData(sumExp))[colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
 
-plots <- satuRn::plotDTU(object = sumExp, 
-                         contrast = "Contrast1", 
-                         groups = list(group1, group2), 
-                         coefficients = list(c(0, 0, 1), c(0, 1, 0)), 
-                         summaryStat = "model", 
-                         transcripts = c("ENSMUST00000081554", "ENSMUST00000195963", "ENSMUST00000132062"), 
-                         genes = NULL, 
-                         top.n = 6)
+plots <- satuRn::plotDTU(
+    object = sumExp,
+    contrast = "Contrast1",
+    groups = list(group1, group2),
+    coefficients = list(c(0, 0, 1), c(0, 1, 0)),
+    summaryStat = "model",
+    transcripts = c("ENSMUST00000081554", "ENSMUST00000195963", "ENSMUST00000132062"),
+    genes = NULL,
+    top.n = 6
+)
 
 # to have same layout as in our paper
 for (i in seq_along(plots)) {
@@ -284,29 +290,35 @@ qScreen <- pmin(1, qScreen)
 names(qScreen) <- names(geneSplit)
 
 # prepare stageR input
-tx2gene <- as.data.frame(rowData(sumExp)[c("isoform_id","gene_id")])
-colnames(tx2gene) <- c("transcript","gene")
+tx2gene <- as.data.frame(rowData(sumExp)[c("isoform_id", "gene_id")])
+colnames(tx2gene) <- c("transcript", "gene")
 
 pConfirmation <- matrix(matrix(pvals),
-                        ncol = 1,
-                        dimnames = list(rownames(tx2gene),"transcript"))
+    ncol = 1,
+    dimnames = list(rownames(tx2gene), "transcript")
+)
 
 # create a stageRTx object
-stageRObj <- stageR::stageRTx(pScreen = qScreen, 
-                              pConfirmation = pConfirmation, 
-                              pScreenAdjusted = TRUE, 
-                              tx2gene = tx2gene)
+stageRObj <- stageR::stageRTx(
+    pScreen = qScreen,
+    pConfirmation = pConfirmation,
+    pScreenAdjusted = TRUE,
+    tx2gene = tx2gene
+)
 
 # perform the two-stage testing procedure
-stageRObj <- stageR::stageWiseAdjustment(object = stageRObj, 
-                                         method = "dtu", 
-                                         alpha = 0.05, 
-                                         allowNA = TRUE)
+stageRObj <- stageR::stageWiseAdjustment(
+    object = stageRObj,
+    method = "dtu",
+    alpha = 0.05,
+    allowNA = TRUE
+)
 
 # retrieves the adjusted p-values from the stageRTx object
-padj <- stageR::getAdjustedPValues(stageRObj, 
-                                   order = TRUE, 
-                                   onlySignificantGenes = FALSE)
+padj <- stageR::getAdjustedPValues(stageRObj,
+    order = TRUE,
+    onlySignificantGenes = FALSE
+)
 head(padj)
 ```
 
