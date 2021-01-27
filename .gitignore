@@ -5,4 +5,5 @@ Meta
 .DS_Store
 .Rproj.user
 ^\.Rproj\.user$
+*.Rproj
 docs
