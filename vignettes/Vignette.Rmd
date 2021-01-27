@@ -17,6 +17,8 @@ vignette: >
 library(knitr)
 ```
 
+# Introduction
+
 `satuRn` is an R package to perform differential transcript usage analyses in bulk and single-cell transcriptomics datasets. The package has three main functions. 
 
 1. The first function, `fitDTU`, is used to model transcript usage profiles by means of a quasi-binomial generalized linear model. 

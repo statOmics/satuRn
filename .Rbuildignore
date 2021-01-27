@@ -1,3 +1,5 @@
 ^\.github$
 ^\.Rproj\.user$
 ^.*\.Rproj$
+^doc$
+^Meta$
