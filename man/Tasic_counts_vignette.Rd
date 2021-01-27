@@ -3,11 +3,14 @@
 \docType{data}
 \name{Tasic_counts_vignette}
 \alias{Tasic_counts_vignette}
-\title{A `Matrix` with transcript-level counts derived from our case study which builds on the dataset of Tasic et al. 
-We used Salmon (V1.1.0) to quantify all L5IT cells (both for ALM and VISp tissue) from mice with a normal eye condition. 
-From these cells, we randomly sampled 20 cells of each of the following cell types to use for this vignette;
-L5_IT_VISp_Hsd11b1_Endou, L5_IT_ALM_Tmem163_Dmrtb1 and L5_IT_ALM_Tnc. The data has already been leniently filtered
-with the `filterByExpr` function of edgeR.}
+\title{A `Matrix` with transcript-level counts derived from our case study which 
+builds on the dataset of Tasic et al. We used Salmon (V1.1.0) to quantify 
+all L5IT cells (both for ALM and VISp tissue) from mice with a normal 
+eye condition. From these cells, we randomly sampled 20 cells 
+of each of the following cell types to use for this vignette;
+L5_IT_VISp_Hsd11b1_Endou, L5_IT_ALM_Tmem163_Dmrtb1 and L5_IT_ALM_Tnc. 
+The data has already been leniently filtered with 
+the `filterByExpr` function of edgeR.}
 \format{
 An object of class \code{matrix} (inherits from \code{array}) with 22273 rows and 60 columns.
 }
@@ -15,10 +18,13 @@ An object of class \code{matrix} (inherits from \code{array}) with 22273 rows an
 data(Tasic_counts_vignette)
 }
 \description{
-A `Matrix` with transcript-level counts derived from our case study which builds on the dataset of Tasic et al. 
-We used Salmon (V1.1.0) to quantify all L5IT cells (both for ALM and VISp tissue) from mice with a normal eye condition. 
-From these cells, we randomly sampled 20 cells of each of the following cell types to use for this vignette;
-L5_IT_VISp_Hsd11b1_Endou, L5_IT_ALM_Tmem163_Dmrtb1 and L5_IT_ALM_Tnc. The data has already been leniently filtered
-with the `filterByExpr` function of edgeR.
+A `Matrix` with transcript-level counts derived from our case study which 
+builds on the dataset of Tasic et al. We used Salmon (V1.1.0) to quantify 
+all L5IT cells (both for ALM and VISp tissue) from mice with a normal 
+eye condition. From these cells, we randomly sampled 20 cells 
+of each of the following cell types to use for this vignette;
+L5_IT_VISp_Hsd11b1_Endou, L5_IT_ALM_Tmem163_Dmrtb1 and L5_IT_ALM_Tnc. 
+The data has already been leniently filtered with 
+the `filterByExpr` function of edgeR.
 }
 \keyword{datasets}

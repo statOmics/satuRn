@@ -17,32 +17,35 @@ plotDTU(
 }
 \arguments{
 \item{object}{A `SummarizedExperiment` containing the models and results
-of the DTU analysis as obtained by the `fitDTU` and `testDTU` function from
-this `satuRn` package, respectively.}
+of the DTU analysis as obtained by the `fitDTU` and `testDTU` function 
+from this `satuRn` package, respectively.}
 
-\item{contrast}{Specifies the specific contrast for which the visualization should be
-returned. This should be one of the column names of the contrast matrix that
-was provided to the `testDTU` function.}
+\item{contrast}{Specifies the specific contrast for which the visualization 
+should be returned. This should be one of the column names of 
+the contrast matrix that was provided to the `testDTU` function.}
 
-\item{groups}{A `list` containing two character vectors. Each character vector contains
-the names (sample names or cell names) of the respective groups in the target contrast.}
+\item{groups}{A `list` containing two character vectors.
+Each character vector contains the names (sample names or cell names) 
+of the respective groups in the target contrast.}
 
-\item{coefficients}{A `list` containing two numeric vectors. Each numeric vector specifies
-the model coefficient of the corresponding groups in the selected contrast.}
+\item{coefficients}{A `list` containing two numeric vectors. 
+Each numeric vector specifies the model coefficient of the corresponding 
+groups in the selected contrast.}
 
-\item{summaryStat}{Which summary statistic for the relative usage of the transcript
-should be displayed. `Character` or `character vector`, must be any of following
-summary statistics; model (default), mean or median.}
+\item{summaryStat}{Which summary statistic for the relative usage of 
+the transcript should be displayed. `Character` or `character vector`, 
+must be any of following summary statistics; model (default), 
+mean or median.}
 
 \item{transcripts}{A `character` or `character vector` of transcript IDs,
-to specify which transcripts should be visualized. Can be used together with
-`genes`. If not specified, `plotDTU` will check if the `genes` slot is
-specified.}
+to specify which transcripts should be visualized. Can be used together 
+with `genes`. If not specified, `plotDTU` will check if the `genes` slot 
+is specified.}
 
 \item{genes}{A single `character` or `character vector` of gene IDs,
-to specify the genes for which the individual transcripts should be visualized.
-Can be used together with `transcripts`. If not specified, `plotDTU` will check
-if the `transcripts` slot is specified.}
+to specify the genes for which the individual transcripts should be 
+visualized. Can be used together with `transcripts`. If not specified, 
+`plotDTU` will check if the `transcripts` slot is specified.}
 
 \item{top.n}{A `numeric` value. If neither `transcripts` nor `genes` was
 was specified, this argument leads to the visualization of the `n` most
@@ -57,13 +60,15 @@ Plot function to visualize differential transcript usage (DTU)
 }
 \examples{
 data(sumExp_example, package = "satuRn")
+library(SummarizedExperiment)
 sumExp <- fitDTU(
-   object = sumExp_example,
-   formula = ~0+group,
-   parallel = FALSE,
-   BPPARAM = BiocParallel::bpparam(),
-   verbose = TRUE)
-group <- as.factor(SummarizedExperiment::colData(sumExp)$group)
+    object = sumExp_example,
+    formula = ~ 0 + group,
+    parallel = FALSE,
+    BPPARAM = BiocParallel::bpparam(),
+    verbose = TRUE
+)
+group <- as.factor(colData(sumExp)$group)
 design <- model.matrix(~ 0 + group)
 colnames(design) <- levels(group)
 L <- matrix(0, ncol = 2, nrow = ncol(design))
@@ -72,20 +77,24 @@ colnames(L) <- c("Contrast1", "Contrast2")
 L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tnc"), 1] <- c(1, -1)
 L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tmem163_Dmrtb1"), 2] <- c(1, -1)
 
-sumExp <- satuRn::testDTU(object = sumExp, contrasts = L, plot = FALSE, sort = FALSE)
+sumExp <- satuRn::testDTU(object = sumExp, 
+    contrasts = L, 
+    plot = FALSE, 
+    sort = FALSE)
 
-group1 <- rownames(SummarizedExperiment::colData(sumExp))[SummarizedExperiment::colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
-group2 <- rownames(SummarizedExperiment::colData(sumExp))[SummarizedExperiment::colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
+group1 <- rownames(colData(sumExp))[colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
+group2 <- rownames(colData(sumExp))[colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
 
-plots <- plotDTU(object = sumExp, 
-   contrast = "Contrast1", 
-   groups = list(group1, group2), 
-   coefficients = list(c(0, 0, 1), c(0, 1, 0)), 
-   summaryStat = "model", 
-   transcripts = c("ENSMUST00000165123", "ENSMUST00000165721", "ENSMUST00000005067"), 
-   genes = NULL, 
-   top.n = 6)
-   
+plots <- plotDTU(
+    object = sumExp,
+    contrast = "Contrast1",
+    groups = list(group1, group2),
+    coefficients = list(c(0, 0, 1), c(0, 1, 0)),
+    summaryStat = "model",
+    transcripts = c("ENSMUST00000165123", "ENSMUST00000165721", "ENSMUST00000005067"),
+    genes = NULL,
+    top.n = 6
+)
 }
 \author{
 Jeroen Gilis

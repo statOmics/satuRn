@@ -18,7 +18,8 @@ StatModel(
 
 \item{varPosterior}{Numeric, posterior variance of the glm, default is NA}
 
-\item{dfPosterior}{Numeric, posterior degrees of freedom of the glm, default is NA}
+\item{dfPosterior}{Numeric, posterior degrees of freedom of the glm, 
+default is NA}
 }
 \value{
 A StatModel object
@@ -35,5 +36,4 @@ myModel <- StatModel(
     dfPosterior = c(6, 7, 8)
 )
 myModel
-
 }

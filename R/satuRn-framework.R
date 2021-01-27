@@ -31,7 +31,6 @@
 #'     dfPosterior = c(6, 7, 8)
 #' )
 #' myModel
-
 .StatModel <- setClass("StatModel",
     slots = c(
         type = "character",
@@ -43,17 +42,18 @@
 
 #' @name StatModel
 #' @title StatModel
-#' 
+#'
 #' @description Function for contstructing a new `StatModel` object.
 #'
 #' @param type default set to fiterror, can be a glm
-#' 
+#'
 #' @param params A list containing the parameters of the fitted glm
-#' 
+#'
 #' @param varPosterior Numeric, posterior variance of the glm, default is NA
-#' 
-#' @param dfPosterior Numeric, posterior degrees of freedom of the glm, default is NA
-#' 
+#'
+#' @param dfPosterior Numeric, posterior degrees of freedom of the glm, 
+#'     default is NA
+#'
 #' @examples
 #' ## A fully specified dummy model
 #' myModel <- StatModel(
@@ -63,15 +63,16 @@
 #'     dfPosterior = c(6, 7, 8)
 #' )
 #' myModel
-#' 
 #' @return A StatModel object
-#' 
+#'
+#' @importFrom methods new
+#'
 #' @export
 
-StatModel <- function(type = "fitError", 
-                      params = list(), 
-                      varPosterior = NA_real_, 
-                      dfPosterior = NA_real_) {
+StatModel <- function(type = "fitError",
+    params = list(),
+    varPosterior = NA_real_,
+    dfPosterior = NA_real_) {
     out <- new("StatModel")
     out@type <- type
     out@params <- params

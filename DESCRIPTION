@@ -2,7 +2,7 @@ Package: satuRn
 Type: Package
 Title: Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell RNA-sequencing Applications
 Date: 2021-01-26
-Version: 0.99.3
+Version: 0.99.4
 Authors@R: c(person("Jeroen", "Gilis", role = c("aut","cre"),
                      email = "jeroen.gilis@ugent.be"),
              person("Kristoffer", "Vitting-Seerup", role = "ctb",
@@ -26,7 +26,9 @@ Imports: locfdr,
 	 ggplot2,
 	 boot,
 	 Matrix,
-	 stats
+	 stats,
+	 methods,
+	 graphics
 Suggests:
     knitr,
     rmarkdown,
@@ -44,13 +46,13 @@ Collate:'data.R' 'satuRn-framework.R' 'allGenerics.R'
         'accessors.R' 'fitDTU.R' 'testDTU.R' 'plotDTU.R'
 License: Artistic-2.0
 URL: https://github.com/statOmics/satuRn
-BugReports: https://support.bioconductor.org/t/satuRn
+BugReports: https://github.com/statOmics/satuRn/issues
 Encoding: UTF-8
 LazyData: false
 RoxygenNote: 7.1.1
 biocViews:
     Regression,
-    TimeCourse,
+    ExperimentalDesign,
     DifferentialExpression,
     GeneExpression,
     RNASeq,

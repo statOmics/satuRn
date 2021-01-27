@@ -16,14 +16,18 @@ fitDTU(object, ...)
 )
 }
 \arguments{
-\item{object}{A `SummarizedExperiment` instance generated with the SummarizedExperiment function of the SummarizedExperiment
-package. In the assay slot, provide the transcript-level expression counts as an ordinary `matrix`, `DataFrame` a 
-`sparseMatrix` or a `DelayedMatrix`. The `rowData` slot must be a `DataFrame` object describing the rows, which must contain 
-a column `isoform_id` with the row names of the expression matrix and a column `gene_id` with 
-the corresponding gene identifiers of each transcript.
-`colData` is a `DataFrame` describing the samples or cells in the experiment. Finally, specify the experimental design as
-a formula in the metadata slot. This formula must be based on the colData. See the documentation examples and 
-the vignette for more details.}
+\item{object}{A `SummarizedExperiment` instance generated with the
+SummarizedExperiment function of the SummarizedExperiment package.
+In the assay slot, provide the transcript-level expression counts as an
+ordinary `matrix`, `DataFrame`, a `sparseMatrix` or a `DelayedMatrix`.
+The `rowData` slot must be a `DataFrame` object describing the rows,
+which must contain a column `isoform_id` with the row names of
+the expression matrix and a column `gene_id` with the corresponding gene
+identifiers of each transcript. `colData` is a `DataFrame` describing
+the samples or cells in the experiment. Finally, specify the
+experimental design as a formula in the metadata slot. This formula must
+be based on the colData. See the documentation examples and the vignette
+for more details.}
 
 \item{...}{parameters including:}
 
@@ -41,21 +45,21 @@ back-end to be used for computations. See
 }
 \value{
 An updated `SummarizedExperiment` instance. The instance now includes
-a new list of models ("fitDTUModels") in its rowData slot, which can be accessed
-by rowData(object)[["fitDTUModels"]].
+    a new list of models ("fitDTUModels") in its rowData slot,
+    which can be accessed by rowData(object)[["fitDTUModels"]].
 }
 \description{
 Parameter estimation of quasi-binomial models.
 }
 \examples{
-data(sumExp_example, package = "satuRn") # testDTU
+data(sumExp_example, package = "satuRn")
 sumExp <- fitDTU(
-   object = sumExp_example,
-   formula = ~0+group,
-   parallel = FALSE,
-   BPPARAM = BiocParallel::bpparam(),
-   verbose = TRUE)
-
+    object = sumExp_example,
+    formula = ~ 0 + group,
+    parallel = FALSE,
+    BPPARAM = BiocParallel::bpparam(),
+    verbose = TRUE
+)
 }
 \author{
 Jeroen Gilis
