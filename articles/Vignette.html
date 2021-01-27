@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">satuRn</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.5</span>
       </span>
     </div>
 
@@ -94,6 +94,9 @@
 
     
     
+<div id="introduction" class="section level1">
+<h1 class="hasAnchor">
+<a href="#introduction" class="anchor"></a>Introduction</h1>
 <p><code>satuRn</code> is an R package to perform differential transcript usage analyses in bulk and single-cell transcriptomics datasets. The package has three main functions.</p>
 <ol style="list-style-type: decimal">
 <li><p>The first function, <code>fitDTU</code>, is used to model transcript usage profiles by means of a quasi-binomial generalized linear model.</p></li>
@@ -102,6 +105,7 @@
 </ol>
 <p>All details about the <code>satuRn</code> model and statistical tests are described in our preprint <span class="citation">(Gilis Jeroen 2021)</span>.</p>
 <p>In this vignette, we analyze a small subset of the data from <span class="citation">(Tasic Bosiljka 2018)</span>. More specifically, an expression matrix and the corresponding metadata of the subset data has been provided with the <code>satuRn</code> package. We will adopt this dataset to showcase the different functionalities of <code>satuRn</code>.</p>
+</div>
 <div id="installation" class="section level1">
 <h1 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h1>
@@ -232,17 +236,17 @@
 <p>The <code>fitDTU</code> function of <code>satuRn</code> is used to model transcript usage in different groups of samples or cells. Here we adopt the default settings of the function. Without parallelized execution, this code runs for approximately 15 seconds on a 2018 macbook pro laptop.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.time</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "2021-01-26 19:05:02 CET"</code></pre>
+<pre><code>## [1] "2021-01-27 13:58:46 CET"</code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sumExp</span> <span class="op">&lt;-</span> <span class="fu">satuRn</span><span class="fu">::</span><span class="fu"><a href="../reference/fitDTU.html">fitDTU</a></span><span class="op">(</span>
     object <span class="op">=</span> <span class="va">sumExp</span>,
-    formula <span class="op">=</span> <span class="op">~</span><span class="fl">0</span><span class="op">+</span><span class="va">group</span>, 
+    formula <span class="op">=</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">group</span>,
     parallel <span class="op">=</span> <span class="cn">FALSE</span>,
     BPPARAM <span class="op">=</span> <span class="fu">BiocParallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/register.html">bpparam</a></span><span class="op">(</span><span class="op">)</span>,
     verbose <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.time</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "2021-01-26 19:05:17 CET"</code></pre>
+<pre><code>## [1] "2021-01-27 13:59:01 CET"</code></pre>
 <p>The resulting model fits are now saved into the <code>rowData</code> of our SummarizedExperiment object under the name <code>fitDTUModels</code>. These models can be accessed as follows:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">[[</span><span class="st">"fitDTUModels"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="st">"ENSMUST00000037739"</span>
@@ -280,19 +284,23 @@
 <span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">group</span><span class="op">)</span> <span class="co"># construct design matrix</span>
 <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">design</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span>
 
-<span class="va">L</span> <span class="op">&lt;-</span><span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/makeContrasts.html">makeContrasts</a></span><span class="op">(</span>Contrast1<span class="op">=</span><span class="va">VISp.L5_IT_VISp_Hsd11b1_Endou</span><span class="op">-</span><span class="va">ALM.L5_IT_ALM_Tnc</span>,
-                         Contrast2<span class="op">=</span><span class="va">VISp.L5_IT_VISp_Hsd11b1_Endou</span><span class="op">-</span><span class="va">ALM.L5_IT_ALM_Tmem163_Dmrtb1</span>, 
-                         levels<span class="op">=</span><span class="va">design</span><span class="op">)</span> <span class="co"># construct contrast matrix</span></code></pre></div>
+<span class="va">L</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/makeContrasts.html">makeContrasts</a></span><span class="op">(</span>
+    Contrast1 <span class="op">=</span> <span class="va">VISp.L5_IT_VISp_Hsd11b1_Endou</span> <span class="op">-</span> <span class="va">ALM.L5_IT_ALM_Tnc</span>,
+    Contrast2 <span class="op">=</span> <span class="va">VISp.L5_IT_VISp_Hsd11b1_Endou</span> <span class="op">-</span> <span class="va">ALM.L5_IT_ALM_Tmem163_Dmrtb1</span>,
+    levels <span class="op">=</span> <span class="va">design</span>
+<span class="op">)</span> <span class="co"># construct contrast matrix</span></code></pre></div>
 </div>
 <div id="perform-the-test" class="section level2">
 <h2 class="hasAnchor">
 <a href="#perform-the-test" class="anchor"></a>Perform the test</h2>
 <p>Next we can perform differential usage testing using <code>testDTU</code>. We again adopt default settings. For more information on the parameter settings, please fitting the help file of the testDTU function.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sumExp</span> <span class="op">&lt;-</span> <span class="fu">satuRn</span><span class="fu">::</span><span class="fu"><a href="../reference/testDTU.html">testDTU</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">sumExp</span>, 
-                          contrasts <span class="op">=</span> <span class="va">L</span>, 
-                          plot <span class="op">=</span> <span class="cn">FALSE</span>, 
-                          sort <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">sumExp</span> <span class="op">&lt;-</span> <span class="fu">satuRn</span><span class="fu">::</span><span class="fu"><a href="../reference/testDTU.html">testDTU</a></span><span class="op">(</span>
+    object <span class="op">=</span> <span class="va">sumExp</span>,
+    contrasts <span class="op">=</span> <span class="va">L</span>,
+    plot <span class="op">=</span> <span class="cn">FALSE</span>,
+    sort <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span></code></pre></div>
 <p>The test results are now saved into the <code>rowData</code> of our SummarizedExperiment object under the name <code>fitDTUResult_</code> followed by the name of the contrast of interest (i.e. the column names of the contrast matrix). The results can be accessed as follows:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">[[</span><span class="st">"fitDTUResult_Contrast1"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="co"># first contrast</span></code></pre></div>
@@ -336,14 +344,16 @@
 <code class="sourceCode R"><span class="va">group1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">$</span><span class="va">group</span> <span class="op">==</span> <span class="st">"VISp.L5_IT_VISp_Hsd11b1_Endou"</span><span class="op">]</span>
 <span class="va">group2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">$</span><span class="va">group</span> <span class="op">==</span> <span class="st">"ALM.L5_IT_ALM_Tnc"</span><span class="op">]</span>
 
-<span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu">satuRn</span><span class="fu">::</span><span class="fu"><a href="../reference/plotDTU.html">plotDTU</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">sumExp</span>, 
-                         contrast <span class="op">=</span> <span class="st">"Contrast1"</span>, 
-                         groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">group1</span>, <span class="va">group2</span><span class="op">)</span>, 
-                         coefficients <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>, 
-                         summaryStat <span class="op">=</span> <span class="st">"model"</span>, 
-                         transcripts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ENSMUST00000081554"</span>, <span class="st">"ENSMUST00000195963"</span>, <span class="st">"ENSMUST00000132062"</span><span class="op">)</span>, 
-                         genes <span class="op">=</span> <span class="cn">NULL</span>, 
-                         top.n <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
+<span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu">satuRn</span><span class="fu">::</span><span class="fu"><a href="../reference/plotDTU.html">plotDTU</a></span><span class="op">(</span>
+    object <span class="op">=</span> <span class="va">sumExp</span>,
+    contrast <span class="op">=</span> <span class="st">"Contrast1"</span>,
+    groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">group1</span>, <span class="va">group2</span><span class="op">)</span>,
+    coefficients <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,
+    summaryStat <span class="op">=</span> <span class="st">"model"</span>,
+    transcripts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ENSMUST00000081554"</span>, <span class="st">"ENSMUST00000195963"</span>, <span class="st">"ENSMUST00000132062"</span><span class="op">)</span>,
+    genes <span class="op">=</span> <span class="cn">NULL</span>,
+    top.n <span class="op">=</span> <span class="fl">6</span>
+<span class="op">)</span>
 
 <span class="co"># to have same layout as in our paper</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_along</a></span><span class="op">(</span><span class="va">plots</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
@@ -379,29 +389,35 @@
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">qScreen</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">geneSplit</span><span class="op">)</span>
 
 <span class="co"># prepare stageR input</span>
-<span class="va">tx2gene</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"isoform_id"</span>,<span class="st">"gene_id"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">tx2gene</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"transcript"</span>,<span class="st">"gene"</span><span class="op">)</span>
+<span class="va">tx2gene</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"isoform_id"</span>, <span class="st">"gene_id"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">tx2gene</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"transcript"</span>, <span class="st">"gene"</span><span class="op">)</span>
 
 <span class="va">pConfirmation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">pvals</span><span class="op">)</span>,
-                        ncol <span class="op">=</span> <span class="fl">1</span>,
-                        dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">tx2gene</span><span class="op">)</span>,<span class="st">"transcript"</span><span class="op">)</span><span class="op">)</span>
+    ncol <span class="op">=</span> <span class="fl">1</span>,
+    dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">tx2gene</span><span class="op">)</span>, <span class="st">"transcript"</span><span class="op">)</span>
+<span class="op">)</span>
 
 <span class="co"># create a stageRTx object</span>
-<span class="va">stageRObj</span> <span class="op">&lt;-</span> <span class="fu">stageR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/stageR/man/stageRTx.html">stageRTx</a></span><span class="op">(</span>pScreen <span class="op">=</span> <span class="va">qScreen</span>, 
-                              pConfirmation <span class="op">=</span> <span class="va">pConfirmation</span>, 
-                              pScreenAdjusted <span class="op">=</span> <span class="cn">TRUE</span>, 
-                              tx2gene <span class="op">=</span> <span class="va">tx2gene</span><span class="op">)</span>
+<span class="va">stageRObj</span> <span class="op">&lt;-</span> <span class="fu">stageR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/stageR/man/stageRTx.html">stageRTx</a></span><span class="op">(</span>
+    pScreen <span class="op">=</span> <span class="va">qScreen</span>,
+    pConfirmation <span class="op">=</span> <span class="va">pConfirmation</span>,
+    pScreenAdjusted <span class="op">=</span> <span class="cn">TRUE</span>,
+    tx2gene <span class="op">=</span> <span class="va">tx2gene</span>
+<span class="op">)</span>
 
 <span class="co"># perform the two-stage testing procedure</span>
-<span class="va">stageRObj</span> <span class="op">&lt;-</span> <span class="fu">stageR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/stageR/man/stageWiseAdjustment.html">stageWiseAdjustment</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">stageRObj</span>, 
-                                         method <span class="op">=</span> <span class="st">"dtu"</span>, 
-                                         alpha <span class="op">=</span> <span class="fl">0.05</span>, 
-                                         allowNA <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">stageRObj</span> <span class="op">&lt;-</span> <span class="fu">stageR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/stageR/man/stageWiseAdjustment.html">stageWiseAdjustment</a></span><span class="op">(</span>
+    object <span class="op">=</span> <span class="va">stageRObj</span>,
+    method <span class="op">=</span> <span class="st">"dtu"</span>,
+    alpha <span class="op">=</span> <span class="fl">0.05</span>,
+    allowNA <span class="op">=</span> <span class="cn">TRUE</span>
+<span class="op">)</span>
 
 <span class="co"># retrieves the adjusted p-values from the stageRTx object</span>
-<span class="va">padj</span> <span class="op">&lt;-</span> <span class="fu">stageR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/stageR/man/getAdjustedPValues.html">getAdjustedPValues</a></span><span class="op">(</span><span class="va">stageRObj</span>, 
-                                   order <span class="op">=</span> <span class="cn">TRUE</span>, 
-                                   onlySignificantGenes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<span class="va">padj</span> <span class="op">&lt;-</span> <span class="fu">stageR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/stageR/man/getAdjustedPValues.html">getAdjustedPValues</a></span><span class="op">(</span><span class="va">stageRObj</span>,
+    order <span class="op">=</span> <span class="cn">TRUE</span>,
+    onlySignificantGenes <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span></code></pre></div>
 <pre><code>## The returned adjusted p-values are based on a stage-wise testing approach and are only valid for the provided target OFDR level of 5%. If a different target OFDR level is of interest,the entire adjustment should be re-run.</code></pre>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">padj</span><span class="op">)</span></code></pre></div>

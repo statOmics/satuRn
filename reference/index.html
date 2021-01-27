@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">satuRn</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.5</span>
       </span>
     </div>
 
@@ -156,18 +156,21 @@
         <td>
           <p><code><a href="Tasic_counts_vignette.html">Tasic_counts_vignette</a></code> </p>
         </td>
-        <td><p>A `Matrix` with transcript-level counts derived from our case study which builds on the dataset of Tasic et al. 
-We used Salmon (V1.1.0) to quantify all L5IT cells (both for ALM and VISp tissue) from mice with a normal eye condition. 
-From these cells, we randomly sampled 20 cells of each of the following cell types to use for this vignette;
-L5_IT_VISp_Hsd11b1_Endou, L5_IT_ALM_Tmem163_Dmrtb1 and L5_IT_ALM_Tnc. The data has already been leniently filtered
-with the `filterByExpr` function of edgeR.</p></td>
+        <td><p>A `Matrix` with transcript-level counts derived from our case study which 
+builds on the dataset of Tasic et al. We used Salmon (V1.1.0) to quantify 
+all L5IT cells (both for ALM and VISp tissue) from mice with a normal 
+eye condition. From these cells, we randomly sampled 20 cells 
+of each of the following cell types to use for this vignette;
+L5_IT_VISp_Hsd11b1_Endou, L5_IT_ALM_Tmem163_Dmrtb1 and L5_IT_ALM_Tnc. 
+The data has already been leniently filtered with 
+the `filterByExpr` function of edgeR.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="Tasic_metadata_vignette.html">Tasic_metadata_vignette</a></code> </p>
         </td>
-        <td><p>Metadata associated with the expression matrix `Tasic_counts_vignette`. See `?Tasic_counts_vignette` for more information
-on the dataset.</p></td>
+        <td><p>Metadata associated with the expression matrix `Tasic_counts_vignette`. 
+See `?Tasic_counts_vignette` for more information on the dataset.</p></td>
       </tr><tr>
         
         <td>
@@ -197,18 +200,21 @@ on the dataset.</p></td>
         <td>
           <p><code><a href="sumExp_example.html">sumExp_example</a></code> </p>
         </td>
-        <td><p>A `SummarizedExperiment` derived from our case study which builds on the dataset of Tasic et al. It contains the same cells 
-as the data object used in the vignette (see `?Tasic_counts_vignette` for more information). In this SummarizedExperiment, we
-performed a filtering with the `filterByExpr` of edgeR with more stringent than default parameter settings (min.count = 100,
-min.total.count = 200, large.n = 50, min.prop = 0.9) to reduced the number of retained transcripts. We used this object to
-create an executable example in the help files of satuRn.</p></td>
+        <td><p>A `SummarizedExperiment` derived from our case study which builds on 
+the dataset of Tasic et al. It contains the same cells as the data object 
+used in the vignette (see `?Tasic_counts_vignette` for more information). 
+In this SummarizedExperiment, we performed a filtering with `filterByExpr` 
+of edgeR with more stringent than default parameter settings 
+(min.count = 100,min.total.count = 200, large.n = 50, min.prop = 0.9) to 
+reduced the number of retained transcripts. We used this object to create 
+an executable example in the help files of satuRn.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="testDTU.html">testDTU()</a></code> </p>
         </td>
-        <td><p>Test function to obtain a top list of transcripts that are differentially used
-in the contrast of interest</p></td>
+        <td><p>Test function to obtain a top list of transcripts that are
+differentially used in the contrast of interest</p></td>
       </tr>
     </tbody>
     </table>

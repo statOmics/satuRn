@@ -41,12 +41,15 @@
 
 <meta property="og:title" content="Accessor functions for StatModel class — getModel,StatModel-method" />
 <meta property="og:description" content="Accessor functions for StatModel class
-             getModel(object)to get model
-             getDF(object)to get the residual degrees of freedom of the model
-             getDfPosterior(object)to get the degrees of freedom of
-               the empirical Bayes variance estimator
-             getDispersion(object)to get the dispersion estimate of the model
-             getCoef(object)to get the parameter estimates of the mean model
+        getModel(object)to get model
+        getDF(object)to get the residual degrees of freedom 
+                of the model
+        getDfPosterior(object)to get the degrees of freedom of
+                the empirical Bayes variance estimator
+        getDispersion(object)to get the dispersion estimate of 
+                the model
+        getCoef(object)to get the parameter estimates of the mean 
+                model
              
 
 " />
@@ -81,7 +84,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">satuRn</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.5</span>
       </span>
     </div>
 
@@ -139,12 +142,15 @@
 
     <div class="ref-description">
     <p>Accessor functions for StatModel class</p><dl>
-             <dt>getModel(object)</dt><dd><p>to get model</p></dd>
-             <dt>getDF(object)</dt><dd><p>to get the residual degrees of freedom of the model</p></dd>
-             <dt>getDfPosterior(object)</dt><dd><p>to get the degrees of freedom of
-               the empirical Bayes variance estimator</p></dd>
-             <dt>getDispersion(object)</dt><dd><p>to get the dispersion estimate of the model</p></dd>
-             <dt>getCoef(object)</dt><dd><p>to get the parameter estimates of the mean model</p></dd>
+        <dt>getModel(object)</dt><dd><p>to get model</p></dd>
+        <dt>getDF(object)</dt><dd><p>to get the residual degrees of freedom 
+                of the model</p></dd>
+        <dt>getDfPosterior(object)</dt><dd><p>to get the degrees of freedom of
+                the empirical Bayes variance estimator</p></dd>
+        <dt>getDispersion(object)</dt><dd><p>to get the dispersion estimate of 
+                the model</p></dd>
+        <dt>getCoef(object)</dt><dd><p>to get the parameter estimates of the mean 
+                model</p></dd>
              
 </dl>
 
@@ -178,6 +184,24 @@
 
     <p>The requested parameter of the StatModel object</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'>## A fully specified dummy model</span>
+<span class='va'>myModel</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StatModel.html'>StatModel</a></span><span class='op'>(</span>
+    type <span class='op'>=</span> <span class='st'>"glm"</span>,
+    params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='fl'>3</span>, y <span class='op'>=</span> <span class='fl'>7</span>, b <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span>,
+    varPosterior <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.2</span>, <span class='fl'>0.3</span><span class='op'>)</span>,
+    dfPosterior <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>6</span>, <span class='fl'>7</span>, <span class='fl'>8</span><span class='op'>)</span>
+<span class='op'>)</span>
+<span class='fu'>getModel</span><span class='op'>(</span><span class='va'>myModel</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $x
+#&gt; [1] 3
+#&gt; 
+#&gt; $y
+#&gt; [1] 7
+#&gt; 
+#&gt; $b
+#&gt; [1] 4
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
