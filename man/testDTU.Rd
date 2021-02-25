@@ -51,8 +51,10 @@ colnames(design) <- levels(group)
 L <- matrix(0, ncol = 2, nrow = ncol(design))
 rownames(L) <- colnames(design)
 colnames(L) <- c("Contrast1", "Contrast2")
-L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tnc"), 1] <- c(1, -1)
-L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tmem163_Dmrtb1"), 2] <- c(1, -1)
+L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", 
+    "ALM.L5_IT_ALM_Tnc"), 1] <- c(1, -1)
+L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", 
+    "ALM.L5_IT_ALM_Tmem163_Dmrtb1"), 2] <- c(1, -1)
 
 sumExp <- testDTU(object = sumExp, contrasts = L, plot = FALSE, sort = FALSE)
 }

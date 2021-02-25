@@ -2,7 +2,8 @@
 # Essentially taking the sum of the counts for each transcript within a gene.
 getTotalCount <- function(countData, tx2gene) {
     # get tx2gene in better format
-    geneForEachTx <- tx2gene$gene_id[match(rownames(countData), tx2gene$isoform_id)]
+    geneForEachTx <- tx2gene$gene_id[match(rownames(countData), 
+                                            tx2gene$isoform_id)]
     geneForEachTx <- as.character(geneForEachTx)
     stopifnot(class(geneForEachTx) %in% c("character", "factor"))
     stopifnot(length(geneForEachTx) == nrow(countData))
@@ -11,7 +12,8 @@ getTotalCount <- function(countData, tx2gene) {
     forCycle <- split(seq_len(nrow(countData)), as.character(geneForEachTx))
     all <- lapply(forCycle, function(i) {
         sct <- countData[i, , drop = FALSE]
-        rs <- t(vapply(seq_len(nrow(sct)), function(r) colSums(sct[, , drop = FALSE]), numeric(ncol(countData))))
+        rs <- t(vapply(seq_len(nrow(sct)), function(r) 
+            colSums(sct[, , drop = FALSE]), numeric(ncol(countData))))
         rownames(rs) <- rownames(sct)
         rs
     })
@@ -30,7 +32,8 @@ label_facet <- function(txID, padj) {
 }
 
 # Worker function of the plotDTU wrapper function
-plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, summaryStat, tx2gene, transcripts) {
+plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, 
+                            summaryStat, tx2gene, transcripts) {
     group <- modelled_value <- NULL
     plotList <- list()
     countData <- assay(object)
@@ -63,7 +66,8 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
         transcript <- transcripts[i]
 
         # get all data and lay-out features to plot current transcript
-        data <- as.data.frame(cbind(t(usage[transcript, , drop = FALSE]), t(totalCount[transcript, , drop = FALSE])))
+        data <- as.data.frame(cbind(t(usage[transcript, , drop = FALSE]), 
+                                    t(totalCount[transcript, , drop = FALSE])))
         data$group <- names(cell_to_group)[match(rownames(data), cell_to_group)]
         colnames(data) <- c("usage", "totalCount", "group")
         data$group <- as.factor(data$group)
@@ -74,22 +78,33 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
         gene <- tx2gene[tx2gene$isoform_id == transcript, "gene_id"]
 
         # violin plot
-        gg <- ggplot(data = data, aes(x = group, y = usage, fill = group, width = totalCount)) +
+        gg <- ggplot(data = data, 
+                    aes(x = group, y = usage, fill = group, 
+                        width = totalCount)) +
             geom_violin() +
-            geom_point(data = data, aes(x = group, y = usage, size = totalCount), position = position_jitterdodge(jitter.width = 0.7, jitter.height = 0, dodge.width = 0.9)) +
+            geom_point(data = data, 
+                    aes(x = group, y = usage, size = totalCount), 
+                    position = position_jitterdodge(jitter.width = 0.7, 
+                                                    jitter.height = 0, 
+                                                    dodge.width = 0.9)) +
             scale_radius(name = "expression", range = c(0, 5)) +
             ylim(c(-0.05, 1.05)) +
             ylab("Fraction of usage") +
             theme_bw() +
             ggtitle(paste0(transcript, "  -  ", gene)) +
             theme(plot.title = element_text(size = 9.5, face = "bold")) +
-            facet_wrap(~variable, ncol = 1, labeller = labeller(variable = label_facet(data$variable, padj))) +
-            theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 8)) +
+            facet_wrap(~variable, 
+                        ncol = 1, 
+                        labeller = labeller(variable = label_facet(
+                            data$variable, padj))) +
+            theme(axis.text.x = element_text(angle = 45, vjust = 1, 
+                                                hjust = 1, size = 8)) +
             theme(strip.text = element_text(size = 7, face = "bold"))
 
         # add summarystats
         if ("model" %in% summaryStat) {
-            model_estimates <- rowData(object)[["fitDTUModels"]][transcript][[1]]@params$coefficients
+            model_estimates <- rowData(
+                object)[["fitDTUModels"]][transcript][[1]]@params$coefficients
 
             coefs <- do.call(rbind, coefficients)
             requested_estimates <- boot::inv.logit(coefs %*% model_estimates)
@@ -99,15 +114,24 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
             data$modelled_value <- as.numeric(as.character(data$modelled_value))
 
             gg <- gg +
-                geom_point(data = data, aes(x = group, y = modelled_value), position = position_jitterdodge(jitter.width = 0, jitter.height = 0, dodge.width = 0.9), shape = 18, size = 5, colour = "gold2")
+                geom_point(data = data, 
+                        aes(x = group, y = modelled_value), 
+                            position = position_jitterdodge(jitter.width = 0, 
+                                                            jitter.height = 0, 
+                                                            dodge.width = 0.9), 
+                            shape = 18, size = 5, colour = "gold2")
         }
 
         if ("mean" %in% summaryStat) {
-            gg <- gg + stat_summary(fun = mean, geom = "point", position = position_dodge(width = 0.9), shape = 18, size = 4, colour = "cyan")
+            gg <- gg + stat_summary(fun = mean, geom = "point", 
+                                    position = position_dodge(width = 0.9), 
+                                    shape = 18, size = 4, colour = "cyan")
         }
 
         if ("median" %in% summaryStat) {
-            gg <- gg + stat_summary(fun = median, geom = "point", position = position_dodge(width = 0.9), shape = 18, size = 3, colour = "darkgreen")
+            gg <- gg + stat_summary(fun = median, geom = "point", 
+                                    position = position_dodge(width = 0.9), 
+                                    shape = 18, size = 3, colour = "darkgreen")
         }
 
         # save current ggplot in list
@@ -172,15 +196,18 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 #' rownames(L) <- colnames(design)
 #' colnames(L) <- c("Contrast1", "Contrast2")
 #' L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tnc"), 1] <- c(1, -1)
-#' L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tmem163_Dmrtb1"), 2] <- c(1, -1)
+#' L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", 
+#'     "ALM.L5_IT_ALM_Tmem163_Dmrtb1"), 2] <- c(1, -1)
 #'
 #' sumExp <- satuRn::testDTU(object = sumExp, 
 #'     contrasts = L, 
 #'     plot = FALSE, 
 #'     sort = FALSE)
 #'
-#' group1 <- rownames(colData(sumExp))[colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
-#' group2 <- rownames(colData(sumExp))[colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
+#' group1 <- rownames(colData(sumExp))[colData(sumExp)$group == 
+#'                                     "VISp.L5_IT_VISp_Hsd11b1_Endou"]
+#' group2 <- rownames(colData(sumExp))[colData(sumExp)$group == 
+#'                                     "ALM.L5_IT_ALM_Tnc"]
 #'
 #' plots <- plotDTU(
 #'     object = sumExp,
@@ -188,12 +215,14 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 #'     groups = list(group1, group2),
 #'     coefficients = list(c(0, 0, 1), c(0, 1, 0)),
 #'     summaryStat = "model",
-#'     transcripts = c("ENSMUST00000165123", "ENSMUST00000165721", "ENSMUST00000005067"),
+#'     transcripts = c("ENSMUST00000165123", 
+#'                     "ENSMUST00000165721", 
+#'                     "ENSMUST00000005067"),
 #'     genes = NULL,
 #'     top.n = 6
 #' )
-#' @return A ggplot object that can be directly displayed in the current R session
-#'         or stored in a list.
+#' @return A ggplot object that can be directly displayed in the current R 
+#' session or stored in a list.
 #'
 #' @rdname plotDTU
 #'
@@ -210,7 +239,9 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups, s
 
 # Wrapper function, sanity checks and 
 # getting all transcripts + the requested contrast in place
-plotDTU <- function(object, contrast, groups, coefficients, summaryStat = "model", transcripts = NULL, genes = NULL, top.n = 6) {
+plotDTU <- function(object, contrast, groups, coefficients, 
+                    summaryStat = "model", transcripts = NULL, genes = NULL, 
+                    top.n = 6) {
 
     ## Stop if some input is not provided or not in the correct format
     stopifnot(is(object, "SummarizedExperiment"))
@@ -228,7 +259,8 @@ plotDTU <- function(object, contrast, groups, coefficients, summaryStat = "model
     topTable <- rowData(object)[[paste0("fitDTUResult_", contrast)]] 
     topTable <- topTable[order(topTable$empirical_pval), ]
 
-    tx2gene <- data.frame(cbind(rowData(object)[["isoform_id"]], rowData(object)[["gene_id"]]))
+    tx2gene <- data.frame(cbind(rowData(object)[["isoform_id"]], 
+                                rowData(object)[["gene_id"]]))
     colnames(tx2gene) <- c("isoform_id", "gene_id")
     tx2gene$isoform_id <- as.character(tx2gene$isoform_id)
     tx2gene$gene_id <- as.character(tx2gene$gene_id)
@@ -237,7 +269,8 @@ plotDTU <- function(object, contrast, groups, coefficients, summaryStat = "model
     # plot the top n DTU transcripts (default = 6)
     if (is.null(transcripts) & is.null(genes)) {
         transcripts <- rownames(topTable)[seq_len(top.n)]
-        return(plotDTU_internal(object, topTable, contrast, coefficients, groups, summaryStat, tx2gene, transcripts))
+        return(plotDTU_internal(object, topTable, contrast, coefficients, 
+                                groups, summaryStat, tx2gene, transcripts))
     }
 
     tx_tx <- tx_gene <- c()
@@ -248,7 +281,8 @@ plotDTU <- function(object, contrast, groups, coefficients, summaryStat = "model
         ## check if all provided transcripts are present in topTable
         absent <- transcripts[!transcripts %in% rownames(topTable)]
         if (length(absent) > 0) {
-            warning(paste("The requested transcript", absent, "is not present in the provided topTable. "))
+            warning(paste("The requested transcript", absent, 
+                            "is not present in the provided topTable. "))
         }
         tx_tx <- transcripts[!transcripts %in% absent]
     }
@@ -258,7 +292,8 @@ plotDTU <- function(object, contrast, groups, coefficients, summaryStat = "model
         absent <- NULL
         absent <- genes[!genes %in% tx2gene$gene_id]
         if (length(absent) > 0) {
-            warning(paste("The requested gene", absent, "is not present in the provided tx2gene dataframe. "))
+            warning(paste("The requested gene", absent, 
+                        "is not present in the provided tx2gene dataframe. "))
         }
         genes <- genes[!genes %in% absent]
         tx_gene <- tx2gene[tx2gene$gene_id %in% genes, "isoform_id"]
@@ -267,10 +302,12 @@ plotDTU <- function(object, contrast, groups, coefficients, summaryStat = "model
     transcripts <- c(tx_tx, tx_gene)
 
     if (length(transcripts) < 1) {
-        stop("None of the requested transcripts/genes could be retrieved from the provided data")
+        stop("None of the requested transcripts/genes could be retrieved 
+            from the provided data")
     }
 
     # got to the internal visualization function
-    plotList <- plotDTU_internal(object, topTable, contrast, coefficients, groups, summaryStat, tx2gene, transcripts)
+    plotList <- plotDTU_internal(object, topTable, contrast, coefficients, 
+                                groups, summaryStat, tx2gene, transcripts)
     return(plotList)
 }

@@ -57,7 +57,7 @@ is used to specify the comparison(s) of interest and can either be
 generated manually or automatically with the `makeContrasts` function of
 the `limma` R package.
 
-``` r
+```{r, eval = FALSE}
 group <- as.factor(Tasic_metadata_vignette$group)
 design <- model.matrix(~ 0 + group) # constructs design matrix
 colnames(design) <- levels(group)
@@ -73,10 +73,10 @@ sumExp <- satuRn::testDTU(object = sumExp,
 
 The test results are now saved into the `rowData` of our
 `SummarizedExperiment` object under the name `fitDTUResult_` followed by
-the name of the contrast of interest (i.e. the column names of the
+the name of the contrast of interest (i.e. the column names of the
 contrast matrix). The results can be accessed as follows:
 
-``` r
+```{r, eval = FALSE}
 head(rowData(sumExp)[["fitDTUResult_Contrast1"]]) # first contrast
 ```
 
@@ -117,7 +117,7 @@ plots <- satuRn::plotDTU(
 
 ```{r out.width = "75%"}
 # Example plot from our publication:
-knitr::include_graphics("https://raw.githubusercontent.com/statOmics/satuRn/master/man/figures/README-DTU_plot.png")
+knitr::include_graphics("https://raw.githubusercontent.com/statOmics/satuRn/master/inst/figures/README-DTU_plot.png")
 ```
 
 ## Citation

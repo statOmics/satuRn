@@ -12,7 +12,8 @@
 #'         \item{getCoef(object)}{to get the parameter estimates of the mean 
 #'                 model}
 #'              }
-#' @aliases statModelAccessors getModel getDF getDfPosterior getDispersion getCoef
+#' @aliases statModelAccessors getModel getDF getDfPosterior getDispersion 
+#' getCoef
 #' @rdname statModelAccessors
 #'
 #' @param object StatModel object
