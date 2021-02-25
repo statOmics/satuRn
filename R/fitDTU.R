@@ -4,7 +4,8 @@
     if (type != "fitError") {
         df.r <- model$df.residual
         if (df.r > 0) {
-            model$dispersion <- sum((model$weights * model$residuals^2)[model$weights > 0]) / df.r
+            model$dispersion <- sum(
+                (model$weights * model$residuals^2)[model$weights > 0]) / df.r
         }
     }
     return(model)
@@ -31,7 +32,8 @@
 # the gene-level count and current transcript-level count.
 .getOtherCount <- function(countData, tx2gene) {
     # get tx2gene in better format
-    geneForEachTx <- tx2gene$gene_id[match(rownames(countData), tx2gene$isoform_id)]
+    geneForEachTx <- tx2gene$gene_id[match(rownames(countData), 
+                                            tx2gene$isoform_id)]
     geneForEachTx <- as.character(geneForEachTx)
     stopifnot(class(geneForEachTx) %in% c("character", "factor"))
     stopifnot(length(geneForEachTx) == nrow(countData))
@@ -39,7 +41,8 @@
     forCycle <- split(seq_len(nrow(countData)), as.character(geneForEachTx))
     all <- lapply(forCycle, function(i) {
         sct <- countData[i, , drop = FALSE]
-        rs <- t(vapply(seq_len(nrow(sct)), function(r) colSums(sct[-r, , drop = FALSE]), numeric(ncol(countData))))
+        rs <- t(vapply(seq_len(nrow(sct)), function(r) 
+            colSums(sct[-r, , drop = FALSE]), numeric(ncol(countData))))
         rownames(rs) <- rownames(sct)
         rs
     })
@@ -51,7 +54,12 @@
 
 # Worker function that fits quasi-binomial models, 
 # wrapped inside the fitDTU function
-.fitDTU_internal <- function(countData, tx2gene, design, parallel, BPPARAM, verbose) {
+.fitDTU_internal <- function(countData, 
+                            tx2gene, 
+                            design, 
+                            parallel, 
+                            BPPARAM, 
+                            verbose) {
     if (parallel) {
         BiocParallel::register(BPPARAM)
         if (verbose) {
@@ -62,7 +70,10 @@
         }
     }
 
-    stopifnot(class(countData)[1] %in% c("matrix", "data.frame", "dgCMatrix", "DelayedMatrix"))
+    stopifnot(class(countData)[1] %in% c("matrix", 
+                                        "data.frame", 
+                                        "dgCMatrix", 
+                                        "DelayedMatrix"))
     countData <- as.matrix(countData)
 
     # Get the "other" counts, i.e. the counts for all other transcripts 
@@ -91,7 +102,10 @@
         model <- .calcDispersion(model, type) ## calculate disp slot
         model <- .calcVcovUnscaled(model, type) ## calculate vcov slot
 
-        model <- model[c("coefficients", "df.residual", "dispersion", "vcovUnsc")]
+        model <- model[c("coefficients", 
+                        "df.residual", 
+                        "dispersion", 
+                        "vcovUnsc")]
 
 
         .out <- .StatModel(
@@ -105,12 +119,22 @@
 
     # Fit the models
     if (parallel) {
-        models <- BiocParallel::bplapply(seq_len(nrow(countData)), function(i) fitQuasiLogistic(countData = countData[i, ], otherCount = otherCount[i, ], design = design), BPPARAM = BPPARAM)
+        models <- BiocParallel::bplapply(seq_len(nrow(countData)), function(i) 
+            fitQuasiLogistic(countData = countData[i, ], 
+                            otherCount = otherCount[i, ], 
+                            design = design), 
+            BPPARAM = BPPARAM)
     } else {
         if (verbose) {
-            models <- pbapply::pblapply(seq_len(nrow(countData)), function(i) fitQuasiLogistic(countData = countData[i, ], otherCount = otherCount[i, ], design = design))
+            models <- pbapply::pblapply(seq_len(nrow(countData)), function(i) 
+                fitQuasiLogistic(countData = countData[i, ], 
+                                otherCount = otherCount[i, ], 
+                                design = design))
         } else {
-            models <- lapply(seq_len(nrow(countData)), function(i) fitQuasiLogistic(countData = countData[i, ], otherCount = otherCount[i, ], design = design))
+            models <- lapply(seq_len(nrow(countData)), function(i) 
+                fitQuasiLogistic(countData = countData[i, ], 
+                                otherCount = otherCount[i, ], 
+                                design = design))
         }
     }
 
@@ -141,27 +165,27 @@
 #' @description Parameter estimation of quasi-binomial models.
 #'
 #' @param object A `SummarizedExperiment` instance generated with the
-#'     SummarizedExperiment function of the SummarizedExperiment package.
-#'     In the assay slot, provide the transcript-level expression counts as an
-#'     ordinary `matrix`, `DataFrame`, a `sparseMatrix` or a `DelayedMatrix`.
-#'     The `rowData` slot must be a `DataFrame` object describing the rows,
-#'     which must contain a column `isoform_id` with the row names of
-#'     the expression matrix and a column `gene_id` with the corresponding gene
-#'     identifiers of each transcript. `colData` is a `DataFrame` describing
-#'     the samples or cells in the experiment. Finally, specify the
-#'     experimental design as a formula in the metadata slot. This formula must
-#'     be based on the colData. See the documentation examples and the vignette
-#'     for more details.
+#' SummarizedExperiment function of the SummarizedExperiment package.
+#' In the assay slot, provide the transcript-level expression counts as an
+#' ordinary `matrix`, `DataFrame`, a `sparseMatrix` or a `DelayedMatrix`.
+#' The `rowData` slot must be a `DataFrame` object describing the rows,
+#' which must contain a column `isoform_id` with the row names of
+#' the expression matrix and a column `gene_id` with the corresponding gene
+#' identifiers of each transcript. `colData` is a `DataFrame` describing
+#' the samples or cells in the experiment. Finally, specify the
+#' experimental design as a formula in the metadata slot. This formula must
+#' be based on the colData. See the documentation examples and the vignette
+#' for more details.
 #'
 #' @param formula Model formula. The model is built based on the
-#'  covariates in the data object.
+#' covariates in the data object.
 #'
 #' @param parallel Logical, defaults to FALSE. Set to TRUE if you want to
 #' parallellize the fitting procedure.
 #'
 #' @param BPPARAM object of class \code{bpparamClass} that specifies the
-#'   back-end to be used for computations. See
-#'   \code{bpparam} in \code{BiocParallel} package for details.
+#' back-end to be used for computations. See
+#' \code{bpparam} in \code{BiocParallel} package for details.
 #'
 #' @param verbose Logical, should progress be printed?
 #'
@@ -200,15 +224,18 @@ setMethod(
     parallel = FALSE,
     BPPARAM = BiocParallel::bpparam(),
     verbose = TRUE) {
-        if (ncol(SummarizedExperiment::colData(object)) == 0) stop("colData is empty")
+        if (ncol(SummarizedExperiment::colData(object)) == 0) 
+            stop("colData is empty")
 
         design <- model.matrix(formula, SummarizedExperiment::colData(object))
 
-        if (!"gene_id" %in% colnames(rowData(object)) | !"isoform_id" %in% colnames(rowData(object))) {
+        if (!"gene_id" %in% colnames(rowData(object)) | 
+            !"isoform_id" %in% colnames(rowData(object))) {
             stop("rowData does not contain columns gene_id and isoform_id")
         }
         if (!all(rownames(object) == rowData(object)[, "isoform_id"])) {
-            stop("not all row names of the expression matrix match the isoform_id column of the object's rowData")
+            stop("not all row names of the expression matrix match 
+                the isoform_id column of the object's rowData")
         }
 
         rowData(object)[["fitDTUModels"]] <- .fitDTU_internal(

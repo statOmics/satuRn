@@ -19,24 +19,36 @@ library(knitr)
 
 # Introduction
 
-`satuRn` is an R package to perform differential transcript usage analyses in bulk and single-cell transcriptomics datasets. The package has three main functions. 
+`satuRn` is an R package to perform differential transcript usage analyses in 
+bulk and single-cell transcriptomics datasets. 
+The package has three main functions. 
 
-1. The first function, `fitDTU`, is used to model transcript usage profiles by means of a quasi-binomial generalized linear model. 
+1. The first function, `fitDTU`, is used to model transcript usage profiles by 
+means of a quasi-binomial generalized linear model. 
 
-2. Second, the `testDTU` function tests for differential usage of transcripts between certain groups of interest (e.g. different treatment groups or cell types). 
+2. Second, the `testDTU` function tests for differential usage of transcripts
+between certain groups of interest (e.g. different treatment groups or
+cell types). 
 
-3. Finally, the `plotDTU` can be used to visualize the usage profiles of selected transcripts in different groups of interest. 
+3. Finally, the `plotDTU` can be used to visualize the usage profiles of 
+selected transcripts in different groups of interest. 
 
-All details about the `satuRn` model and statistical tests are described in our preprint [@Gilis2021].
+All details about the `satuRn` model and statistical tests are described 
+in our preprint [@Gilis2021].
 
-In this vignette, we analyze a small subset of the data from [@Tasic2018]. More specifically, an expression matrix and the corresponding metadata of the subset data has been provided with the `satuRn` package. We will adopt this dataset to showcase the different functionalities of `satuRn`.
+In this vignette, we analyze a small subset of the data from [@Tasic2018]. 
+More specifically, an expression matrix and the corresponding metadata of 
+the  subset data has been provided with the `satuRn` package. We will adopt 
+this dataset to showcase the different functionalities of `satuRn`.
 
-# Installation
+# Package installation
 
-For the moment, `satuRn` is only available from our GitHub page https://github.com/statOmics/satuRn. We hope to make a submission to the Bioconductor project soon.
+`satuRn` can be installed from Bioconductor with:
 
-```
-devtools::install_github("statOmics/satuRn")
+```{r, eval=FALSE}
+if(!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("satuRn")
 ```
 
 # Load libraries
@@ -54,7 +66,9 @@ library(stageR)
 
 # Load data
 
-The following data corresponds to a small subset of the dataset from [@Tasic2018] and is readily available from the `satuRn` package. To check how the subset was generate, please check `?Tasic_counts_vignette`.
+The following data corresponds to a small subset of the dataset 
+from [@Tasic2018] and is readily available from the `satuRn` package.
+To check how the subset was generate, please check `?Tasic_counts_vignette`.
 
 ```{r}
 data(Tasic_counts_vignette) # transcript expression matrix
@@ -63,11 +77,14 @@ data(Tasic_metadata_vignette) # metadata
 
 # Data pre-processing
 
-We start the analysis from scratch, in order to additionally showcase some of the prerequisite steps for performing a DTU analysis.
+We start the analysis from scratch, in order to additionally showcase some of
+the prerequisite steps for performing a DTU analysis.
 
 # Import transcript information
 
-First, we need an object that links transcripts to their corresponding genes. We suggest using the BioConductor R packages `AnnotationHub` and `ensembldb` for this purpose.  
+First, we need an object that links transcripts to their corresponding genes. 
+We suggest using the BioConductor R packages `AnnotationHub` and `ensembldb` 
+for this purpose.  
 
 ```{r, message=FALSE, warning=FALSE}
 ah <- AnnotationHub() # load the annotation resource.
@@ -78,8 +95,15 @@ txs <- transcripts(ahEdb)
 
 ## Data wrangling
 
-Next, we perform some data wrangling steps to get the data in a format that is suited for satuRn. First, we create a `DataFrame` or `Matrix` linking transcripts to their corresponding genes. 
-! Important: `satuRn` is implemented such that the columns with transcript identifiers is names `isoform_id`, while the column containing gene identifiers should be named `gene_id`. In addition, following chunk removes transcripts that are the only isoform expressed of a certain gene, as they cannot be used in a DTU analysis.
+Next, we perform some data wrangling steps to get the data in a format that is
+suited for satuRn. First, we create a `DataFrame` or `Matrix` linking 
+transcripts to their corresponding genes.
+
+! Important: `satuRn` is implemented such that the columns with transcript 
+identifiers is names `isoform_id`, while the column containing gene identifiers 
+should be named `gene_id`. In addition, following chunk removes transcripts 
+that are the only isoform expressed of a certain gene, as they cannot be used 
+in a DTU analysis.
 
 ```{r}
 # Get the transcript information in correct format
@@ -90,16 +114,26 @@ txInfo$gene_id <- txs$gene_id
 rownames(txInfo) <- txInfo$isoform_id
 
 # Remove transcripts that are the only isoform expressed of a certain gene
-rownames(Tasic_counts_vignette) <- sub("\\..*", "", rownames(Tasic_counts_vignette)) # remove transcript version identifiers
-txInfo <- txInfo[txInfo$isoform_id %in% rownames(Tasic_counts_vignette), ]
-txInfo <- subset(txInfo, duplicated(gene_id) | duplicated(gene_id, fromLast = TRUE))
+rownames(Tasic_counts_vignette) <- sub("\\..*", "", 
+                                       rownames(Tasic_counts_vignette)) 
+# remove transcript version identifiers
 
-Tasic_counts_vignette <- Tasic_counts_vignette[which(rownames(Tasic_counts_vignette) %in% txInfo$isoform_id), ]
+txInfo <- txInfo[txInfo$isoform_id %in% rownames(Tasic_counts_vignette), ]
+txInfo <- subset(txInfo, 
+                 duplicated(gene_id) | duplicated(gene_id, fromLast = TRUE))
+
+Tasic_counts_vignette <- Tasic_counts_vignette[which(
+  rownames(Tasic_counts_vignette) %in% txInfo$isoform_id), ]
 ```
 
 ## Filtering
 
-Here we perform some feature-level filtering. For this task, we adopt the filtering criterion that is implemented in the R package `edgeR`. Alternatively, one could adopt the `dmFilter` criterion from the `DRIMSeq` R package, which provides a more stringent filtering when both methods are run in default settings. After filtering, we again remove transcripts that are the only isoform expressed of a certain gene.
+Here we perform some feature-level filtering. For this task, we adopt 
+the filtering criterion that is implemented in the R package `edgeR`. 
+Alternatively, one could adopt the `dmFilter` criterion from the `DRIMSeq` R 
+package, which provides a more stringent filtering when both methods are run 
+in default settings. After filtering, we again remove transcripts that are 
+the only isoform expressed of a certain gene.
 
 ```{r}
 filter_edgeR <- filterByExpr(Tasic_counts_vignette,
@@ -116,46 +150,66 @@ table(filter_edgeR)
 Tasic_counts_vignette <- Tasic_counts_vignette[filter_edgeR, ]
 
 # Update txInfo according to the filtering procedure
-txInfo <- txInfo[which(txInfo$isoform_id %in% rownames(Tasic_counts_vignette)), ]
+txInfo <- txInfo[which(
+  txInfo$isoform_id %in% rownames(Tasic_counts_vignette)), ]
 
-# remove transcripts that are the only isoform expressed of a certain gene (after filtering)
-txInfo <- subset(txInfo, duplicated(gene_id) | duplicated(gene_id, fromLast = TRUE))
-Tasic_counts_vignette <- Tasic_counts_vignette[which(rownames(Tasic_counts_vignette) %in% txInfo$isoform_id), ]
+# remove txs that are the only isoform expressed within a gene (after filtering)
+txInfo <- subset(txInfo, 
+                 duplicated(gene_id) | duplicated(gene_id, fromLast = TRUE))
+Tasic_counts_vignette <- Tasic_counts_vignette[which(rownames(
+  Tasic_counts_vignette) %in% txInfo$isoform_id), ]
 
-# satuRn requires the transcripts in the rowData and the transcripts in the count matrix to be in the same order.
+# satuRn requires the transcripts in the rowData and 
+# the transcripts in the count matrix to be in the same order.
 txInfo <- txInfo[match(rownames(Tasic_counts_vignette), txInfo$isoform_id), ]
 ```
 
 ## Create a design matrix
 
-Here we set up the design matrix of the experiment. The subset of the dataset from [@Tasic2018] contains cells of several different cell types (variable `cluster`) in two different areas of the mouse neocortex (variable `brain_region`). As such, we can model the data with a factorial design, i.e. by generating a new variable `group` that encompasses all different cell type - brain region combinations. 
+Here we set up the design matrix of the experiment. The subset of the dataset 
+from [@Tasic2018] contains cells of several different cell types 
+(variable `cluster`) in two different areas of the mouse neocortex 
+(variable `brain_region`). As such, we can model the data with 
+a factorial design, i.e. by generating a new variable `group` that encompasses 
+all different cell type - brain region combinations. 
 
 ```{r}
-Tasic_metadata_vignette$group <- paste(Tasic_metadata_vignette$brain_region, Tasic_metadata_vignette$cluster, sep = ".")
+Tasic_metadata_vignette$group <- paste(Tasic_metadata_vignette$brain_region, 
+                                       Tasic_metadata_vignette$cluster, 
+                                       sep = ".")
 ```
 
 ## Generate SummarizedExperiment
 
-All three main functions of `satuRn` require a `SummarizedExperiment` object as an input class. See the SummarizedExperiment vignette [@SummarizedExperiment] for more information on this object class. 
-Do not forget to include the design matrix formula (see above) to the SummarizedExperiment as indicated below. As such, the object contains all the information required for the downstream DTU analysis.
+All three main functions of `satuRn` require a `SummarizedExperiment` object as 
+an input class. See the SummarizedExperiment vignette [@SummarizedExperiment] 
+for more information on this object class.  
 
-```{r, message=F}
+Do not forget to include the design matrix formula (see above) to
+the SummarizedExperiment as indicated below. As such, the object contains all 
+the information required for the downstream DTU analysis.
+
+```{r, message=FALSE}
 sumExp <- SummarizedExperiment::SummarizedExperiment(
     assays = list(counts = Tasic_counts_vignette),
     colData = Tasic_metadata_vignette,
     rowData = txInfo
 )
 
-metadata(sumExp)$formula <- ~ 0 + as.factor(colData(sumExp)$group) # specify design formula from colData
+# specify design formula from colData
+metadata(sumExp)$formula <- ~ 0 + as.factor(colData(sumExp)$group)
 sumExp
 ```
 
 # Fit quasi-binomial generalized linear models models
 
-The `fitDTU` function of `satuRn` is used to model transcript usage in different groups of samples or cells. Here we adopt the default settings of the function. Without parallelized execution, this code runs for approximately 15 seconds on a 2018 macbook pro laptop. 
+The `fitDTU` function of `satuRn` is used to model transcript usage in different
+groups of samples or cells. Here we adopt the default settings of the function.
+Without parallelized execution, this code runs for approximately 15 seconds 
+on a 2018 macbook pro laptop. 
 
 ```{r}
-Sys.time()
+system.time({
 sumExp <- satuRn::fitDTU(
     object = sumExp,
     formula = ~ 0 + group,
@@ -163,25 +217,36 @@ sumExp <- satuRn::fitDTU(
     BPPARAM = BiocParallel::bpparam(),
     verbose = TRUE
 )
-Sys.time()
+})
 ```
 
-The resulting model fits are now saved into the `rowData` of our SummarizedExperiment object under the name `fitDTUModels`. These models can be accessed as follows:
+The resulting model fits are now saved into the `rowData` of 
+our SummarizedExperiment object under the name `fitDTUModels`. 
+These models can be accessed as follows:
 
-```{r, eval=FALSE}
+```{r}
 rowData(sumExp)[["fitDTUModels"]]$"ENSMUST00000037739"
-rowData(sumExp)[["fitDTUModels"]][1] # equivalent
 ```
 
-The models are instances of the `StatModel` class as defined in the `satuRn` package. These contain all relevant information for the downstream analysis. For more details, read the StatModel documentation with ?satuRn::`StatModel-class`.
+The models are instances of the `StatModel` class as defined in 
+the `satuRn` package. These contain all relevant information for 
+the downstream analysis. For more details, read the StatModel documentation 
+with ?satuRn::`StatModel-class`.
 
 # Test for DTU
 
-Here we test for differential transcript usage between select groups of interest. In this example, the groups of interest are the three different cell types that are present in the dataset associated with this vignette.
+Here we test for differential transcript usage between select groups 
+of interest. In this example, the groups of interest are the three different 
+cell types that are present in the dataset associated with this vignette.
 
 ## Set up contrast matrix
 
-First, we set up a contrast matrix. This allows us to test for differential transcript usage between groups of interest. The `group` factor in this toy example contains three levels; (1) ALM.L5_IT_ALM_Tmem163_Dmrtb1, (2) ALM.L5_IT_ALM_Tnc, (3) VISp.L5_IT_VISp_Hsd11b1_Endou. Here we show to assess DTU between cells of the groups 1 and 3 and between cells of groups 2 and 3.
+First, we set up a contrast matrix. This allows us to test for differential 
+transcript usage between groups of interest. The `group` factor in this 
+toy example contains three levels; (1) ALM.L5_IT_ALM_Tmem163_Dmrtb1, 
+(2) ALM.L5_IT_ALM_Tnc, (3) VISp.L5_IT_VISp_Hsd11b1_Endou. 
+Here we show to assess DTU between cells of the groups 1 and 3
+and between cells of groups 2 and 3.
 
 The contrast matrix can be constructed manually;
 
@@ -194,14 +259,15 @@ L <- matrix(0, ncol = 2, nrow = ncol(design)) # initialize contrast matrix
 rownames(L) <- colnames(design)
 colnames(L) <- c("Contrast1", "Contrast2")
 
-L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tnc"), 1] <- c(1, -1)
-L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tmem163_Dmrtb1"), 2] <- c(1, -1)
+L[c("VISp.L5_IT_VISp_Hsd11b1_Endou","ALM.L5_IT_ALM_Tnc"),1] <-c(1,-1)
+L[c("VISp.L5_IT_VISp_Hsd11b1_Endou","ALM.L5_IT_ALM_Tmem163_Dmrtb1"),2] <-c(1,-1)
 L # contrast matrix
 ```
 
-This can also be done automatically with the `makeContrasts` function of the `limma` R package.
+This can also be done automatically with the `makeContrasts` function of 
+the `limma` R package.
 
-```{r, eval = FALSE}
+```{r}
 group <- as.factor(Tasic_metadata_vignette$group)
 design <- model.matrix(~ 0 + group) # construct design matrix
 colnames(design) <- levels(group)
@@ -210,12 +276,15 @@ L <- limma::makeContrasts(
     Contrast1 = VISp.L5_IT_VISp_Hsd11b1_Endou - ALM.L5_IT_ALM_Tnc,
     Contrast2 = VISp.L5_IT_VISp_Hsd11b1_Endou - ALM.L5_IT_ALM_Tmem163_Dmrtb1,
     levels = design
-) # construct contrast matrix
+)
+L # contrast matrix
 ```
 
 ## Perform the test
 
-Next we can perform differential usage testing using `testDTU`. We again adopt default settings. For more information on the parameter settings, please fitting the help file of the testDTU function.
+Next we can perform differential usage testing using `testDTU`. We again adopt 
+default settings. For more information on the parameter settings, please comsult
+the help file of the testDTU function.
 
 ```{r}
 sumExp <- satuRn::testDTU(
@@ -226,7 +295,10 @@ sumExp <- satuRn::testDTU(
 )
 ```
 
-The test results are now saved into the `rowData` of our SummarizedExperiment object under the name `fitDTUResult_` followed by the name of the contrast of interest (i.e. the column names of the contrast matrix). The results can be accessed as follows:
+The test results are now saved into the `rowData` of our SummarizedExperiment 
+object under the name `fitDTUResult_` followed by the name of the contrast 
+of interest (i.e. the column names of the contrast matrix). 
+The results can be accessed as follows:
 
 ```{r}
 head(rowData(sumExp)[["fitDTUResult_Contrast1"]]) # first contrast
@@ -238,11 +310,14 @@ head(rowData(sumExp)[["fitDTUResult_Contrast2"]]) # second contrast
 
 # Visualize DTU
 
-Finally, we may visualize the usage of select transcripts in select groups of interest.
+Finally, we may visualize the usage of select transcripts in select groups 
+of interest.
 
 ```{r, warning=FALSE}
-group1 <- rownames(colData(sumExp))[colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
-group2 <- rownames(colData(sumExp))[colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
+group1 <- rownames(colData(sumExp))[colData(sumExp)$group == 
+                                      "VISp.L5_IT_VISp_Hsd11b1_Endou"]
+group2 <- rownames(colData(sumExp))[colData(sumExp)$group == 
+                                      "ALM.L5_IT_ALM_Tnc"]
 
 plots <- satuRn::plotDTU(
     object = sumExp,
@@ -250,7 +325,9 @@ plots <- satuRn::plotDTU(
     groups = list(group1, group2),
     coefficients = list(c(0, 0, 1), c(0, 1, 0)),
     summaryStat = "model",
-    transcripts = c("ENSMUST00000081554", "ENSMUST00000195963", "ENSMUST00000132062"),
+    transcripts = c("ENSMUST00000081554", 
+                    "ENSMUST00000195963", 
+                    "ENSMUST00000132062"),
     genes = NULL,
     top.n = 6
 )
@@ -258,7 +335,8 @@ plots <- satuRn::plotDTU(
 # to have same layout as in our paper
 for (i in seq_along(plots)) {
     current_plot <- plots[[i]] +
-        scale_fill_manual(labels = c("VISp", "ALM"), values = c("royalblue4", "firebrick")) +
+        scale_fill_manual(labels = c("VISp", "ALM"), values = c("royalblue4", 
+                                                                "firebrick")) +
         scale_x_discrete(labels = c("Hsd11b1_Endou", "Tnc"))
 
     print(current_plot)
@@ -267,13 +345,34 @@ for (i in seq_along(plots)) {
 
 # Two-stage testing procedure
 
-`satuRn` returns transcript-level p-values for each of the specified contrasts. While we have shown that `satuRn` is able to adequately control the false discovery rate (FDR) at the transcript level [@Gilis2021], [@VandenBerge2017] argued that it is often desirable to control the FDR at the gene level. This boosts statistical power and eases downstream biological interpretation and validation, which typically occur at the gene level. 
+`satuRn` returns transcript-level p-values for each of the specified contrasts.
+While we have shown that `satuRn` is able to adequately control the false 
+discovery rate (FDR) at the transcript level [@Gilis2021], 
+[@VandenBerge2017] argued that it is often desirable to control the FDR at 
+the gene level. This boosts statistical power and eases downstream
+biological interpretation and validation, which typically occur at 
+the gene level. 
 
-To this end, [@VandenBerge2017] developed a testing procedure that is implemented in the BioConductor R package `stageR`. The procedure consists of two stages; a screening stage and a confirmation stage. In the screening stage, gene-level FDR-adjusted p-values are computed, which aggregate the evidence for differential transcript usage over all transcripts within the gene. Only genes with an FDR below the desired nominal level are further considered in the second stage. In the confirmation stage, transcript-level p-values are adjusted for those genes, using a FWER-controlling method on the FDR-adjusted significance level.
+To this end, [@VandenBerge2017] developed a testing procedure that is 
+implemented in the BioConductor R package `stageR`. The procedure consists of 
+two stages; a screening stage and a confirmation stage. 
 
-In its current implementation, `stageR` only has implemented a procedure for stage-wise testing if only one contrast is of interest in a DTU setting. An analogous correction for the assessment of multiple contrasts for multiple transcripts per gene has not yeet been implemented. 
+In the screening stage, gene-level FDR-adjusted p-values are computed, 
+which aggregate the evidence for differential transcript usage over all 
+transcripts within the gene. Only genes with an FDR below the desired 
+nominal level are further considered in the second stage. 
+In the confirmation stage, transcript-level p-values are adjusted for 
+those genes, using a FWER-controlling method on the FDR-adjusted 
+significance level.
 
-Below, we demonstrate how the transcript-level p-values for the first contrast as returned by `satuRn` can be post-processed using `stageR`. We rely on the `perGeneQValue` function:
+In its current implementation, `stageR` can only perform stage-wise testing if 
+only one contrast is of interest in a DTU setting. An analogous correction for 
+the assessment of multiple contrasts for multiple transcripts per gene 
+has not yet been implemented. 
+
+Below, we demonstrate how the transcript-level p-values for the first contrast 
+as returned by `satuRn` can be post-processed using `stageR`. 
+We rely on the `perGeneQValue` function:
 
 ```{r, stage-wise testing}
 # transcript level p-values from satuRn
@@ -285,7 +384,9 @@ geneSplit <- split(seq(along = geneID), geneID)
 pGene <- sapply(geneSplit, function(i) min(pvals[i]))
 pGene[is.na(pGene)] <- 1
 theta <- unique(sort(pGene))
-q <- DEXSeq:::perGeneQValueExact(pGene, theta, geneSplit) # gene-level significance testing
+
+# gene-level significance testing
+q <- DEXSeq:::perGeneQValueExact(pGene, theta, geneSplit) 
 qScreen <- rep(NA_real_, length(pGene))
 qScreen <- q[match(pGene, theta)]
 qScreen <- pmin(1, qScreen)

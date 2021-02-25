@@ -52,8 +52,8 @@ was specified, this argument leads to the visualization of the `n` most
 significant DTU transcripts in the contrast. Defaults to 6 transcripts.}
 }
 \value{
-A ggplot object that can be directly displayed in the current R session
-        or stored in a list.
+A ggplot object that can be directly displayed in the current R 
+session or stored in a list.
 }
 \description{
 Plot function to visualize differential transcript usage (DTU)
@@ -75,15 +75,18 @@ L <- matrix(0, ncol = 2, nrow = ncol(design))
 rownames(L) <- colnames(design)
 colnames(L) <- c("Contrast1", "Contrast2")
 L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tnc"), 1] <- c(1, -1)
-L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tmem163_Dmrtb1"), 2] <- c(1, -1)
+L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", 
+    "ALM.L5_IT_ALM_Tmem163_Dmrtb1"), 2] <- c(1, -1)
 
 sumExp <- satuRn::testDTU(object = sumExp, 
     contrasts = L, 
     plot = FALSE, 
     sort = FALSE)
 
-group1 <- rownames(colData(sumExp))[colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
-group2 <- rownames(colData(sumExp))[colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
+group1 <- rownames(colData(sumExp))[colData(sumExp)$group == 
+                                    "VISp.L5_IT_VISp_Hsd11b1_Endou"]
+group2 <- rownames(colData(sumExp))[colData(sumExp)$group == 
+                                    "ALM.L5_IT_ALM_Tnc"]
 
 plots <- plotDTU(
     object = sumExp,
@@ -91,7 +94,9 @@ plots <- plotDTU(
     groups = list(group1, group2),
     coefficients = list(c(0, 0, 1), c(0, 1, 0)),
     summaryStat = "model",
-    transcripts = c("ENSMUST00000165123", "ENSMUST00000165721", "ENSMUST00000005067"),
+    transcripts = c("ENSMUST00000165123", 
+                    "ENSMUST00000165721", 
+                    "ENSMUST00000005067"),
     genes = NULL,
     top.n = 6
 )

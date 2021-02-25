@@ -1,12 +1,12 @@
-#' A `Matrix` with transcript-level counts derived from our case study which 
-#' builds on the dataset of Tasic et al. We used Salmon (V1.1.0) to quantify 
-#' all L5IT cells (both for ALM and VISp tissue) from mice with a normal 
-#' eye condition. From these cells, we randomly sampled 20 cells 
-#' of each of the following cell types to use for this vignette;
+#' A `Matrix` with transcript-level counts 
+#' derived from our case study which  builds on the dataset of Tasic et al. 
+#' We used Salmon (V1.1.0) to quantify all L5IT cells 
+#' (both for ALM and VISp tissue) from mice with a normal eye condition. 
+#' From these cells, we randomly sampled 20 cells of each of the following 
+#' cell types to use for this vignette;
 #' L5_IT_VISp_Hsd11b1_Endou, L5_IT_ALM_Tmem163_Dmrtb1 and L5_IT_ALM_Tnc. 
 #' The data has already been leniently filtered with 
 #' the `filterByExpr` function of edgeR.
-#'
 #' @usage data(Tasic_counts_vignette)
 "Tasic_counts_vignette"
 
