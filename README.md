@@ -126,10 +126,10 @@ plots <- satuRn::plotDTU(
 
 ``` r
 # Example plot from our publication:
-knitr::include_graphics("https://raw.githubusercontent.com/statOmics/satuRn/master/man/figures/README-DTU_plot.png")
+knitr::include_graphics("https://raw.githubusercontent.com/statOmics/satuRn/master/inst/figures/README-DTU_plot.png")
 ```
 
-<img src="https://raw.githubusercontent.com/statOmics/satuRn/master/man/figures/README-DTU_plot.png" width="75%" />
+<img src="https://raw.githubusercontent.com/statOmics/satuRn/master/inst/figures/README-DTU_plot.png" width="75%" />
 
 ## Citation
 
@@ -145,7 +145,7 @@ print(citation("satuRn"), bibtex = TRUE)
     ## Gilis J (2021). _Scalable Analysis of differential Transcript Usage for
     ## bulk and single-Cell RNA-sequencing applications_. doi:
     ## 10.18129/B9.bioc.satuRn (URL: https://doi.org/10.18129/B9.bioc.satuRn),
-    ## https://github.com/statOmics/satuRn - R package version 0.99.3, <URL:
+    ## https://github.com/statOmics/satuRn - R package version 0.99.6, <URL:
     ## http://www.bioconductor.org/packages/satuRn>.
     ## 
     ## A BibTeX entry for LaTeX users is
@@ -155,7 +155,7 @@ print(citation("satuRn"), bibtex = TRUE)
     ##     author = {Jeroen Gilis},
     ##     year = {2021},
     ##     url = {http://www.bioconductor.org/packages/satuRn},
-    ##     note = {https://github.com/statOmics/satuRn - R package version 0.99.3},
+    ##     note = {https://github.com/statOmics/satuRn - R package version 0.99.6},
     ##     doi = {10.18129/B9.bioc.satuRn},
     ##   }
     ## 
