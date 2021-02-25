@@ -17,7 +17,7 @@ Description: satuRn provides a higly performant and scalable framework for perfo
     transcript usage in different groups of interest. The second function, testDTU, tests    
     for differential usage of transcripts between groups of interest. Finally, plotDTU  
     visualizes the usage profiles of transcripts in groups of interest.
-Depends: R (>= 4.1)
+Depends: R (>= 4.0)
 Imports: locfdr,
 	 SummarizedExperiment,
 	 BiocParallel,

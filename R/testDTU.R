@@ -7,7 +7,7 @@ getEstimates <- function(object, contrast) {
     return(contrast %*% coef)
 }
 
-# Compute the variance oon the usage estimates in a contrast of interest
+# Compute the variance on the usage estimates in a contrast of interest
 varContrast <- function(object, contrast) {
     if (object@type != "fitError") {
         if (nrow(object@params$vcovUnsc) == length(contrast)) {
