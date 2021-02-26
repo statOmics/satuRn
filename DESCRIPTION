@@ -1,8 +1,8 @@
 Package: satuRn
 Type: Package
 Title: Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell RNA-sequencing Applications
-Date: 2021-01-26
-Version: 0.99.6
+Date: 2021-02-25
+Version: 0.99.7
 Authors@R: c(person("Jeroen", "Gilis", role = c("aut","cre"),
                      email = "jeroen.gilis@ugent.be"),
              person("Kristoffer", "Vitting-Seerup", role = "ctb",
@@ -17,7 +17,7 @@ Description: satuRn provides a higly performant and scalable framework for perfo
     transcript usage in different groups of interest. The second function, testDTU, tests    
     for differential usage of transcripts between groups of interest. Finally, plotDTU  
     visualizes the usage profiles of transcripts in groups of interest.
-Depends: R (>= 4.0)
+Depends: R (>= 4.1)
 Imports: locfdr,
 	 SummarizedExperiment,
 	 BiocParallel,
