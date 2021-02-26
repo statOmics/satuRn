@@ -20,7 +20,7 @@ Get the development version of `satuRn` from
 [GitHub](https://github.com/) with:
 
 ``` r
-devtools::install_github("statOmics/satuRn")
+devtools::install_github("statOmics/satuRn", ref="R4.0")
 ```
 
 The installation should only take a few seconds. The dependencies of the
@@ -145,7 +145,7 @@ print(citation("satuRn"), bibtex = TRUE)
     ## Gilis J (2021). _Scalable Analysis of differential Transcript Usage for
     ## bulk and single-Cell RNA-sequencing applications_. doi:
     ## 10.18129/B9.bioc.satuRn (URL: https://doi.org/10.18129/B9.bioc.satuRn),
-    ## https://github.com/statOmics/satuRn - R package version 0.99.6, <URL:
+    ## https://github.com/statOmics/satuRn - R package version 0.99.7, <URL:
     ## http://www.bioconductor.org/packages/satuRn>.
     ## 
     ## A BibTeX entry for LaTeX users is
@@ -155,7 +155,7 @@ print(citation("satuRn"), bibtex = TRUE)
     ##     author = {Jeroen Gilis},
     ##     year = {2021},
     ##     url = {http://www.bioconductor.org/packages/satuRn},
-    ##     note = {https://github.com/statOmics/satuRn - R package version 0.99.6},
+    ##     note = {https://github.com/statOmics/satuRn - R package version 0.99.7},
     ##     doi = {10.18129/B9.bioc.satuRn},
     ##   }
     ## 
