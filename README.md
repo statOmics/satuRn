@@ -20,7 +20,7 @@ Get the development version of `satuRn` from
 [GitHub](https://github.com/) with:
 
 ``` r
-devtools::install_github("statOmics/satuRn")
+devtools::install_github("statOmics/satuRn", ref="R4.0")
 ```
 
 The installation should only take a few seconds. The dependencies of the

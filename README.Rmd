@@ -18,7 +18,7 @@ satuRn is a highly performant and scalable method for performing differential tr
 Get the development version of `satuRn` from [GitHub](https://github.com/) with:
 
 ```{r 'install_dev', eval = FALSE}
-devtools::install_github("statOmics/satuRn")
+devtools::install_github("statOmics/satuRn", ref="R4.0")
 ```
 
 The installation should only take a few seconds.
