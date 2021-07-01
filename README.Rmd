@@ -15,10 +15,19 @@ satuRn is a highly performant and scalable method for performing differential tr
 
 ## Installation instructions
 
-Get the development version of `satuRn` from [GitHub](https://github.com/) with:
+To install the current version of `satuRn` in Bioconductor, run;
+
+```{r 'install_bioc', eval = FALSE}
+if(!requireNamespace("BiocManager", quietly = TRUE)) {
+ install.packages("BiocManager") 
+}
+BiocManager::install("tradeSeq")
+```
+
+To install the development version, run;
 
 ```{r 'install_dev', eval = FALSE}
-devtools::install_github("statOmics/satuRn", ref="R4.0")
+devtools::install_github("statOmics/satuRn")
 ```
 
 The installation should only take a few seconds.
@@ -30,7 +39,9 @@ Please use https://github.com/statOmics/satuRn/issues to submit issues, bug repo
 
 ## Usage 
 
-A minimal example of the different functions for `modelling`, `testing` and `visualizing` differential transcript usage is provided. See the online [vignette](https://github.com/statOmics/satuRn/blob/master/vignettes/Vignette.Rmd) or the satuRn [website](https://statomics.github.io/satuRn/) for a more elaborate and reproducible example.
+A minimal example of the different functions for `modelling`, `testing` and `visualizing` differential transcript usage is provided. 
+
+! See the online [vignette](https://github.com/statOmics/satuRn/blob/master/vignettes/Vignette.Rmd) or the satuRn [website](https://statomics.github.io/satuRn/) for a more elaborate and reproducible example.
 
 ```{r, eval = FALSE}
 library(satuRn)

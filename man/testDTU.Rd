@@ -5,7 +5,7 @@
 \title{Test function to obtain a top list of transcripts that are
 differentially used in the contrast of interest}
 \usage{
-testDTU(object, contrasts, plot = FALSE, sort = FALSE)
+testDTU(object, contrasts, diagplot1 = TRUE, diagplot2 = TRUE, sort = FALSE)
 }
 \arguments{
 \item{object}{A `SummarizedExperiment` instance containing a list of objects 
@@ -19,9 +19,22 @@ involved in the contrast. The column names of the matrix will be used
 to construct names to store the results in the rowData of 
 the SummarizedExperiment.}
 
-\item{plot}{`boolean(1)` Logical, defaults to FALSE. If set to TRUE,
-a plot of the histogram of the empirical z-scores and the standard normal
-distribution will be displayed.}
+\item{diagplot1}{`boolean(1)` Logical, defaults to TRUE. If set to TRUE,
+a plot of the histogram of the z-scores (computed from p-values) is 
+displayed using the locfdr function of the `locfdr` package. The blue 
+dashed curve is fitted to the mid 50% of the z-scores, which are assumed 
+to originate from null transcripts, thus representing the estimated 
+empirical null component densities. The maximum likelihood estimates 
+(MLE) and central matching estimates  (CME) of this estimated empirical 
+null distribution are given below the plot. If the values for delta and
+sigma deviate from 0 and 1 respectively, the downstream inference will 
+be influenced by the empirical adjustment implemented in satuRn.}
+
+\item{diagplot2}{`boolean(1)` Logical, defaults to TRUE. If set to TRUE,
+a plot of the histogram of the "empirically adjusted" test statistics and 
+the standard normal distribution will be displayed. Ideally, the majority
+(mid portion) of the adjusted test statistics should follow the standard 
+normal.}
 
 \item{sort}{`boolean(1)` Logical, defaults to FALSE. If set to TRUE, 
 the output of the topTable test function is sorted according to 

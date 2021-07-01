@@ -16,11 +16,19 @@ differential transcript usage analyses.
 
 ## Installation instructions
 
-Get the development version of `satuRn` from
-[GitHub](https://github.com/) with:
+To install the current version of `satuRn` in Bioconductor, run;
 
 ``` r
-devtools::install_github("statOmics/satuRn", ref="R4.0")
+if(!requireNamespace("BiocManager", quietly = TRUE)) {
+ install.packages("BiocManager") 
+}
+BiocManager::install("tradeSeq")
+```
+
+To install the development version, run;
+
+``` r
+devtools::install_github("statOmics/satuRn")
 ```
 
 The installation should only take a few seconds. The dependencies of the
@@ -34,8 +42,9 @@ issues, bug reports, and comments.
 ## Usage
 
 A minimal example of the different functions for `modelling`, `testing`
-and `visualizing` differential transcript usage is provided. See the
-online
+and `visualizing` differential transcript usage is provided.
+
+! See the online
 [vignette](https://github.com/statOmics/satuRn/blob/master/vignettes/Vignette.Rmd)
 or the satuRn [website](https://statomics.github.io/satuRn/) for a more
 elaborate and reproducible example.
@@ -145,7 +154,7 @@ print(citation("satuRn"), bibtex = TRUE)
     ## Gilis J (2021). _Scalable Analysis of differential Transcript Usage for
     ## bulk and single-Cell RNA-sequencing applications_. doi:
     ## 10.18129/B9.bioc.satuRn (URL: https://doi.org/10.18129/B9.bioc.satuRn),
-    ## https://github.com/statOmics/satuRn - R package version 0.99.7, <URL:
+    ## https://github.com/statOmics/satuRn - R package version 1.1.0, <URL:
     ## http://www.bioconductor.org/packages/satuRn>.
     ## 
     ## A BibTeX entry for LaTeX users is
@@ -155,7 +164,7 @@ print(citation("satuRn"), bibtex = TRUE)
     ##     author = {Jeroen Gilis},
     ##     year = {2021},
     ##     url = {http://www.bioconductor.org/packages/satuRn},
-    ##     note = {https://github.com/statOmics/satuRn - R package version 0.99.7},
+    ##     note = {https://github.com/statOmics/satuRn - R package version 1.1.0},
     ##     doi = {10.18129/B9.bioc.satuRn},
     ##   }
     ## 
@@ -196,7 +205,7 @@ By contributing to this project, you agree to abide by its terms.
     *[rcmdcheck](https://CRAN.R-project.org/package=rcmdcheck)*
     customized to use [Bioconductor’s docker
     containers](https://www.bioconductor.org/help/docker/) and
-    *[BiocCheck](https://bioconductor.org/packages/3.12/BiocCheck)*.
+    *[BiocCheck](https://bioconductor.org/packages/3.13/BiocCheck)*.
 -   Code coverage assessment is possible thanks to
     [codecov](https://codecov.io/gh) and
     *[covr](https://CRAN.R-project.org/package=covr)*.

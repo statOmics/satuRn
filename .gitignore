@@ -7,3 +7,5 @@ Meta
 ^\.Rproj\.user$
 *.Rproj
 docs
+/doc/
+/Meta/

@@ -2,7 +2,7 @@
 title: 'satuRn - vignette'
 author: "Jeroen Gilis"
 bibliography: satuRn.bib
-date: "30/11/2020"
+date: "01/07/2021"
 output: 
   rmarkdown::html_document:
     toc: true
@@ -19,8 +19,8 @@ library(knitr)
 
 # Introduction
 
-`satuRn` is an R package to perform differential transcript usage analyses in 
-bulk and single-cell transcriptomics datasets. 
+`satuRn` is an R package for performing differential transcript usage analyses 
+in bulk and single-cell transcriptomics datasets. 
 The package has three main functions. 
 
 1. The first function, `fitDTU`, is used to model transcript usage profiles by 
@@ -283,17 +283,38 @@ L # contrast matrix
 ## Perform the test
 
 Next we can perform differential usage testing using `testDTU`. We again adopt 
-default settings. For more information on the parameter settings, please comsult
-the help file of the testDTU function.
+default settings. For more information on the parameter settings, please consult
+the help file of the `testDTU` function.
 
 ```{r}
 sumExp <- satuRn::testDTU(
     object = sumExp,
     contrasts = L,
-    plot = FALSE,
+    diagplot1 = TRUE,
+    diagplot2 = TRUE,
     sort = FALSE
 )
 ```
+
+When set to TRUE, the `diagplot1` and `diagplot2` arguments generate a 
+diagnostic plot.
+
+For `diagplot1`, the histogram of the z-scores (computed from p-values) is 
+displayed using the locfdr function of the `locfdr` package. The blue dashed 
+curve is fitted to the mid 50% of the z-scores, which are assumed to originate 
+from null transcripts, thus representing the estimated empirical null component 
+densities. The maximum likelihood estimates (MLE) and central matching estimates 
+(CME) of this estimated empirical null distribution are given below the plot. 
+If the MLE estimates for delta and sigma deviate from 0 and 1 respectively, the 
+downstream inference will be influenced by the empirical adjustment implemented 
+in satuRn (see below).
+
+For `diagplot2`, a plot of the histogram of the "empirically adjusted" test 
+statistics and the standard normal distribution will be displayed. Ideally, 
+the majority (mid portion) of the adjusted test statistics should follow 
+the standard normal. If this is not the case, the inference may be 
+untrustworthy and results should be treated with care. One potential solution
+is to include (additional) potential covariates in the analysis.
 
 The test results are now saved into the `rowData` of our SummarizedExperiment 
 object under the name `fitDTUResult_` followed by the name of the contrast 
@@ -307,6 +328,34 @@ head(rowData(sumExp)[["fitDTUResult_Contrast1"]]) # first contrast
 ```{r}
 head(rowData(sumExp)[["fitDTUResult_Contrast2"]]) # second contrast
 ```
+
+The results for are, for each contrast, a dataframe with 8 columns:
+
+- `estimates`: The estimated log-odds ratios (log base e). In the most simple 
+case, an estimate of +1 would mean that the odds of picking that transcript from 
+the pool of transcripts within its corresponding gene is exp(1) = 2.72 times 
+larger in condition B than in condition A.
+- `se`: The standard error on this estimate.
+- `df`: The posterior degrees of freedom for the test statistic.
+- `t`: The student's t-test statistic, computed with a Wald test given
+`estimates` and `se`.
+- `pval`: The "raw" p-value given `t` and `df`.
+- `FDR`: The false discovery rate, computed using the multiple testing 
+correction of Benjamini and Hochberg on `pval`.
+- `empirical_pval`: An "empirical" p-value that is computed by estimating the 
+null distribution of the test statistic empirically. For more details, see our 
+publication.
+- `empirical_FDR`: The false discovery rate, computed using the multiple testing 
+correction of Benjamini and Hochberg on `pval_empirical`.
+
+*! Note: based on the benchmarks in our publication, we always recommend using*
+*the empirical p-values from column 7 over the "raw" p-value from column 5.*
+When the MLE estimates for the mean and standard deviation (delta and sigma) of
+the empirical null density (blue dashed curve in `diagplot1`) deviate from 0 and
+1 respectively, there will be a discrepancy between the "raw" and "empirically
+adjusted" p-values. A deviation in the standard deviation only affects the 
+magnitude of the p-values, whereas a deviation in the mean also affects the
+ranking of transcripts according to their p-value.
 
 # Visualize DTU
 
@@ -343,7 +392,7 @@ for (i in seq_along(plots)) {
 }
 ```
 
-# Two-stage testing procedure
+# Optional post-processing of results: Two-stage testing procedure with stageR
 
 `satuRn` returns transcript-level p-values for each of the specified contrasts.
 While we have shown that `satuRn` is able to adequately control the false 
