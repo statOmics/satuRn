@@ -348,8 +348,8 @@ publication.
 - `empirical_FDR`: The false discovery rate, computed using the multiple testing 
 correction of Benjamini and Hochberg on `pval_empirical`.
 
-*! Note: based on the benchmarks in our publication, we always recommend using*
-*the empirical p-values from column 7 over the "raw" p-value from column 5.*
+**!Note: based on the benchmarks in our publication, we always recommend using**
+**the empirical p-values from column 7 over the "raw" p-value from column 5.**
 When the MLE estimates for the mean and standard deviation (delta and sigma) of
 the empirical null density (blue dashed curve in `diagplot1`) deviate from 0 and
 1 respectively, there will be a discrepancy between the "raw" and "empirically
