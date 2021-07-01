@@ -290,10 +290,31 @@ the help file of the `testDTU` function.
 sumExp <- satuRn::testDTU(
     object = sumExp,
     contrasts = L,
-    plot = FALSE,
+    diagplot1 = TRUE,
+    diagplot2 = TRUE,
     sort = FALSE
 )
 ```
+
+When set to TRUE, the `diagplot1` and `diagplot2` arguments generate a 
+diagnostic plot.
+
+For `diagplot1`, the histogram of the z-scores (computed from p-values) is 
+displayed using the locfdr function of the `locfdr` package. The blue dashed 
+curve is fitted to the mid 50% of the z-scores, which are assumed to originate 
+from null transcripts, thus representing the estimated empirical null component 
+densities. The maximum likelihood estimates (MLE) and central matching estimates 
+(CME) of this estimated empirical null distribution are given below the plot. 
+If the MLE estimates for delta and sigma deviate from 0 and 1 respectively, the 
+downstream inference will be influenced by the empirical adjustment implemented 
+in satuRn (see below).
+
+For `diagplot2`, a plot of the histogram of the "empirically adjusted" test 
+statistics and the standard normal distribution will be displayed. Ideally, 
+the majority (mid portion) of the adjusted test statistics should follow 
+the standard normal. If this is not the case, the inference may be 
+untrustworthy and results should be treated with care. One potential solution
+is to include (additional) potential covariates in the analysis.
 
 The test results are now saved into the `rowData` of our SummarizedExperiment 
 object under the name `fitDTUResult_` followed by the name of the contrast 
@@ -322,11 +343,19 @@ larger in condition B than in condition A.
 - `FDR`: The false discovery rate, computed using the multiple testing 
 correction of Benjamini and Hochberg on `pval`.
 - `empirical_pval`: An "empirical" p-value that is computed by estimating the 
-null distribution of the test statistic empirically. *Note: we recommend using
-the empirical p-value over the "raw" p--value from column 5". For more details,
-see our publication.
+null distribution of the test statistic empirically. For more details, see our 
+publication.
 - `empirical_FDR`: The false discovery rate, computed using the multiple testing 
 correction of Benjamini and Hochberg on `pval_empirical`.
+
+*! Note: based on the benchmarks in our publication, we always recommend using*
+*the empirical p-values from column 7 over the "raw" p-value from column 5.*
+When the MLE estimates for the mean and standard deviation (delta and sigma) of
+the empirical null density (blue dashed curve in `diagplot1`) deviate from 0 and
+1 respectively, there will be a discrepancy between the "raw" and "empirically
+adjusted" p-values. A deviation in the standard deviation only affects the 
+magnitude of the p-values, whereas a deviation in the mean also affects the
+ranking of transcripts according to their p-value.
 
 # Visualize DTU
 

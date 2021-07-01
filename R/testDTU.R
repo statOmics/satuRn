@@ -183,12 +183,21 @@ locfdr_locmle <- function(z, xlim, Jmle = 35, d = 0, s = 1,
 # Compute p-values under an empirical null distribution
 # The code is based on the source code of 
 # the locFDR package https://CRAN.R-project.org/package=locfdr
-p.adjust_empirical <- function(pvalues, tvalues, plot = FALSE) {
+p.adjust_empirical <- function(pvalues, 
+                               tvalues,
+                               main,
+                               diagplot1,
+                               diagplot2) {
     zvalues <- qnorm(pvalues / 2) * sign(tvalues)
     
     # to avoid locFDR (numerical) fit errors if abs(z) is extremely large
     zvalues_mid <- zvalues[abs(zvalues) < 10]
-    zvalues_mid <- zvalues_mid[!is.na(zvalues_mid)] 
+    zvalues_mid <- zvalues_mid[!is.na(zvalues_mid)]
+    
+    if(diagplot1){
+        plot <- locfdr(zz = zvalues_mid,
+                       main = paste0("diagplot 1: ", main))
+    }
 
     #### start code from locFDR package
     N <- length(zvalues_mid)
@@ -223,7 +232,7 @@ p.adjust_empirical <- function(pvalues, tvalues, plot = FALSE) {
     # p-values under empirical null
     pval_empirical <- 2 * pnorm(-abs(zval_empirical), mean = 0, sd = 1) 
 
-    if (plot) {
+    if (diagplot2) {
         zval_empirical <- zval_empirical[!is.na(zval_empirical)]
         lo <- min(zval_empirical)
         up <- max(zval_empirical)
@@ -239,7 +248,7 @@ p.adjust_empirical <- function(pvalues, tvalues, plot = FALSE) {
         K <- length(yall)
 
         hist(zzz, breaks = breaks, xlab = "z-scores", 
-            main = "Empirical distribution of z-scores", freq = FALSE)
+            main = paste0("diagplot 2: ", main), freq = FALSE)
         xfit <- seq(min(zzz), max(zzz), length = 4000)
         yfit <- dnorm(xfit / mlests[3], mean = 0, sd = 1)
         lines(xfit, yfit, col = "darkgreen", lwd = 2)
@@ -265,10 +274,23 @@ p.adjust_empirical <- function(pvalues, tvalues, plot = FALSE) {
 #'     involved in the contrast. The column names of the matrix will be used 
 #'     to construct names to store the results in the rowData of 
 #'     the SummarizedExperiment.
+#'     
+#' @param diagplot1 `boolean(1)` Logical, defaults to TRUE. If set to TRUE,
+#'     a plot of the histogram of the z-scores (computed from p-values) is 
+#'     displayed using the locfdr function of the `locfdr` package. The blue 
+#'     dashed curve is fitted to the mid 50% of the z-scores, which are assumed 
+#'     to originate from null transcripts, thus representing the estimated 
+#'     empirical null component densities. The maximum likelihood estimates 
+#'     (MLE) and central matching estimates  (CME) of this estimated empirical 
+#'     null distribution are given below the plot. If the values for delta and
+#'     sigma deviate from 0 and 1 respectively, the downstream inference will 
+#'     be influenced by the empirical adjustment implemented in satuRn.
 #'
-#' @param plot `boolean(1)` Logical, defaults to FALSE. If set to TRUE,
-#'     a plot of the histogram of the empirical z-scores and the standard normal
-#'     distribution will be displayed.
+#' @param diagplot2 `boolean(1)` Logical, defaults to TRUE. If set to TRUE,
+#'     a plot of the histogram of the "empirically adjusted" test statistics and 
+#'     the standard normal distribution will be displayed. Ideally, the majority
+#'     (mid portion) of the adjusted test statistics should follow the standard 
+#'     normal.
 #'
 #' @param sort `boolean(1)` Logical, defaults to FALSE. If set to TRUE, 
 #'     the output of the topTable test function is sorted according to 
@@ -312,7 +334,11 @@ p.adjust_empirical <- function(pvalues, tvalues, plot = FALSE) {
 #'
 #' @export
 
-testDTU <- function(object, contrasts, plot = FALSE, sort = FALSE) {
+testDTU <- function(object, 
+                    contrasts,
+                    diagplot1 = TRUE,
+                    diagplot2 = TRUE, 
+                    sort = FALSE) {
     if (is.null(rowData(object)[["fitDTUModels"]])) {
         stop("fitDTUModels is empty. Did you run fitDTU first?")    
     }
@@ -345,7 +371,11 @@ testDTU <- function(object, contrasts, plot = FALSE, sort = FALSE) {
         regular_FDR <- p.adjust(pval, method = "BH") # regular FDR correction
         
         # empirical FDR correction    
-        empirical <- p.adjust_empirical(pval, t, plot = plot) 
+        empirical <- p.adjust_empirical(pval, 
+                                        t, 
+                                        main = colnames(contrasts)[i], 
+                                        diagplot1, 
+                                        diagplot2) 
         empirical_pval <- empirical$pval
         empirical_FDR <- empirical$FDR
 
