@@ -69,7 +69,11 @@ L[c("VISp.L5_IT_VISp_Hsd11b1_Endou",
 L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", 
     "ALM.L5_IT_ALM_Tmem163_Dmrtb1"), 2] <- c(1, -1)
 
-sumExp <- testDTU(object = sumExp, contrasts = L, plot = FALSE, sort = FALSE)
+sumExp <- testDTU(object = sumExp, 
+    contrasts = L, 
+    diagplot1 = FALSE,
+    diagplot2 = FALSE,
+    sort = FALSE)
 }
 \author{
 Jeroen Gilis
