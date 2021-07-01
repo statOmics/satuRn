@@ -78,9 +78,10 @@ L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", "ALM.L5_IT_ALM_Tnc"), 1] <- c(1, -1)
 L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", 
     "ALM.L5_IT_ALM_Tmem163_Dmrtb1"), 2] <- c(1, -1)
 
-sumExp <- satuRn::testDTU(object = sumExp, 
+sumExp <- testDTU(object = sumExp, 
     contrasts = L, 
-    plot = FALSE, 
+    diagplot1 = FALSE,
+    diagplot2 = FALSE,
     sort = FALSE)
 
 group1 <- rownames(colData(sumExp))[colData(sumExp)$group == 

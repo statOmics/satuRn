@@ -199,9 +199,10 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups,
 #' L[c("VISp.L5_IT_VISp_Hsd11b1_Endou", 
 #'     "ALM.L5_IT_ALM_Tmem163_Dmrtb1"), 2] <- c(1, -1)
 #'
-#' sumExp <- satuRn::testDTU(object = sumExp, 
+#' sumExp <- testDTU(object = sumExp, 
 #'     contrasts = L, 
-#'     plot = FALSE, 
+#'     diagplot1 = FALSE,
+#'     diagplot2 = FALSE,
 #'     sort = FALSE)
 #'
 #' group1 <- rownames(colData(sumExp))[colData(sumExp)$group == 
@@ -281,8 +282,8 @@ plotDTU <- function(object, contrast, groups, coefficients,
         ## check if all provided transcripts are present in topTable
         absent <- transcripts[!transcripts %in% rownames(topTable)]
         if (length(absent) > 0) {
-            warning(paste("The requested transcript", absent, 
-                            "is not present in the provided topTable. "))
+            warning("The requested transcript", absent, 
+                    "is not present in the provided topTable. ")
         }
         tx_tx <- transcripts[!transcripts %in% absent]
     }
@@ -292,8 +293,8 @@ plotDTU <- function(object, contrast, groups, coefficients,
         absent <- NULL
         absent <- genes[!genes %in% tx2gene$gene_id]
         if (length(absent) > 0) {
-            warning(paste("The requested gene", absent, 
-                        "is not present in the provided tx2gene dataframe. "))
+            warning("The requested gene", absent, 
+                    "is not present in the provided tx2gene dataframe. ")
         }
         genes <- genes[!genes %in% absent]
         tx_gene <- tx2gene[tx2gene$gene_id %in% genes, "isoform_id"]
