@@ -43,13 +43,29 @@ this dataset to showcase the different functionalities of `satuRn`.
 
 # Package installation
 
-`satuRn` can be installed from Bioconductor with:
+`satuRn` (version 1.1.1) can be installed from Bioconductor with:
 
 ```{r, eval=FALSE}
 if(!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("satuRn")
 ```
+
+or from GitHub with:
+
+```{r, eval=FALSE}
+devtools::install_github("statOmics/satuRn", ref="RELEASE_3_13")
+```
+
+Alternatively, the development version of `satuRn` can be downloaded with:
+ 
+```{r, eval=FALSE}
+devtools::install_github("statOmics/satuRn")
+```
+
+*! for this vignette, we use the development version of satuRn.*
+The vignette for the officially released satuRn version 1.1.1 can be viewed from 
+[Bioconductor](https://bioconductor.org/packages/release/bioc/vignettes/satuRn/inst/doc/Vignette.html)
 
 # Load libraries
 
@@ -284,7 +300,8 @@ L # contrast matrix
 
 Next we can perform differential usage testing using `testDTU`. We again adopt 
 default settings. For more information on the parameter settings, please consult
-the help file of the `testDTU` function.
+the help file of the `testDTU` function. Note that the arguments `diagplot1` and
+`diagplot2` were not yet implemented in `satuRn` v1.1.1.
 
 ```{r}
 sumExp <- satuRn::testDTU(

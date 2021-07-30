@@ -1,3 +1,8 @@
+# satuRn 1.1.1
+
+* Initial Bioconductor release of satuRn
+
+
 # satuRn 0.99.0
 
 NEW FEATURES
