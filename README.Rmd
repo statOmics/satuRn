@@ -21,7 +21,7 @@ To install the current version of `satuRn` in Bioconductor, run;
 if(!requireNamespace("BiocManager", quietly = TRUE)) {
  install.packages("BiocManager") 
 }
-BiocManager::install("tradeSeq")
+BiocManager::install("satuRn")
 ```
 
 To install the development version, run;

@@ -22,7 +22,7 @@ To install the current version of `satuRn` in Bioconductor, run;
 if(!requireNamespace("BiocManager", quietly = TRUE)) {
  install.packages("BiocManager") 
 }
-BiocManager::install("tradeSeq")
+BiocManager::install("satuRn")
 ```
 
 To install the development version, run;
@@ -154,7 +154,7 @@ print(citation("satuRn"), bibtex = TRUE)
     ## Gilis J (2021). _Scalable Analysis of differential Transcript Usage for
     ## bulk and single-Cell RNA-sequencing applications_. doi:
     ## 10.18129/B9.bioc.satuRn (URL: https://doi.org/10.18129/B9.bioc.satuRn),
-    ## https://github.com/statOmics/satuRn - R package version 1.1.0, <URL:
+    ## https://github.com/statOmics/satuRn - R package version 1.1.1, <URL:
     ## http://www.bioconductor.org/packages/satuRn>.
     ## 
     ## A BibTeX entry for LaTeX users is
@@ -164,7 +164,7 @@ print(citation("satuRn"), bibtex = TRUE)
     ##     author = {Jeroen Gilis},
     ##     year = {2021},
     ##     url = {http://www.bioconductor.org/packages/satuRn},
-    ##     note = {https://github.com/statOmics/satuRn - R package version 1.1.0},
+    ##     note = {https://github.com/statOmics/satuRn - R package version 1.1.1},
     ##     doi = {10.18129/B9.bioc.satuRn},
     ##   }
     ## 
