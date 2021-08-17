@@ -351,8 +351,8 @@ testDTU <- function(object,
     for (i in seq_len(ncol(contrasts))) {
         estimates <- vapply(
             X = models,
-            FUN = getEstimates,
-            contrast = contrasts[, i],
+            FUN =  function(x) tryCatch(satuRn:::getEstimates(x,contrasts[,i]), 
+                                        error = function(err) NA),
             FUN.VALUE = numeric(1)
         )
         se <- sqrt(vapply(

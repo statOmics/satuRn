@@ -91,7 +91,7 @@
         model <- try(glm(countsAll ~ -1 + design, family = "quasibinomial"))
 
         if (class(model)[1] == "try-error") {
-            model <- list()
+            model <- list(coefficients = NA, df.residual = NA)
             type <- "fitError"
             class(model) <- "list"
         } else {
