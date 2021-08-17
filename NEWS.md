@@ -1,3 +1,7 @@
+# satuRn 1.1.2
+
+* Improved error handling
+
 # satuRn 1.1.1
 
 * Initial Bioconductor release of satuRn

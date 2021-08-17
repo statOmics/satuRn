@@ -278,33 +278,52 @@ plotDTU <- function(object, contrast, groups, coefficients,
 
     # If transcripts is not null
     if (!is.null(transcripts)) {
-        absent <- NULL
-        ## check if all provided transcripts are present in topTable
+        # handle faulty transcript requests
         absent <- transcripts[!transcripts %in% rownames(topTable)]
-        if (length(absent) > 0) {
-            warning("The requested transcript", absent, 
-                    "is not present in the provided topTable. ")
+        if(length(absent) > 0) {
+            warning("The requested transcript \n", 
+                    absent, 
+                    "\nis not present in the provided topTable. \n\n")
         }
         tx_tx <- transcripts[!transcripts %in% absent]
+        
+        # handle transcripts with fitError
+        NAs <- transcripts[which(is.na(topTable[tx_tx,"empirical_pval"]))]
+        if(length(NAs) > 0){
+            warning("The requested transcript \n",
+                    NAs,
+                    "\n has NA results. \n\n")
+        }
+        tx_tx <- tx_tx[!tx_tx %in% NAs]
     }
-
+    
     # If genes is not null
     if (!is.null(genes)) {
+        # handle faulty gene requests
         absent <- NULL
         absent <- genes[!genes %in% tx2gene$gene_id]
         if (length(absent) > 0) {
-            warning("The requested gene", absent, 
-                    "is not present in the provided tx2gene dataframe. ")
+            warning("The requested gene \n", 
+                    absent, 
+                    "\nis not present in the provided tx2gene dataframe. \n\n")
         }
         genes <- genes[!genes %in% absent]
         tx_gene <- tx2gene[tx2gene$gene_id %in% genes, "isoform_id"]
+        
+        # handle transcripts with fitError
+        NAs <- transcripts[which(is.na(topTable[tx_gene,"empirical_pval"]))]
+        if(length(NAs) > 0){
+            warning("The requested transcript \n",
+                    NAs,
+                    "\n has NA results. \n\n")
+        }
+        tx_gene <- tx_gene[!tx_gene %in% NAs]
     }
-
     transcripts <- c(tx_tx, tx_gene)
 
     if (length(transcripts) < 1) {
-        stop("None of the requested transcripts/genes could be retrieved 
-            from the provided data")
+        stop("The requested transcripts/genes could not be retrieved 
+             from the provided data or had NA results. ")
     }
 
     # got to the internal visualization function
