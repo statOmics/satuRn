@@ -17,7 +17,7 @@
         p1 <- 1L:model$rank
         p <- length(model$coef)
         out <- matrix(NA, p, p)
-        out[p1, p1] <- chol2inv(model$qr$qr[p1, p1, drop = FALSE])
+        out[!is.na(model$coefficients), !is.na(model$coefficients)] <- chol2inv(model$qr$qr[p1, p1, drop = FALSE])
         colnames(out) <- rownames(out) <- names(model$coefficients)
         model$vcovUnsc <- out
     } else {
