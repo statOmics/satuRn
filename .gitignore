@@ -1,6 +1,7 @@
 doc
 Meta
 .Rhistory
+.Rbuildignore
 .RData
 .DS_Store
 .Rproj.user
