@@ -149,6 +149,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Set BiocVersion
+        if: matrix.config.image == null
         run: |
           BiocManager::install(version = "${{ matrix.config.bioc }}", ask = FALSE)
         shell: Rscript {0}
