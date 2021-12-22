@@ -43,15 +43,15 @@ env:
 jobs:
   build-check:
     runs-on: ${{ matrix.config.os }}
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }} - ${{ matrix.config.bioc }})
-    container: 
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }} - ${{ matrix.config.bioc }} - ${{ matrix.config.image }})
+    container: ${{ matrix.config.image }}
     ## Environment variables unique to this job.
 
     strategy:
       fail-fast: false
       matrix:
         config:
-          - { os: ubuntu-latest, r: 'release', bioc: '3.14' }
+          - { os: ubuntu-latest, r: 'release', image: 'bioconductor/bioconductor_docker:RELEASE_3_14' }
           - { os: macOS-latest, r: 'release', bioc: '3.14' }
           - { os: windows-latest, r: 'release', bioc: '3.14' }
     env:
@@ -109,8 +109,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /home/runner/work/_temp/Library
-          key: ${{ env.cache-version }}-${{ runner.os }}-biocbranch-devel-r-4.1-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ env.cache-version }}-${{ runner.os }}-biocbranch-devel-r-4.1-
+          key: ${{ env.cache-version }}-${{ runner.os }}-bioc-${{ matrix.config.image }}-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ env.cache-version }}-${{ runner.os }}-bioc-${{ matrix.config.image }}-
 
       - name: Install Linux system dependencies
         if: runner.os == 'Linux'
