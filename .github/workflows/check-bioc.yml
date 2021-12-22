@@ -52,6 +52,7 @@ jobs:
       matrix:
         config:
           - { os: ubuntu-latest, r: 'release', image: 'bioconductor/bioconductor_docker:RELEASE_3_14' }
+          - { os: ubuntu-latest, r: 'release', image: 'bioconductor/bioconductor_docker:devel' }
           - { os: macOS-latest, r: 'release', bioc: '3.14' }
           - { os: windows-latest, r: 'release', bioc: '3.14' }
     env:
