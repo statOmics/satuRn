@@ -12,7 +12,7 @@ getEstimates <- function(object, contrast) {
 
 # Compute the variance on the usage estimates in a contrast of interest
 varContrast <- function(object, contrast) {
-    if (object@type != "fitError") {
+    if (!object@type %in% c("fitError", "lonelyTranscript")) {
         if (nrow(object@params$vcovUnsc) == length(contrast)) {
             vcovTmp <- object@params$vcovUnsc * object@varPosterior
             if(any(is.na(vcovTmp))){
