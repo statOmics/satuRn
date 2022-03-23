@@ -72,7 +72,7 @@
   
   # Get the "other" counts, i.e. the counts for all other transcripts 
   # belonging to the same gene as the current transcript
-  otherCount <- satuRn:::.getOtherCount(countData, tx2gene)
+  otherCount <- .getOtherCount(countData, tx2gene)
   stopifnot(all(rownames(countData) %in% rownames(otherCount)))
   
   # Check if lonely transcripts (only transcript in its corresponding gene)
@@ -90,7 +90,7 @@
     # if the transcript is the only transcript in its corresponding gene
     # return empty model
     if(lonely_txi){
-      .out <- satuRn:::.StatModel(
+      .out <- .StatModel(
         type = "lonelyTranscript",
         params = list(coefficients = NA, 
                       df.residual = NA,
@@ -112,7 +112,7 @@
     # if the quasibinomial model could not be estimated
     # return empty model
     if (class(model)[1] == "try-error") {
-      .out <- satuRn:::.StatModel(
+      .out <- .StatModel(
         type = "fitError",
         params = list(coefficients = NA, 
                       df.residual = NA,
@@ -135,7 +135,7 @@
                      "dispersion", 
                      "vcovUnsc")]
     
-    .out <- satuRn:::.StatModel(
+    .out <- .StatModel(
       type = type,
       params = model,
       varPosterior = as.numeric(NA),
