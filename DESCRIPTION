@@ -42,14 +42,14 @@ Suggests:
     stageR,
     DelayedArray
 VignetteBuilder: knitr
-Collate:'data.R' 'satuRn-framework.R' 'allGenerics.R'
+Collate: 'data.R' 'satuRn-framework.R' 'allGenerics.R'
         'accessors.R' 'fitDTU.R' 'testDTU.R' 'plotDTU.R'
 License: Artistic-2.0
 URL: https://github.com/statOmics/satuRn
 BugReports: https://github.com/statOmics/satuRn/issues
 Encoding: UTF-8
 LazyData: false
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 biocViews:
     Regression,
     ExperimentalDesign,

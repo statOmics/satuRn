@@ -239,16 +239,17 @@ p.adjust_empirical <- function(pvalues,
     pval_empirical <- 2 * pnorm(-abs(zval_empirical), mean = 0, sd = 1) 
 
     if (diagplot2) {
-        zval_empirical <- zval_empirical[!is.na(zval_empirical)]
-        lo <- min(zval_empirical)
-        up <- max(zval_empirical)
+        zval_empirical_mid <- zval_empirical[abs(zval_empirical) < 10]
+        zval_empirical_mid <- zval_empirical_mid[!is.na(zval_empirical_mid)]
+        lo <- min(zval_empirical_mid)
+        up <- max(zval_empirical_mid)
 
         lo <- min(lo, -1 * up) # to center the figure
         up <- max(up, -1 * lo)
 
         bre <- 120
         breaks <- seq(lo, up, length = bre)
-        zzz <- pmax(pmin(zval_empirical, up), lo)
+        zzz <- pmax(pmin(zval_empirical_mid, up), lo)
         zh <- hist(zzz, breaks = breaks, plot = FALSE)
         yall <- zh$counts
         K <- length(yall)
@@ -357,7 +358,7 @@ testDTU <- function(object,
     for (i in seq_len(ncol(contrasts))) {
         estimates <- vapply(
             X = models,
-            FUN =  function(x) tryCatch(satuRn:::getEstimates(x,contrasts[,i]), 
+            FUN =  function(x) tryCatch(getEstimates(x,contrasts[,i]), 
                                         error = function(err) NA),
             FUN.VALUE = numeric(1)
         )
