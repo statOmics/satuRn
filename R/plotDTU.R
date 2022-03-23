@@ -50,6 +50,7 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups,
                                 times = lengths(groups))
 
     countData <- countData[transcripts_all, unlist(groups)]
+    countData <- as.matrix(countData) # make matrix from possible sparseMatrix
     tx2gene <- tx2gene[tx2gene$isoform_id %in% transcripts_all, ]
 
     # get total counts (gene-level count) and 
