@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![Lifecycle:
-maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+stable](https://img.shields.io/badge/lifecycle-stable-blue.svg)](https://www.tidyverse.org/lifecycle/#stable)
 [![R build
 status](https://github.com/statOmics/satuRn/workflows/R-CMD-check-bioc/badge.svg)](https://github.com/statOmics/satuRn/actions)
 <!-- badges: end -->
@@ -151,10 +151,10 @@ print(citation("satuRn"), bibtex = TRUE)
 ```
 
     ## 
-    ## Gilis J (2021). _Scalable Analysis of differential Transcript Usage for
+    ## Gilis J (2022). _Scalable Analysis of differential Transcript Usage for
     ## bulk and single-Cell RNA-sequencing applications_. doi:
     ## 10.18129/B9.bioc.satuRn (URL: https://doi.org/10.18129/B9.bioc.satuRn),
-    ## https://github.com/statOmics/satuRn - R package version 1.1.1, <URL:
+    ## https://github.com/statOmics/satuRn - R package version 1.4.0, <URL:
     ## http://www.bioconductor.org/packages/satuRn>.
     ## 
     ## A BibTeX entry for LaTeX users is
@@ -162,17 +162,18 @@ print(citation("satuRn"), bibtex = TRUE)
     ##   @Manual{,
     ##     title = {Scalable Analysis of differential Transcript Usage for bulk and single-Cell RNA-sequencing applications},
     ##     author = {Jeroen Gilis},
-    ##     year = {2021},
+    ##     year = {2022},
     ##     url = {http://www.bioconductor.org/packages/satuRn},
-    ##     note = {https://github.com/statOmics/satuRn - R package version 1.1.1},
+    ##     note = {https://github.com/statOmics/satuRn - R package version 1.4.0},
     ##     doi = {10.18129/B9.bioc.satuRn},
     ##   }
     ## 
     ## Gilis J, Vitting-Seerup K, Van den Berge K, Clement L (2021). "Scalable
     ## Analysis of Differential Transcript Usage for Bulk and Single-Cell
-    ## RNA-sequencing Applications." _bioRxiv_. doi: 10.1101/2021.01.14.426636
-    ## (URL: https://doi.org/10.1101/2021.01.14.426636), <URL:
-    ## https://www.biorxiv.org/content/10.1101/2021.01.14.426636v1>.
+    ## RNA-sequencing Applications." _F1000_. doi:
+    ## (https://doi.org/10.12688/f1000research.51749.1 (URL:
+    ## https://doi.org/(https://doi.org/10.12688/f1000research.51749.1), <URL:
+    ## https://f1000research.com/articles/10-374/v1>.
     ## 
     ## A BibTeX entry for LaTeX users is
     ## 
@@ -180,9 +181,9 @@ print(citation("satuRn"), bibtex = TRUE)
     ##     title = {Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell RNA-sequencing Applications},
     ##     author = {Jeroen Gilis and Kristoffer Vitting-Seerup and Koen {Van den Berge} and Lieven Clement},
     ##     year = {2021},
-    ##     journal = {bioRxiv},
-    ##     doi = {https://doi.org/10.1101/2021.01.14.426636},
-    ##     url = {https://www.biorxiv.org/content/10.1101/2021.01.14.426636v1},
+    ##     journal = {F1000},
+    ##     doi = {(https://doi.org/10.12688/f1000research.51749.1},
+    ##     url = {https://f1000research.com/articles/10-374/v1},
     ##   }
 
 Please note that the `satuRn` was only made possible thanks to many
@@ -205,7 +206,7 @@ By contributing to this project, you agree to abide by its terms.
     *[rcmdcheck](https://CRAN.R-project.org/package=rcmdcheck)*
     customized to use [Bioconductor’s docker
     containers](https://www.bioconductor.org/help/docker/) and
-    *[BiocCheck](https://bioconductor.org/packages/3.13/BiocCheck)*.
+    *[BiocCheck](https://bioconductor.org/packages/3.14/BiocCheck)*.
 -   Code coverage assessment is possible thanks to
     [codecov](https://codecov.io/gh) and
     *[covr](https://CRAN.R-project.org/package=covr)*.

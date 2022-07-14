@@ -7,7 +7,7 @@ output: github_document
 # satuRn
 
 <!-- badges: start -->
-[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-blue.svg)](https://www.tidyverse.org/lifecycle/#stable)
 [![R build status](https://github.com/statOmics/satuRn/workflows/R-CMD-check-bioc/badge.svg)](https://github.com/statOmics/satuRn/actions)
 <!-- badges: end -->
 
