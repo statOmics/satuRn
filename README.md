@@ -114,8 +114,8 @@ Finally, we may visualize the usage of select transcripts in select
 groups of interest with `plotDTU`:
 
 ``` r
-group1 <- rownames(colData(sumExp))[colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
-group2 <- rownames(colData(sumExp))[colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
+group1 <- colnames(sumExp)[colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
+group2 <- colnames(sumExp)[colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
 
 plots <- satuRn::plotDTU(
     object = sumExp,

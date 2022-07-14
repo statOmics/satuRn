@@ -43,18 +43,12 @@ this dataset to showcase the different functionalities of `satuRn`.
 
 # Package installation
 
-`satuRn` (version 1.1.1) can be installed from Bioconductor with:
+`satuRn` (version 1.4.0) can be installed from Bioconductor with:
 
 ```{r, eval=FALSE}
 if(!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("satuRn")
-```
-
-or from GitHub with:
-
-```{r, eval=FALSE}
-devtools::install_github("statOmics/satuRn", ref="RELEASE_3_13")
 ```
 
 Alternatively, the development version of `satuRn` can be downloaded with:
@@ -64,7 +58,7 @@ devtools::install_github("statOmics/satuRn")
 ```
 
 *! for this vignette, we use the development version of satuRn.*
-The vignette for the officially released satuRn version 1.1.1 can be viewed from 
+The vignette for the officially released satuRn version 1.4.0 can be viewed from 
 [Bioconductor](https://bioconductor.org/packages/release/bioc/vignettes/satuRn/inst/doc/Vignette.html)
 
 # Load libraries
@@ -201,9 +195,8 @@ All three main functions of `satuRn` require a `SummarizedExperiment` object as
 an input class. See the SummarizedExperiment vignette [@SummarizedExperiment] 
 for more information on this object class.  
 
-Do not forget to include the design matrix formula (see above) to
-the SummarizedExperiment as indicated below. As such, the object contains all 
-the information required for the downstream DTU analysis.
+For the sake of completeness, it is advised to include the design matrix formula 
+in the SummarizedExperiment as indicated below.
 
 ```{r, message=FALSE}
 sumExp <- SummarizedExperiment::SummarizedExperiment(
@@ -212,7 +205,7 @@ sumExp <- SummarizedExperiment::SummarizedExperiment(
     rowData = txInfo
 )
 
-# specify design formula from colData
+# for sake of completeness: specify design formula from colData
 metadata(sumExp)$formula <- ~ 0 + as.factor(colData(sumExp)$group)
 sumExp
 ```
@@ -380,10 +373,10 @@ Finally, we may visualize the usage of select transcripts in select groups
 of interest.
 
 ```{r, warning=FALSE}
-group1 <- rownames(colData(sumExp))[colData(sumExp)$group == 
-                                      "VISp.L5_IT_VISp_Hsd11b1_Endou"]
-group2 <- rownames(colData(sumExp))[colData(sumExp)$group == 
-                                      "ALM.L5_IT_ALM_Tnc"]
+group1 <- colnames(sumExp)[colData(sumExp)$group == 
+                             "VISp.L5_IT_VISp_Hsd11b1_Endou"]
+group2 <- colnames(sumExp)[colData(sumExp)$group == 
+                             "ALM.L5_IT_ALM_Tnc"]
 
 plots <- satuRn::plotDTU(
     object = sumExp,
