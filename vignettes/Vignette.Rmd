@@ -2,7 +2,7 @@
 title: 'satuRn - vignette'
 author: "Jeroen Gilis"
 bibliography: satuRn.bib
-date: "01/07/2021"
+date: "14/07/2022"
 output: 
   rmarkdown::html_document:
     toc: true
