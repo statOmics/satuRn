@@ -4,9 +4,9 @@ getEstimates <- function(object, contrast) {
     if (is.null(coef)) {
         coef <- rep(NA, times = length(contrast))
     }
-    if(any(is.na(coef))){
-        coef[is.na(coef)] <- 0
-    }
+    # if(any(is.na(coef))){
+    #     coef[is.na(coef)] <- 0
+    # }
     return(contrast %*% coef)
 }
 
@@ -15,9 +15,9 @@ varContrast <- function(object, contrast) {
     if (!object@type %in% c("fitError", "lonelyTranscript")) {
         if (nrow(object@params$vcovUnsc) == length(contrast)) {
             vcovTmp <- object@params$vcovUnsc * object@varPosterior
-            if(any(is.na(vcovTmp))){
-                vcovTmp[is.na(vcovTmp)] <- 0
-            }
+            # if(any(is.na(vcovTmp))){
+            #     vcovTmp[is.na(vcovTmp)] <- 0
+            # }
             return(diag(t(contrast) %*% vcovTmp %*% contrast))
         }
     }
