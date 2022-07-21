@@ -1,27 +1,35 @@
 # Compute usage estimates (log-odds) in a contrast of interest
 getEstimates <- function(object, contrast) {
     coef <- getCoef(object)
-    if (is.null(coef)) {
-        coef <- rep(NA, times = length(contrast))
+    
+    if (is.null(coef) | any(is.na(coef[contrast!=0]))) { # NULL or NAs in current contrast
+      return(NA)
+    } else {
+      coef[is.na(coef)] <- 0 # in case NAs would be presented in the not-relevant contrasts
+      return(contrast %*% coef)
     }
-    # if(any(is.na(coef))){
-    #     coef[is.na(coef)] <- 0
-    # }
-    return(contrast %*% coef)
 }
 
 # Compute the variance on the usage estimates in a contrast of interest
 varContrast <- function(object, contrast) {
-    if (!object@type %in% c("fitError", "lonelyTranscript")) {
-        if (nrow(object@params$vcovUnsc) == length(contrast)) {
-            vcovTmp <- object@params$vcovUnsc * object@varPosterior
-            # if(any(is.na(vcovTmp))){
-            #     vcovTmp[is.na(vcovTmp)] <- 0
-            # }
-            return(diag(t(contrast) %*% vcovTmp %*% contrast))
-        }
-    }
+  if (object@type %in% c("fitError", "lonelyTranscript") |
+      nrow(object@params$vcovUnsc) != length(contrast)){
     return(NA)
+  } else{
+    vcovTmp <- object@params$vcovUnsc * object@varPosterior
+    if(!any(is.na(vcovTmp))){ # if no NAs, compute as normal
+      return(diag(t(contrast) %*% vcovTmp %*% contrast))
+    } else { # if NAs, see if they are problematic for the contrast
+      vcovHlp <- vcovTmp
+      vcovHlp[upper.tri(vcovHlp)] <- 0
+      if(any(is.na(vcovTmp[contrast != 0, contrast != 0]))){ # problematic
+        return(NA)
+      } else{ # not problematic
+        vcovTmp[is.na(vcovTmp)] <- 0
+        return(diag(t(contrast) %*% vcovTmp %*% contrast))
+      }
+    }
+  }
 }
 
 # The code is based on the source code of the unexported loccov function
@@ -381,26 +389,42 @@ testDTU <- function(object,
         pval <- pt(-abs(t), df) * 2
         regular_FDR <- p.adjust(pval, method = "BH") # regular FDR correction
         
-        # empirical FDR correction    
-        empirical <- p.adjust_empirical(pval, 
-                                        t, 
-                                        main = colnames(contrasts)[i], 
-                                        diagplot1, 
-                                        diagplot2) 
-        empirical_pval <- empirical$pval
-        empirical_FDR <- empirical$FDR
-
-        result_contrast <- data.frame(
+        if(sum(!is.na(pval)) < 500){
+          warning(paste0("Less than 500 features with non-NA results for contrast ",
+                         i, ": not running empirical correction"))
+          
+          result_contrast <- data.frame(
+            estimates, se, df, t, pval, regular_FDR
+          )
+          
+          if (sort == TRUE) {
+            result_contrast <- result_contrast[order(result_contrast$pval), ]
+          }
+          
+          rowData(object)[[paste0("fitDTUResult_", 
+                                  colnames(contrasts)[i])]] <- result_contrast
+        } else{
+          # empirical FDR correction    
+          empirical <- satuRn:::p.adjust_empirical(pval, 
+                                                   t, 
+                                                   main = colnames(contrasts)[i], 
+                                                   diagplot1 = TRUE, 
+                                                   diagplot2 = TRUE) 
+          empirical_pval <- empirical$pval
+          empirical_FDR <- empirical$FDR
+          
+          result_contrast <- data.frame(
             estimates, se, df, t, pval, regular_FDR, empirical_pval,
             empirical_FDR
-        )
-
-        if (sort == TRUE) {
+          )
+          
+          if (sort == TRUE) {
             result_contrast <- result_contrast[order(
-                result_contrast$empirical_pval), ]
+              result_contrast$empirical_pval), ]
+          }
+          rowData(object)[[paste0("fitDTUResult_", 
+                                  colnames(contrasts)[i])]] <- result_contrast
         }
-        rowData(object)[[paste0("fitDTUResult_", 
-                                colnames(contrasts)[i])]] <- result_contrast
     }
     return(object)
 }
