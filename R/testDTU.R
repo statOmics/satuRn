@@ -400,7 +400,8 @@ testDTU <- function(object,
           if (sort == TRUE) {
             result_contrast <- result_contrast[order(result_contrast$pval), ]
           }
-          
+          result_contrast$empirical_pval <- NA
+          result_contrast$empirical_FDR <- NA
           rowData(object)[[paste0("fitDTUResult_", 
                                   colnames(contrasts)[i])]] <- result_contrast
         } else{
