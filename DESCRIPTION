@@ -1,8 +1,8 @@
 Package: satuRn
 Type: Package
 Title: Scalable Analysis of Differential Transcript Usage for Bulk and Single-Cell RNA-sequencing Applications
-Date: 2022-07-22
-Version: 1.5.3
+Date: 2022-07-24
+Version: 1.4.1
 Authors@R: c(person("Jeroen", "Gilis", role = c("aut","cre"),
                      email = "jeroen.gilis@ugent.be"),
              person("Kristoffer", "Vitting-Seerup", role = "ctb",
