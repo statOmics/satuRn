@@ -7,7 +7,7 @@ output: github_document
 # satuRn
 
 <!-- badges: start -->
-[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-blue.svg)](https://www.tidyverse.org/lifecycle/#stable)
 [![R build status](https://github.com/statOmics/satuRn/workflows/R-CMD-check-bioc/badge.svg)](https://github.com/statOmics/satuRn/actions)
 <!-- badges: end -->
 
@@ -107,8 +107,8 @@ Finally, we may visualize the usage of select transcripts
 in select groups of interest with `plotDTU`:
 
 ```{r, eval = FALSE}
-group1 <- rownames(colData(sumExp))[colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
-group2 <- rownames(colData(sumExp))[colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
+group1 <- colnames(sumExp)[colData(sumExp)$group == "VISp.L5_IT_VISp_Hsd11b1_Endou"]
+group2 <- colnames(sumExp)[colData(sumExp)$group == "ALM.L5_IT_ALM_Tnc"]
 
 plots <- satuRn::plotDTU(
     object = sumExp,

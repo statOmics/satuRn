@@ -25,8 +25,8 @@ c(
 	    as.person("Lieven Clement")
         ),
         year = 2021,
-        journal = "bioRxiv",
-        doi = "https://doi.org/10.1101/2021.01.14.426636",
-        url = "https://www.biorxiv.org/content/10.1101/2021.01.14.426636v1"
+        journal = "F1000",
+        doi = "(https://doi.org/10.12688/f1000research.51749.1",
+        url = "https://f1000research.com/articles/10-374/v1"
     )
 )

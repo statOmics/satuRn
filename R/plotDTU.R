@@ -108,8 +108,15 @@ plotDTU_internal <- function(object, topTable, contrast, coefficients, groups,
                 object)[["fitDTUModels"]][transcript][[1]]@params$coefficients
 
             coefs <- do.call(rbind, coefficients)
-            requested_estimates <- boot::inv.logit(coefs %*% model_estimates)
-
+            if(!any(is.na(model_estimates))){
+              requested_estimates <- boot::inv.logit(coefs %*% model_estimates)
+            } else if(any(!is.na(model_estimates[colSums(coefs != 0) > 0]))) {
+              model_estimates[is.na(model_estimates)] <- 0
+              requested_estimates <- boot::inv.logit(coefs %*% model_estimates)
+            } else{
+              stop(paste0("The modeled average usage of transcript ",
+                          transcript, " could not be computed"))
+            }
             data$modelled_value <- data$group
             levels(data$modelled_value) <- requested_estimates
             data$modelled_value <- as.numeric(as.character(data$modelled_value))
