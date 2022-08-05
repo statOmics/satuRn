@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">satuRn</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.4</span>
       </span>
     </div>
 
@@ -89,17 +89,23 @@
 
 <p>satuRn is a highly performant and scalable method for performing differential transcript usage analyses.</p>
 <div class="section level2">
+<h2 id="news">NEWS<a class="anchor" aria-label="anchor" href="#news"></a>
+</h2>
+<p>We report a bug in satuRn 1.4.0. (Bioconductor release 3.15). The bug was inadvertently introduced in satuRn 1.3.1 (from the former Bioconductor devel). Note that the bug was not thus present in any of the older Bioconductor releases 3.13 and 3.14 (satuRn 1.0.x, 1.1.x and 1.2.x).</p>
+<p>The bug has been resolved in the newer versions of satuRn (1.4.1 and up). Therefore, satuRn 1.4.0. should no longer be used and updated to the newer version. For more details on the bug, we refer to the <a href="https://github.com/statOmics/satuRn/blob/master/NEWS.md" class="external-link">NEWS</a></p>
+</div>
+<div class="section level2">
 <h2 id="installation-instructions">Installation instructions<a class="anchor" aria-label="anchor" href="#installation-instructions"></a>
 </h2>
 <p>To install the current version of <code>satuRn</code> in Bioconductor, run;</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
- <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span> 
-<span class="op">}</span>
-<span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"satuRn"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span> </span>
+<span><span class="op">}</span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"satuRn"</span><span class="op">)</span></span></code></pre></div>
 <p>To install the development version, run;</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"statOmics/satuRn"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"statOmics/satuRn"</span><span class="op">)</span></span></code></pre></div>
 <p>The installation should only take a few seconds. The dependencies of the package are listed in the DESCRIPTION file of the package.</p>
 </div>
 <div class="section level2">
@@ -113,64 +119,64 @@
 <p>A minimal example of the different functions for <code>modelling</code>, <code>testing</code> and <code>visualizing</code> differential transcript usage is provided.</p>
 <p>! See the online <a href="https://github.com/statOmics/satuRn/blob/master/vignettes/Vignette.Rmd" class="external-link">vignette</a> or the satuRn <a href="https://statomics.github.io/satuRn/" class="external-link">website</a> for a more elaborate and reproducible example.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/statOmics/satuRn" class="external-link">satuRn</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment" class="external-link">SummarizedExperiment</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/statOmics/satuRn" class="external-link">satuRn</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment" class="external-link">SummarizedExperiment</a></span><span class="op">)</span></span></code></pre></div>
 <p>Provide a transcript expression matrix and corresponding <code>colData</code> and <code>rowData</code></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sumExp</span> <span class="op">&lt;-</span> <span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/RangedSummarizedExperiment-class.html" class="external-link">SummarizedExperiment</a></span><span class="op">(</span>
-    assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="va">Tasic_counts_vignette</span><span class="op">)</span>,
-    colData <span class="op">=</span> <span class="va">Tasic_metadata_vignette</span>,
-    rowData <span class="op">=</span> <span class="va">txInfo</span>
-<span class="op">)</span>
-
-<span class="co"># Specify design formula from colData</span>
-<span class="fu">metadata</span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">$</span><span class="va">formula</span> <span class="op">&lt;-</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">$</span><span class="va">group</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sumExp</span> <span class="op">&lt;-</span> <span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/RangedSummarizedExperiment-class.html" class="external-link">SummarizedExperiment</a></span><span class="op">(</span></span>
+<span>    assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="va">Tasic_counts_vignette</span><span class="op">)</span>,</span>
+<span>    colData <span class="op">=</span> <span class="va">Tasic_metadata_vignette</span>,</span>
+<span>    rowData <span class="op">=</span> <span class="va">txInfo</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Specify design formula from colData</span></span>
+<span><span class="fu">metadata</span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">$</span><span class="va">formula</span> <span class="op">&lt;-</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">$</span><span class="va">group</span><span class="op">)</span></span></code></pre></div>
 <p>Next, we test for differential transcript usage with the function <code>testDTU</code>. This function takes as input the <code>SummarizedExperiment</code> object generated by <code>fitDTU</code> and a contrast matrix or vector. The latter is used to specify the comparison(s) of interest and can either be generated manually or automatically with the <code>makeContrasts</code> function of the <code>limma</code> R package.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">Tasic_metadata_vignette</span><span class="op">$</span><span class="va">group</span><span class="op">)</span>
-<span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">group</span><span class="op">)</span> <span class="co"># constructs design matrix</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">design</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span>
-<span class="va">L</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/makeContrasts.html" class="external-link">makeContrasts</a></span><span class="op">(</span>Contrast1 <span class="op">=</span> <span class="va">VISp.L5_IT_VISp_Hsd11b1_Endou</span> <span class="op">-</span> <span class="va">ALM.L5_IT_ALM_Tnc</span>,
-                          Contrast2 <span class="op">=</span> <span class="va">VISp.L5_IT_VISp_Hsd11b1_Endou</span> <span class="op">-</span> <span class="va">ALM.L5_IT_ALM_Tmem163_Dmrtb1</span>, 
-                          levels <span class="op">=</span> <span class="va">design</span><span class="op">)</span> <span class="co"># constructs contrast matrix</span>
-
-<span class="va">sumExp</span> <span class="op">&lt;-</span> <span class="fu">satuRn</span><span class="fu">::</span><span class="fu"><a href="reference/testDTU.html">testDTU</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">sumExp</span>, 
-                          contrasts <span class="op">=</span> <span class="va">L</span>, 
-                          plot <span class="op">=</span> <span class="cn">FALSE</span>, 
-                          sort <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">Tasic_metadata_vignette</span><span class="op">$</span><span class="va">group</span><span class="op">)</span></span>
+<span><span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">group</span><span class="op">)</span> <span class="co"># constructs design matrix</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">design</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span></span>
+<span><span class="va">L</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/makeContrasts.html" class="external-link">makeContrasts</a></span><span class="op">(</span>Contrast1 <span class="op">=</span> <span class="va">VISp.L5_IT_VISp_Hsd11b1_Endou</span> <span class="op">-</span> <span class="va">ALM.L5_IT_ALM_Tnc</span>,</span>
+<span>                          Contrast2 <span class="op">=</span> <span class="va">VISp.L5_IT_VISp_Hsd11b1_Endou</span> <span class="op">-</span> <span class="va">ALM.L5_IT_ALM_Tmem163_Dmrtb1</span>, </span>
+<span>                          levels <span class="op">=</span> <span class="va">design</span><span class="op">)</span> <span class="co"># constructs contrast matrix</span></span>
+<span></span>
+<span><span class="va">sumExp</span> <span class="op">&lt;-</span> <span class="fu">satuRn</span><span class="fu">::</span><span class="fu"><a href="reference/testDTU.html">testDTU</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">sumExp</span>, </span>
+<span>                          contrasts <span class="op">=</span> <span class="va">L</span>, </span>
+<span>                          plot <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>                          sort <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>The test results are now saved into the <code>rowData</code> of our <code>SummarizedExperiment</code> object under the name <code>fitDTUResult_</code> followed by the name of the contrast of interest (i.e. the column names of the contrast matrix). The results can be accessed as follows:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">[[</span><span class="st">"fitDTUResult_Contrast1"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="co"># first contrast</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">[[</span><span class="st">"fitDTUResult_Contrast1"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="co"># first contrast</span></span></code></pre></div>
 <p>Finally, we may visualize the usage of select transcripts in select groups of interest with <code>plotDTU</code>:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sumExp</span> <span class="op">&lt;-</span> <span class="fu">satuRn</span><span class="fu">::</span><span class="fu"><a href="reference/testDTU.html">testDTU</a></span><span class="op">(</span>
-    object <span class="op">=</span> <span class="va">sumExp</span>,
-    contrasts <span class="op">=</span> <span class="va">L</span>,
-    plot <span class="op">=</span> <span class="cn">FALSE</span>,
-    sort <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sumExp</span> <span class="op">&lt;-</span> <span class="fu">satuRn</span><span class="fu">::</span><span class="fu"><a href="reference/testDTU.html">testDTU</a></span><span class="op">(</span></span>
+<span>    object <span class="op">=</span> <span class="va">sumExp</span>,</span>
+<span>    contrasts <span class="op">=</span> <span class="va">L</span>,</span>
+<span>    plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    sort <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Finally, we may visualize the usage of select transcripts in select groups of interest with <code>plotDTU</code>:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">group1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">$</span><span class="va">group</span> <span class="op">==</span> <span class="st">"VISp.L5_IT_VISp_Hsd11b1_Endou"</span><span class="op">]</span>
-<span class="va">group2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">$</span><span class="va">group</span> <span class="op">==</span> <span class="st">"ALM.L5_IT_ALM_Tnc"</span><span class="op">]</span>
-
-<span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu">satuRn</span><span class="fu">::</span><span class="fu"><a href="reference/plotDTU.html">plotDTU</a></span><span class="op">(</span>
-    object <span class="op">=</span> <span class="va">sumExp</span>,
-    contrast <span class="op">=</span> <span class="st">"Contrast1"</span>,
-    groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">group1</span>, <span class="va">group2</span><span class="op">)</span>,
-    coefficients <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,
-    summaryStat <span class="op">=</span> <span class="st">"model"</span>,
-    transcripts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>
-        <span class="st">"ENSMUST00000081554"</span>,
-        <span class="st">"ENSMUST00000195963"</span>,
-        <span class="st">"ENSMUST00000132062"</span>
-    <span class="op">)</span>,
-    genes <span class="op">=</span> <span class="cn">NULL</span>,
-    top.n <span class="op">=</span> <span class="fl">6</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">group1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">$</span><span class="va">group</span> <span class="op">==</span> <span class="st">"VISp.L5_IT_VISp_Hsd11b1_Endou"</span><span class="op">]</span></span>
+<span><span class="va">group2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span><span class="op">$</span><span class="va">group</span> <span class="op">==</span> <span class="st">"ALM.L5_IT_ALM_Tnc"</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu">satuRn</span><span class="fu">::</span><span class="fu"><a href="reference/plotDTU.html">plotDTU</a></span><span class="op">(</span></span>
+<span>    object <span class="op">=</span> <span class="va">sumExp</span>,</span>
+<span>    contrast <span class="op">=</span> <span class="st">"Contrast1"</span>,</span>
+<span>    groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">group1</span>, <span class="va">group2</span><span class="op">)</span>,</span>
+<span>    coefficients <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    summaryStat <span class="op">=</span> <span class="st">"model"</span>,</span>
+<span>    transcripts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>        <span class="st">"ENSMUST00000081554"</span>,</span>
+<span>        <span class="st">"ENSMUST00000195963"</span>,</span>
+<span>        <span class="st">"ENSMUST00000132062"</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    genes <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    top.n <span class="op">=</span> <span class="fl">6</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Example plot from our publication:</span>
-<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html" class="external-link">include_graphics</a></span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/statOmics/satuRn/master/inst/figures/README-DTU_plot.png"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Example plot from our publication:</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html" class="external-link">include_graphics</a></span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/statOmics/satuRn/master/inst/figures/README-DTU_plot.png"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="https://raw.githubusercontent.com/statOmics/satuRn/master/inst/figures/README-DTU_plot.png" width="75%"></p>
 </div>
 <div class="section level2">
@@ -178,12 +184,12 @@
 </h2>
 <p>Below is the citation output from using <code>citation('satuRn')</code> in R. Please run this yourself to check for any updates on how to cite <strong>satuRn</strong>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"satuRn"</span><span class="op">)</span>, bibtex <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"satuRn"</span><span class="op">)</span>, bibtex <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Gilis J (2022). _Scalable Analysis of differential Transcript Usage for</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="do">## bulk and single-Cell RNA-sequencing applications_. doi:</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="do">## 10.18129/B9.bioc.satuRn (URL: https://doi.org/10.18129/B9.bioc.satuRn),</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="do">## https://github.com/statOmics/satuRn - R package version 1.4.0, &lt;URL:</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="do">## https://github.com/statOmics/satuRn - R package version 1.5.3, &lt;URL:</span></span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="do">## http://www.bioconductor.org/packages/satuRn&gt;.</span></span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="do">## A BibTeX entry for LaTeX users is</span></span>
@@ -193,7 +199,7 @@
 <span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="do">##     author = {Jeroen Gilis},</span></span>
 <span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="do">##     year = {2022},</span></span>
 <span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="do">##     url = {http://www.bioconductor.org/packages/satuRn},</span></span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="do">##     note = {https://github.com/statOmics/satuRn - R package version 1.4.0},</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="do">##     note = {https://github.com/statOmics/satuRn - R package version 1.5.3},</span></span>
 <span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="do">##     doi = {10.18129/B9.bioc.satuRn},</span></span>
 <span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="do">##   }</span></span>
 <span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
@@ -201,8 +207,8 @@
 <span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="do">## Analysis of Differential Transcript Usage for Bulk and Single-Cell</span></span>
 <span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="do">## RNA-sequencing Applications." _F1000_. doi:</span></span>
 <span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="do">## (https://doi.org/10.12688/f1000research.51749.1 (URL:</span></span>
-<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="do">## https://doi.org/(https://doi.org/10.12688/f1000research.51749.1), &lt;URL:</span></span>
-<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a><span class="do">## https://f1000research.com/articles/10-374/v1&gt;.</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="do">## https://doi.org/%28https%3A//doi.org/10.12688/f1000research.51749.1),</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a><span class="do">## &lt;URL: https://f1000research.com/articles/10-374/v1&gt;.</span></span>
 <span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
 <span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a><span class="do">## A BibTeX entry for LaTeX users is</span></span>
 <span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
@@ -225,7 +231,7 @@
 <h2 id="development-tools">Development tools<a class="anchor" aria-label="anchor" href="#development-tools"></a>
 </h2>
 <ul>
-<li>Continuous code testing is possible thanks to <a href="https://www.tidyverse.org/blog/2020/04/usethis-1-6-0/" class="external-link">GitHub actions</a> through <em><a href="https://CRAN.R-project.org/package=usethis" class="external-link">usethis</a></em>, <em><a href="https://CRAN.R-project.org/package=remotes" class="external-link">remotes</a></em>, and <em><a href="https://CRAN.R-project.org/package=rcmdcheck" class="external-link">rcmdcheck</a></em> customized to use <a href="https://www.bioconductor.org/help/docker/" class="external-link">Bioconductor’s docker containers</a> and <em><a href="https://bioconductor.org/packages/3.14/BiocCheck" class="external-link">BiocCheck</a></em>.</li>
+<li>Continuous code testing is possible thanks to <a href="https://www.tidyverse.org/blog/2020/04/usethis-1-6-0/" class="external-link">GitHub actions</a> through <em><a href="https://CRAN.R-project.org/package=usethis" class="external-link">usethis</a></em>, <em><a href="https://CRAN.R-project.org/package=remotes" class="external-link">remotes</a></em>, and <em><a href="https://CRAN.R-project.org/package=rcmdcheck" class="external-link">rcmdcheck</a></em> customized to use <a href="https://www.bioconductor.org/help/docker/" class="external-link">Bioconductor’s docker containers</a> and <em><a href="https://bioconductor.org/packages/3.15/BiocCheck" class="external-link">BiocCheck</a></em>.</li>
 <li>Code coverage assessment is possible thanks to <a href="https://codecov.io/gh" class="external-link">codecov</a> and <em><a href="https://CRAN.R-project.org/package=covr" class="external-link">covr</a></em>.</li>
 <li>The <a href="http://statOmics.github.io/satuRn" class="external-link">documentation website</a> is automatically updated thanks to <em><a href="https://CRAN.R-project.org/package=pkgdown" class="external-link">pkgdown</a></em>.</li>
 <li>The code is styled automatically thanks to <em><a href="https://CRAN.R-project.org/package=styler" class="external-link">styler</a></em>.</li>
@@ -259,6 +265,7 @@
 <ul class="list-unstyled">
 <li><a href="CONTRIBUTING.html">Contributing guide</a></li>
 <li><a href="CODE_OF_CONDUCT.html">Code of conduct</a></li>
+<li><a href="SUPPORT.html">Getting help</a></li>
 </ul>
 </div>
 
@@ -296,7 +303,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
