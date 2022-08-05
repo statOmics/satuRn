@@ -13,6 +13,18 @@ output: github_document
 
 satuRn is a highly performant and scalable method for performing differential transcript usage analyses.
 
+## NEWS
+
+We report a bug in satuRn 1.4.0. (Bioconductor release 3.15). The bug was
+inadvertently introduced in satuRn 1.3.1 (from the former Bioconductor devel).
+Note that the bug was not thus present in any of the older Bioconductor releases 
+3.13 and 3.14 (satuRn 1.0.x, 1.1.x and 1.2.x).
+
+The bug has been resolved in the newer versions of satuRn (1.4.1 and up).
+Therefore, satuRn 1.4.0. should no longer be
+used and updated to the newer version. For more details on the bug, we refer
+to the [NEWS](https://github.com/statOmics/satuRn/blob/master/NEWS.md)
+
 ## Installation instructions
 
 To install the current version of `satuRn` in Bioconductor, run;
