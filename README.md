@@ -14,6 +14,19 @@ status](https://github.com/statOmics/satuRn/workflows/R-CMD-check-bioc/badge.svg
 satuRn is a highly performant and scalable method for performing
 differential transcript usage analyses.
 
+## NEWS
+
+We report a bug in satuRn 1.4.0. (Bioconductor release 3.15). The bug
+was inadvertently introduced in satuRn 1.3.1 (from the former
+Bioconductor devel). Note that the bug was not thus present in any of
+the older Bioconductor releases 3.13 and 3.14 (satuRn 1.0.x, 1.1.x and
+1.2.x).
+
+The bug has been resolved in the newer versions of satuRn (1.4.1 and
+up). Therefore, satuRn 1.4.0. should no longer be used and updated to
+the newer version. For more details on the bug, we refer to the
+[NEWS](https://github.com/statOmics/satuRn/blob/master/NEWS.md)
+
 ## Installation instructions
 
 To install the current version of `satuRn` in Bioconductor, run;
@@ -154,7 +167,7 @@ print(citation("satuRn"), bibtex = TRUE)
     ## Gilis J (2022). _Scalable Analysis of differential Transcript Usage for
     ## bulk and single-Cell RNA-sequencing applications_. doi:
     ## 10.18129/B9.bioc.satuRn (URL: https://doi.org/10.18129/B9.bioc.satuRn),
-    ## https://github.com/statOmics/satuRn - R package version 1.4.0, <URL:
+    ## https://github.com/statOmics/satuRn - R package version 1.5.3, <URL:
     ## http://www.bioconductor.org/packages/satuRn>.
     ## 
     ## A BibTeX entry for LaTeX users is
@@ -164,7 +177,7 @@ print(citation("satuRn"), bibtex = TRUE)
     ##     author = {Jeroen Gilis},
     ##     year = {2022},
     ##     url = {http://www.bioconductor.org/packages/satuRn},
-    ##     note = {https://github.com/statOmics/satuRn - R package version 1.4.0},
+    ##     note = {https://github.com/statOmics/satuRn - R package version 1.5.3},
     ##     doi = {10.18129/B9.bioc.satuRn},
     ##   }
     ## 
@@ -172,8 +185,8 @@ print(citation("satuRn"), bibtex = TRUE)
     ## Analysis of Differential Transcript Usage for Bulk and Single-Cell
     ## RNA-sequencing Applications." _F1000_. doi:
     ## (https://doi.org/10.12688/f1000research.51749.1 (URL:
-    ## https://doi.org/(https://doi.org/10.12688/f1000research.51749.1), <URL:
-    ## https://f1000research.com/articles/10-374/v1>.
+    ## https://doi.org/%28https%3A//doi.org/10.12688/f1000research.51749.1),
+    ## <URL: https://f1000research.com/articles/10-374/v1>.
     ## 
     ## A BibTeX entry for LaTeX users is
     ## 
@@ -206,7 +219,7 @@ By contributing to this project, you agree to abide by its terms.
     *[rcmdcheck](https://CRAN.R-project.org/package=rcmdcheck)*
     customized to use [Bioconductor’s docker
     containers](https://www.bioconductor.org/help/docker/) and
-    *[BiocCheck](https://bioconductor.org/packages/3.14/BiocCheck)*.
+    *[BiocCheck](https://bioconductor.org/packages/3.15/BiocCheck)*.
 -   Code coverage assessment is possible thanks to
     [codecov](https://codecov.io/gh) and
     *[covr](https://CRAN.R-project.org/package=covr)*.
