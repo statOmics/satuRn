@@ -1,3 +1,68 @@
+# Fit a quasibinomial regression model, given counts for all features within a
+# gene and a design matrix
+.fitQuasiLogistic <- function(mat, design) {
+  
+  if(nrow(mat) == 1){
+    .out <- .StatModel(
+      type = "lonelyTranscript",
+      params = list(coefficients = NA, 
+                    df.residual = NA,
+                    dispersion = NA,
+                    vcovUnsc = NA),
+      varPosterior = as.numeric(NA),
+      dfPosterior = as.numeric(NA)
+    )
+    return(.out)
+  }
+  
+  mat <- as.matrix(mat)
+  totalCount <- matrix(data = rep(colSums(mat),nrow(mat)),
+                       nrow = nrow(mat),
+                       byrow = TRUE)
+  otherCount <- totalCount-mat
+  
+  models_gene <- lapply(seq_len(nrow(mat)), function(i){
+    countsAll <- cbind(countData[i,], otherCount[i,])
+    drop <- rowSums(countsAll) == 0 ## gene count is zero in this cell
+    countsAll <- countsAll + 1
+    countsAll[drop, ] <- NA
+    
+    model <- try(glm(countsAll ~ -1 + design, family = "quasibinomial"))
+    
+    # if the quasibinomial model could not be estimated, return empty model
+    if (class(model)[1] == "try-error") {
+      .out <- .StatModel(
+        type = "fitError",
+        params = list(coefficients = NA, 
+                      df.residual = NA,
+                      dispersion = NA,
+                      vcovUnsc = NA),
+        varPosterior = as.numeric(NA),
+        dfPosterior = as.numeric(NA)
+      )
+      return(.out)
+    } else {
+      type <- "glm"
+      class(model) <- "list"
+      model <- .calcDispersion(model, type) ## calculate disp slot
+      model <- .calcVcovUnscaled(model, type) ## calculate vcov slot
+      
+      model <- model[c("coefficients", 
+                       "df.residual", 
+                       "dispersion", 
+                       "vcovUnsc")]
+      
+      .out <- .StatModel(
+        type = type,
+        params = model,
+        varPosterior = as.numeric(NA),
+        dfPosterior = as.numeric(NA)
+      )
+      return(.out)
+    }
+  })
+}
+
 # Compute the dispersion parameter of the quasi-binomial GLM
 .calcDispersion <- function(model, type) {
     model$dispersion <- NA
@@ -20,32 +85,6 @@
     return(model)
 }
 
-# Computes the "other count" for all in each sample or cell in the data.
-# Essentially taking the sum of the counts for each of the transcripts within 
-# a gene except the target transcript. Can be thought as the difference between 
-# the gene-level count and current transcript-level count.
-.getOtherCount <- function(countData, tx2gene) {
-    # get tx2gene in better format
-    geneForEachTx <- tx2gene$gene_id[match(rownames(countData), 
-                                            tx2gene$isoform_id)]
-    geneForEachTx <- as.character(geneForEachTx)
-    stopifnot(class(geneForEachTx) %in% c("character", "factor"))
-    stopifnot(length(geneForEachTx) == nrow(countData))
-
-    forCycle <- split(seq_len(nrow(countData)), as.character(geneForEachTx))
-    all <- lapply(forCycle, function(i) {
-        sct <- countData[i, , drop = FALSE]
-        rs <- t(vapply(seq_len(nrow(sct)), function(r) 
-            colSums(sct[-r, , drop = FALSE]), numeric(ncol(countData))))
-        rownames(rs) <- rownames(sct)
-        rs
-    })
-
-    otherCount <- do.call(rbind, all)
-    otherCount <- otherCount[rownames(countData), ]
-    return(otherCount)
-}
-
 # Worker function that fits quasi-binomial models, 
 # wrapped inside the fitDTU function
 .fitDTU_internal <- function(countData, 
@@ -64,16 +103,8 @@
     }
   }
   
-  stopifnot(class(countData)[1] %in% c("matrix", 
-                                       "data.frame", 
-                                       "dgCMatrix", 
-                                       "DelayedMatrix"))
-  countData <- as.matrix(countData)
-  
-  # Get the "other" counts, i.e. the counts for all other transcripts 
-  # belonging to the same gene as the current transcript
-  otherCount <- .getOtherCount(countData, tx2gene)
-  stopifnot(all(rownames(countData) %in% rownames(otherCount)))
+  stopifnot(class(countData)[1] %in% c("matrix", "data.frame", 
+                                       "dgCMatrix", "DelayedMatrix"))
   
   # Check if lonely transcripts (only transcript in its corresponding gene)
   # have already been removed, if not throw message
@@ -84,92 +115,39 @@
             lonelyTranscript.")
   }
   
-  # The actual fit function
-  fitQuasiLogistic <- function(countData, otherCount, design, lonely_txi) {
-    
-    # if the transcript is the only transcript in its corresponding gene
-    # return empty model
-    if(lonely_txi){
-      .out <- .StatModel(
-        type = "lonelyTranscript",
-        params = list(coefficients = NA, 
-                      df.residual = NA,
-                      dispersion = NA,
-                      vcovUnsc = NA),
-        varPosterior = as.numeric(NA),
-        dfPosterior = as.numeric(NA)
-      )
-      return(.out)
-    }
-    
-    countsAll <- cbind(countData, otherCount)
-    drop <- rowSums(countsAll) == 0 ## gene count is zero in this cell
-    countsAll <- countsAll + 1
-    countsAll[drop, ] <- NA
-    
-    model <- try(glm(countsAll ~ -1 + design, family = "quasibinomial"))
-    
-    # if the quasibinomial model could not be estimated
-    # return empty model
-    if (class(model)[1] == "try-error") {
-      .out <- .StatModel(
-        type = "fitError",
-        params = list(coefficients = NA, 
-                      df.residual = NA,
-                      dispersion = NA,
-                      vcovUnsc = NA),
-        varPosterior = as.numeric(NA),
-        dfPosterior = as.numeric(NA)
-      )
-      return(.out)
-    } else {
-      type <- "glm"
-      class(model) <- "list"
-    }
-    
-    model <- .calcDispersion(model, type) ## calculate disp slot
-    model <- .calcVcovUnscaled(model, type) ## calculate vcov slot
-    
-    model <- model[c("coefficients", 
-                     "df.residual", 
-                     "dispersion", 
-                     "vcovUnsc")]
-    
-    .out <- .StatModel(
-      type = type,
-      params = model,
-      varPosterior = as.numeric(NA),
-      dfPosterior = as.numeric(NA)
-    )
-    return(.out)
-  }
+  geneForEachTx <- tx2gene$gene_id[match(rownames(countData), 
+                                         tx2gene$isoform_id)]
+  geneForEachTx <- as.character(geneForEachTx)
+  stopifnot(length(geneForEachTx) == nrow(countData))
+  
+  # split (sparse) matrix in a per-gene list of (sparse) matrices
+  matList <- split.data.frame(countData, geneForEachTx)
   
   # Fit the models
   if (parallel) {
-    models <- BiocParallel::bplapply(seq_len(nrow(countData)), function(i) 
-      fitQuasiLogistic(countData = countData[i, ], 
-                       otherCount = otherCount[i, ], 
-                       design = design,
-                       lonely_txi = lonely_tx[i]), 
-      BPPARAM = BPPARAM)
+    models <- BiocParallel::bplapply(matList, function(mat){
+      models_gene <- .fitQuasiLogistic(mat = mat, design = design)
+      models_gene <- unlist(models_gene)
+      names(models_gene) <- rownames(mat)
+      return(models_gene)
+    }, BPPARAM = BPPARAM)
+  } else if(verbose) {
+    models <- pbapply::pblapply(matList, function(mat){
+      models_gene <- .fitQuasiLogistic(mat = mat, design = design)
+      models_gene <- unlist(models_gene)
+      names(models_gene) <- rownames(mat)
+      return(models_gene)
+    })
   } else {
-    if (verbose) {
-      models <- pbapply::pblapply(seq_len(nrow(countData)), function(i) 
-        fitQuasiLogistic(countData = countData[i, ], 
-                         otherCount = otherCount[i, ], 
-                         design = design,
-                         lonely_txi = lonely_tx[i]))
-    } else {
-      models <- lapply(seq_len(nrow(countData)), function(i) 
-        fitQuasiLogistic(countData = countData[i, ], 
-                         otherCount = otherCount[i, ], 
-                         design = design,
-                         lonely_txi = lonely_tx[i]))
-    }
+    models <- lapply(matList, function(mat){
+      models_gene <- .fitQuasiLogistic(mat = mat, design = design)
+      names(models_gene) <- rownames(mat)
+      return(models_gene)
+    })
   }
   
-  # retain transcript names
-  names(models) <- rownames(countData)
+  names(models) <- NULL
+  models <- unlist(models)
   
   # Squeeze a set of sample variances together 
   # by computing empirical Bayes posterior means
