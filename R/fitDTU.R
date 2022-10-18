@@ -22,7 +22,7 @@
   otherCount <- totalCount-mat
   
   models_gene <- lapply(seq_len(nrow(mat)), function(i){
-    countsAll <- cbind(countData[i,], otherCount[i,])
+    countsAll <- cbind(mat[i,], otherCount[i,])
     drop <- rowSums(countsAll) == 0 ## gene count is zero in this cell
     countsAll <- countsAll + 1
     countsAll[drop, ] <- NA
@@ -121,6 +121,7 @@
   stopifnot(length(geneForEachTx) == nrow(countData))
   
   # split (sparse) matrix in a per-gene list of (sparse) matrices
+  colnames(countData) <- NULL # to avoid having colnames in each sub-matrix
   matList <- split.data.frame(countData, geneForEachTx)
   
   # Fit the models
@@ -148,6 +149,7 @@
   
   names(models) <- NULL
   models <- unlist(models)
+  models <- models[match(rownames(countData), names(models))]
   
   # Squeeze a set of sample variances together 
   # by computing empirical Bayes posterior means
