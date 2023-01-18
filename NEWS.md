@@ -1,3 +1,13 @@
+# 1.7.1
+
+Minor enhancement for handling fitErrors. When a glm model cannot be fitted,
+e.g., due to the sparsity of the data, satuRn will record this as a "fitError", returning
+NA estimates and p-values. However, in extreme cases, e.g., when a feature is not 
+expressed in any sample or cell, the testDTU could fail in older versions of satuRn.
+With the enhancement in version 1.7.1, such features will be handled correctly, i.e.,
+flagged as fitErrors and assigned NA estimates and p-values. Note that ideally such
+features should have been removed previously during feature-level filtering.
+
 # 1.4.1
 
 We report a bug in satuRn 1.4.0. (Bioconductor release 3.15). The bug
