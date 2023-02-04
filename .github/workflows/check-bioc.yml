@@ -265,7 +265,7 @@ jobs:
 
       - name: Upload check results
         if: failure()
-        uses: actions/upload-artifact@v2-branch
+        uses: actions/upload-artifact@master
         with:
           name: ${{ runner.os }}-biocbranch-devel-r-4.1-results
           path: check
