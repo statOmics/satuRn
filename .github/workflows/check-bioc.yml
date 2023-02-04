@@ -87,6 +87,7 @@ jobs:
         uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
+	  http-user-agent: ${{ matrix.config.http-user-agent }}
 
       ## pandoc is already included in the Bioconductor docker images
       - name: Setup pandoc from r-lib
@@ -99,13 +100,13 @@ jobs:
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
         shell: Rscript {0}
 
-      - name: Cache R packages
+      - name: Restore R package cache
         if: "!contains(github.event.head_commit.message, '/nocache') && runner.os != 'Linux'"
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ env.R_LIBS_USER }}
-          key: ${{ env.cache-version }}-${{ runner.os }}-bioc-${{ matrix.config.bioc }}-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ env.cache-version }}-${{ runner.os }}-bioc-${{ matrix.config.bioc }}-
+          key: ${{ env.cache-version }}-${{ runner.os }}-biocversion-RELEASE_3_15-r-4.2-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ env.cache-version }}-${{ runner.os }}-biocversion-RELEASE_3_15-r-4.2-
 
       - name: Cache R packages on Linux
         if: "!contains(github.event.head_commit.message, '/nocache') && runner.os == 'Linux' "
