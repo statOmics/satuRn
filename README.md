@@ -54,13 +54,14 @@ issues, bug reports, and comments.
 
 ## Usage
 
-A minimal example of the different functions for `modelling`, `testing`
-and `visualizing` differential transcript usage is provided.
+*! See the online vignette on the [bioconductor
+website](https://www.bioconductor.org/packages/devel/bioc/vignettes/satuRn/inst/doc/Vignette.html)
+or the [satuRn
+website](https://statomics.github.io/satuRn/articles/Vignette.html) for
+a more elaborate and reproducible example.*
 
-! See the online
-[vignette](https://github.com/statOmics/satuRn/blob/master/vignettes/Vignette.Rmd)
-or the satuRn [website](https://statomics.github.io/satuRn/) for a more
-elaborate and reproducible example.
+A minimal example of the different functions for `modelling`, `testing`
+and `visualizing` differential transcript usage is provided here.
 
 ``` r
 library(satuRn)
@@ -164,10 +165,10 @@ print(citation("satuRn"), bibtex = TRUE)
 ```
 
     ## 
-    ## Gilis J (2022). _Scalable Analysis of differential Transcript Usage for
+    ## Gilis J (2023). _Scalable Analysis of differential Transcript Usage for
     ## bulk and single-Cell RNA-sequencing applications_. doi:
     ## 10.18129/B9.bioc.satuRn (URL: https://doi.org/10.18129/B9.bioc.satuRn),
-    ## https://github.com/statOmics/satuRn - R package version 1.5.3, <URL:
+    ## https://github.com/statOmics/satuRn - R package version 1.7.2, <URL:
     ## http://www.bioconductor.org/packages/satuRn>.
     ## 
     ## A BibTeX entry for LaTeX users is
@@ -175,9 +176,9 @@ print(citation("satuRn"), bibtex = TRUE)
     ##   @Manual{,
     ##     title = {Scalable Analysis of differential Transcript Usage for bulk and single-Cell RNA-sequencing applications},
     ##     author = {Jeroen Gilis},
-    ##     year = {2022},
+    ##     year = {2023},
     ##     url = {http://www.bioconductor.org/packages/satuRn},
-    ##     note = {https://github.com/statOmics/satuRn - R package version 1.5.3},
+    ##     note = {https://github.com/statOmics/satuRn - R package version 1.7.2},
     ##     doi = {10.18129/B9.bioc.satuRn},
     ##   }
     ## 
@@ -212,25 +213,25 @@ By contributing to this project, you agree to abide by its terms.
 
 ## Development tools
 
--   Continuous code testing is possible thanks to [GitHub
-    actions](https://www.tidyverse.org/blog/2020/04/usethis-1-6-0/)
-    through *[usethis](https://CRAN.R-project.org/package=usethis)*,
-    *[remotes](https://CRAN.R-project.org/package=remotes)*, and
-    *[rcmdcheck](https://CRAN.R-project.org/package=rcmdcheck)*
-    customized to use [Bioconductor’s docker
-    containers](https://www.bioconductor.org/help/docker/) and
-    *[BiocCheck](https://bioconductor.org/packages/3.15/BiocCheck)*.
--   Code coverage assessment is possible thanks to
-    [codecov](https://codecov.io/gh) and
-    *[covr](https://CRAN.R-project.org/package=covr)*.
--   The [documentation website](http://statOmics.github.io/satuRn) is
-    automatically updated thanks to
-    *[pkgdown](https://CRAN.R-project.org/package=pkgdown)*.
--   The code is styled automatically thanks to
-    *[styler](https://CRAN.R-project.org/package=styler)*.
--   The documentation is formatted thanks to
-    *[devtools](https://CRAN.R-project.org/package=devtools)* and
-    *[roxygen2](https://CRAN.R-project.org/package=roxygen2)*.
+- Continuous code testing is possible thanks to [GitHub
+  actions](https://www.tidyverse.org/blog/2020/04/usethis-1-6-0/)
+  through *[usethis](https://CRAN.R-project.org/package=usethis)*,
+  *[remotes](https://CRAN.R-project.org/package=remotes)*, and
+  *[rcmdcheck](https://CRAN.R-project.org/package=rcmdcheck)* customized
+  to use [Bioconductor’s docker
+  containers](https://www.bioconductor.org/help/docker/) and
+  *[BiocCheck](https://bioconductor.org/packages/3.16/BiocCheck)*.
+- Code coverage assessment is possible thanks to
+  [codecov](https://codecov.io/gh) and
+  *[covr](https://CRAN.R-project.org/package=covr)*.
+- The [documentation website](http://statOmics.github.io/satuRn) is
+  automatically updated thanks to
+  *[pkgdown](https://CRAN.R-project.org/package=pkgdown)*.
+- The code is styled automatically thanks to
+  *[styler](https://CRAN.R-project.org/package=styler)*.
+- The documentation is formatted thanks to
+  *[devtools](https://CRAN.R-project.org/package=devtools)* and
+  *[roxygen2](https://CRAN.R-project.org/package=roxygen2)*.
 
 For more details, check the `dev` directory.
 
