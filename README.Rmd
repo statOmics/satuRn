@@ -51,9 +51,9 @@ Please use https://github.com/statOmics/satuRn/issues to submit issues, bug repo
 
 ## Usage 
 
-A minimal example of the different functions for `modelling`, `testing` and `visualizing` differential transcript usage is provided. 
+**! See the online vignette on the [bioconductor website](https://www.bioconductor.org/packages/devel/bioc/vignettes/satuRn/inst/doc/Vignette.html) or the [satuRn website](https://statomics.github.io/satuRn/articles/Vignette.html) for a more elaborate and reproducible example.**
 
-! See the online [vignette](https://github.com/statOmics/satuRn/blob/master/vignettes/Vignette.Rmd) or the satuRn [website](https://statomics.github.io/satuRn/) for a more elaborate and reproducible example.
+A minimal example of the different functions for `modelling`, `testing` and `visualizing` differential transcript usage is provided here. 
 
 ```{r, eval = FALSE}
 library(satuRn)

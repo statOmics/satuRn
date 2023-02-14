@@ -1,0 +1,215 @@
+---
+title: 'Vignette for exon-level analyses'
+author:
+- name: Jeroen Gilis
+  affiliation: Ghent University, Ghent, Belgium
+bibliography: satuRn.bib
+date: "14/02/2023"
+output:
+  BiocStyle::html_document:
+    toc: true
+    toc_depth: 3
+  BiocStyle::pdf_document: default
+package: satuRn
+abstract: |
+  Vignette that describes how to use satuRn for perforimg differential exon
+  usage analyses.
+vignette: >
+  %\VignetteIndexEntry{Vignette for exon-level analyses}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+In order to demonstrate the ability of `satuRn` to perform a **differential**
+**exon usage (DEU) analysis**, as opposed to a differential transcript usage 
+(DTU) analysis, we perform the DEU analysis described in the 
+[vignette](https://bioconductor.org/packages/devel/bioc/vignettes/DEXSeq/inst/doc/DEXSeq.html) 
+of `DEXSeq`. Note that for satuRn there is no real distinction between 
+performing a transcript-level or exon-level analysis. Once a proper input object
+is provided, satuRn will perform a differential usage analysis regardless of the
+specific feature type.
+
+In this script, we perform a DEU analysis on the same dataset as in the `DEXSeq`
+vignette, i.e. a subset of the `pasilla` bulk RNA-Seq dataset by (Brooks 
+*et al.*, 2011), which can be obtained with the Bioconductor experiment package 
+[pasilla](https://bioconductor.org/packages/release/data/experiment/html/pasilla.html).
+Brooks *et al.* investigated the effect of siRNA knock-down of the gene pasilla 
+on the transcriptome of fly S2-DRSC cells. The RNA-binding protein pasilla 
+protein is thought to be involved in the regulation of splicing. (Its mammalian 
+orthologs, NOVA1 and NOVA2, are well-studied examples of splicing factors.)
+
+```{r, echo = FALSE}
+library(knitr)
+```
+
+# Load and wrangle data
+
+```{r load libraries, message=FALSE, warning=FALSE}
+library(satuRn)
+library(DEXSeq)
+library(pasilla)
+library(ggplot2)
+```
+
+First, we load the data files of the `pasilla` dataset as processed by the 
+authors of the `DEXSeq` vignette.
+
+```{r load pasilla data}
+inDir <- system.file("extdata", package="pasilla")
+countFiles <- list.files(inDir, pattern="fb.txt$", full.names=TRUE)
+flattenedFile <- list.files(inDir, pattern="gff$", full.names=TRUE)
+
+sampleTable <- data.frame(row.names = c( "treated1", "treated2", "treated3", 
+                                         "untreated1", "untreated2", "untreated3", 
+                                         "untreated4" ),
+                          condition = c("knockdown", "knockdown", "knockdown",  
+                                        "control", "control", "control", "control"),
+                          libType = c("single-end", "paired-end", "paired-end", 
+                                      "single-end", "single-end", "paired-end", "paired-end"))
+```
+
+Next, we use the wrapper `DEXSeqDataSetFromHTSeq` function of the `DEXSeq` 
+package to create a `DEXSeqDataSet` object from the raw data files. In addition,
+we subset the data to a selected set of genes created by the authors of the
+`DEXSeq` vignette, with the purpose of limiting the vignette runtime.
+
+```{r load data, message=FALSE}
+dxd <- DEXSeqDataSetFromHTSeq(countFiles,
+                              sampleData=sampleTable,
+                              design= ~ sample + exon + libType:exon + condition:exon,
+                              flattenedfile=flattenedFile)
+genesForSubset <- read.table(file.path(inDir, "geneIDsinsubset.txt"), 
+                             stringsAsFactors=FALSE)[[1]]
+dxd <- dxd[geneIDs(dxd) %in% genesForSubset,]
+dxd # only 498 out of 70463 exons retained
+```
+
+Next, we remove exons with zero counts in all samples, and exon that are the
+only exon within a gene. This filtering is optional, but recommended. Not filter
+lowly abundant exons may lead to fit errors. Retaining exons that are the only 
+exon in a gene is nonsensical for a differential usage analysis, because all the
+usages will be 100% by definition. `satuRn` will handle fit errors and "lonely
+transcripts" internally, setting their results to NA. However, it is good 
+practice to remove them up front.
+
+```{r, message=FALSE}
+# remove exons with zero expression
+dxd <- dxd[rowSums(featureCounts(dxd)) != 0,]
+
+# remove exons that are the only exon for a gene
+remove <- which(table(rowData(dxd)$groupID) == 1)
+dxd <- dxd[rowData(dxd)$groupID != names(remove),]
+```
+
+Wrangle into a `SummarizedExperiment` object. satuRn can also handle
+`RangedSummarizedExperiment` and `SingleCellExperiment` objects, but is not
+compatible with `DEXSeqDataSet` objects.
+
+```{r prepare SummarizedExperiment, message=FALSE}
+exonInfo <- rowData(dxd)
+colnames(exonInfo)[1:2] <- c("isoform_id", "gene_id")
+exonInfo$isoform_id <- rownames(exonInfo)
+sumExp <- SummarizedExperiment::SummarizedExperiment(assays = list(counts=featureCounts(dxd)), 
+                                                     colData = sampleAnnotation(dxd), 
+                                                     rowData = exonInfo)
+```
+
+# satuRn analysis
+
+## Fit quasi-binomial generalized linear models
+
+```{r, fit quasibinomial model}
+sumExp <- satuRn::fitDTU(object = sumExp,
+                         formula = ~ 0 + condition + libType,
+                         parallel = FALSE,
+                         BPPARAM = BiocParallel::bpparam(),
+                         verbose = TRUE)
+```
+
+## Test for differential exon usage
+
+### Create contrast matrix
+
+```{r create contrast matrix, message=FALSE}
+design <- model.matrix(~0 + sampleAnnotation(dxd)$condition + sampleAnnotation(dxd)$libType)
+colnames(design)[1:2] <- levels(as.factor(sampleAnnotation(dxd)$condition))
+
+L <- matrix(0, ncol = 1, nrow = ncol(design))
+rownames(L) <- colnames(design)
+colnames(L) <- "C1"
+L[c("control", "knockdown"), 1] <- c(1,-1)
+L
+```
+
+### Perform the test
+
+```{r test for DEU}
+sumExp <- satuRn::testDTU(object = sumExp, 
+                          contrasts = L, 
+                          diagplot1 = TRUE,
+                          diagplot2 = TRUE,
+                          sort = FALSE,
+                          forceEmpirical = TRUE)
+```
+
+## Visualize DTU
+
+```{r}
+# get all (3) statistically significant differentially used exons
+DEU <- rownames(rowData(sumExp)[["fitDTUResult_C1"]][which(rowData(sumExp)[["fitDTUResult_C1"]]$empirical_FDR < 0.05),])
+
+group1 <- rownames(colData(sumExp))[colData(sumExp)$condition == "knockdown"]
+group2 <- rownames(colData(sumExp))[colData(sumExp)$condition == "control"]
+
+plots <- satuRn::plotDTU(object = sumExp,
+                         contrast = "C1",
+                         groups = list(group1,group2),
+                         coefficients = list(c(0,1,0),c(1,0,0)),
+                         summaryStat = "model",
+                         transcripts = DEU,
+                         genes = NULL,
+                         top.n = 6)
+
+for (i in seq_along(plots)) {
+    current_plot <- plots[[i]] +
+        scale_fill_manual(labels = c("knockdown","control"),
+                          values=c("royalblue4", "firebrick")) + 
+        scale_x_discrete(labels= c("knockdown","control")) +
+        theme(axis.text.x = element_text(angle = 0, vjust = 1, hjust = 0.5, size = 9)) +
+        theme(strip.text = element_text(size = 9, face = "bold"))
+    
+    print(current_plot)
+}
+```
+
+# Comparison with DEXSeq
+
+In this document, we display the ability of `satuRn` to perform a 
+**differential exon usage (DEU) analysis**. In our publication [@Gilis2021],
+we have used this analysis to demonstrate `satuRn`'s ability to perform a DEU
+analysis, as well as to compare its result to those of `DEXSeq`. The main 
+conclusion was that when the DEU results are ranked in terms of statistical 
+significance, `satuRn` and  `DEXSeq` results display a very strong concordance.
+This is in line with these methods having a very similar performance on small 
+bulk RNA-seq datasets when performing analyses on the transcript level. However, 
+as the datasets grow, e.g. for single-cell data, `satuRn` was much more 
+scalable, and its empirical correction of p-values additionally improved the 
+type 1 error control. We did not extensively benchmark if these methods have the 
+same behavior on exon-level data, but at least for this small bulk analysis, 
+this seems to be the case.
+
+# Acknowledgements
+
+We would like to specifically acknowledge the original authors of the `DEXSeq`
+vignette, Alejandro Reyes, Simon Anders and Wolfgang Huber. This vignette 
+essentially uses their processed data files and has simply replaced their 
+`DEXSeq` analysis with a `satuRn` analysis.
+
+# Session info
+
+```{r}
+sessionInfo()
+```
+
+# References
+

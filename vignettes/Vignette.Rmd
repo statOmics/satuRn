@@ -1,14 +1,21 @@
 ---
-title: 'satuRn - vignette'
-author: "Jeroen Gilis"
+title: 'Main vignette: transcript-level analyses'
+author:
+- name: Jeroen Gilis
+  affiliation: Ghent University, Ghent, Belgium
 bibliography: satuRn.bib
-date: "14/07/2022"
-output: 
-  rmarkdown::html_document:
+date: "14/02/2023"
+output:
+  BiocStyle::html_document:
     toc: true
     toc_depth: 3
+  BiocStyle::pdf_document: default
+package: satuRn
+abstract: |
+  Main vignette for the satuRn package. This vignette aims to provide a detailed 
+  description of a differential transcript usage analysis with satuRn.
 vignette: >
-  %\VignetteIndexEntry{satuRn - vignette}
+  %\VignetteIndexEntry{Main vignette: transcript-level analyses}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -20,8 +27,8 @@ library(knitr)
 # Introduction
 
 `satuRn` is an R package for performing differential transcript usage analyses 
-in bulk and single-cell transcriptomics datasets. 
-The package has three main functions. 
+in bulk and single-cell transcriptomics datasets. The package has three main 
+functions. 
 
 1. The first function, `fitDTU`, is used to model transcript usage profiles by 
 means of a quasi-binomial generalized linear model. 
@@ -34,7 +41,7 @@ cell types).
 selected transcripts in different groups of interest. 
 
 All details about the `satuRn` model and statistical tests are described 
-in our preprint [@Gilis2021].
+in our publication [@Gilis2021].
 
 In this vignette, we analyze a small subset of the data from [@Tasic2018]. 
 More specifically, an expression matrix and the corresponding metadata of 
@@ -43,7 +50,7 @@ this dataset to showcase the different functionalities of `satuRn`.
 
 # Package installation
 
-`satuRn` (version 1.4.0) can be installed from Bioconductor with:
+`satuRn` can be installed from Bioconductor with:
 
 ```{r, eval=FALSE}
 if(!requireNamespace("BiocManager", quietly = TRUE))
@@ -56,10 +63,6 @@ Alternatively, the development version of `satuRn` can be downloaded with:
 ```{r, eval=FALSE}
 devtools::install_github("statOmics/satuRn")
 ```
-
-*! for this vignette, we use the development version of satuRn.*
-The vignette for the officially released satuRn version 1.4.0 can be viewed from 
-[Bioconductor](https://bioconductor.org/packages/release/bioc/vignettes/satuRn/inst/doc/Vignette.html)
 
 # Load libraries
 
@@ -90,7 +93,7 @@ data(Tasic_metadata_vignette) # metadata
 We start the analysis from scratch, in order to additionally showcase some of
 the prerequisite steps for performing a DTU analysis.
 
-# Import transcript information
+## Import transcript information
 
 First, we need an object that links transcripts to their corresponding genes. 
 We suggest using the BioConductor R packages `AnnotationHub` and `ensembldb` 
@@ -106,7 +109,7 @@ txs <- transcripts(ahEdb)
 ## Data wrangling
 
 Next, we perform some data wrangling steps to get the data in a format that is
-suited for satuRn. First, we create a `DataFrame` or `Matrix` linking 
+suited for `satuRn`. First, we create a `DataFrame` or `Matrix` linking 
 transcripts to their corresponding genes.
 
 ! Important: `satuRn` is implemented such that the columns with transcript 
@@ -218,7 +221,9 @@ metadata(sumExp)$formula <- ~ 0 + as.factor(colData(sumExp)$group)
 sumExp
 ```
 
-# Fit quasi-binomial generalized linear models models
+# satuRn analysis
+
+## Fit quasi-binomial generalized linear models
 
 The `fitDTU` function of `satuRn` is used to model transcript usage in different
 groups of samples or cells. Here we adopt the default settings of the function.
@@ -250,13 +255,13 @@ the `satuRn` package. These contain all relevant information for
 the downstream analysis. For more details, read the StatModel documentation 
 with ?satuRn::`StatModel-class`.
 
-# Test for DTU
+## Test for DTU
 
 Here we test for differential transcript usage between select groups 
 of interest. In this example, the groups of interest are the three different 
 cell types that are present in the dataset associated with this vignette.
 
-## Set up contrast matrix
+### Set up contrast matrix
 
 First, we set up a contrast matrix. This allows us to test for differential 
 transcript usage between groups of interest. The `group` factor in this 
@@ -297,12 +302,11 @@ L <- limma::makeContrasts(
 L # contrast matrix
 ```
 
-## Perform the test
+### Perform the test
 
 Next we can perform differential usage testing using `testDTU`. We again adopt 
 default settings. For more information on the parameter settings, please consult
-the help file of the `testDTU` function. Note that the arguments `diagplot1` and
-`diagplot2` were not yet implemented in `satuRn` v1.1.1.
+the help file of the `testDTU` function.
 
 ```{r}
 sumExp <- satuRn::testDTU(
@@ -310,7 +314,8 @@ sumExp <- satuRn::testDTU(
     contrasts = L,
     diagplot1 = TRUE,
     diagplot2 = TRUE,
-    sort = FALSE
+    sort = FALSE,
+    forceEmpirical = FALSE
 )
 ```
 
@@ -347,7 +352,7 @@ head(rowData(sumExp)[["fitDTUResult_Contrast1"]]) # first contrast
 head(rowData(sumExp)[["fitDTUResult_Contrast2"]]) # second contrast
 ```
 
-The results for are, for each contrast, a dataframe with 8 columns:
+The results will be, for each contrast, a dataframe with 8 columns:
 
 - `estimates`: The estimated log-odds ratios (log base e). In the most simple 
 case, an estimate of +1 would mean that the odds of picking that transcript from 
@@ -375,7 +380,7 @@ adjusted" p-values. A deviation in the standard deviation only affects the
 magnitude of the p-values, whereas a deviation in the mean also affects the
 ranking of transcripts according to their p-value.
 
-# Visualize DTU
+## Visualize DTU
 
 Finally, we may visualize the usage of select transcripts in select groups 
 of interest.
@@ -492,7 +497,7 @@ padj <- stageR::getAdjustedPValues(stageRObj,
 head(padj)
 ```
 
-# Session
+# Session info
 
 ```{r}
 sessionInfo()
