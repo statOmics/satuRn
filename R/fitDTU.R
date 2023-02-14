@@ -27,8 +27,7 @@
     countsAll <- countsAll + 1
     countsAll[drop, ] <- NA
     
-    model <- try(glm(countsAll ~ -1 + design, family = "quasibinomial"), 
-                 silent=TRUE)
+    model <- try(glm(countsAll ~ -1 + design, family = "quasibinomial"))
     
     # if the quasibinomial model could not be estimated, return empty model
     if (class(model)[1] == "try-error") {
