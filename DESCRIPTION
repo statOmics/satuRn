@@ -39,6 +39,7 @@ Suggests:
     ensembldb,
     edgeR,
     DEXSeq,
+    pasilla,
     stageR,
     DelayedArray
 VignetteBuilder: knitr
