@@ -54,11 +54,11 @@ issues, bug reports, and comments.
 
 ## Usage
 
-*! See the online vignette on the [bioconductor
+**! See the online vignette on the [bioconductor
 website](https://www.bioconductor.org/packages/devel/bioc/vignettes/satuRn/inst/doc/Vignette.html)
 or the [satuRn
 website](https://statomics.github.io/satuRn/articles/Vignette.html) for
-a more elaborate and reproducible example.*
+a more elaborate and reproducible example.**
 
 A minimal example of the different functions for `modelling`, `testing`
 and `visualizing` differential transcript usage is provided here.
