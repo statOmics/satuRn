@@ -38,9 +38,8 @@ on the transcriptome of fly S2-DRSC cells. The RNA-binding protein pasilla
 protein is thought to be involved in the regulation of splicing. (Its mammalian 
 orthologs, NOVA1 and NOVA2, are well-studied examples of splicing factors.)
 
-```{r setup, include=FALSE, echo=FALSE}
-require("knitr")
-opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```{r, echo = FALSE}
+library(knitr)
 ```
 
 # Load and wrangle data
