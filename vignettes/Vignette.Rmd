@@ -192,18 +192,26 @@ Tasic_metadata_vignette$group <- paste(Tasic_metadata_vignette$brain_region,
 ## Generate SummarizedExperiment
 
 All three main functions of `satuRn` require a `SummarizedExperiment` object as 
-an input class. See the SummarizedExperiment vignette [@SummarizedExperiment] 
-for more information on this object class.  
+an input class, or one of its extensions (`RangedSummarizedExperiment`,
+`SingleCellExperiment`). See the SummarizedExperiment vignette 
+[@SummarizedExperiment] for more information on this object class.  
 
 For the sake of completeness, it is advised to include the design matrix formula 
 in the SummarizedExperiment as indicated below.
-
+ 
 ```{r, message=FALSE}
 sumExp <- SummarizedExperiment::SummarizedExperiment(
     assays = list(counts = Tasic_counts_vignette),
     colData = Tasic_metadata_vignette,
     rowData = txInfo
 )
+
+# Alternatively, use a SingleCellExperiment as input object
+# sumExp <- SingleCellExperiment::SingleCellExperiment(
+#     assays = list(counts = Tasic_counts_vignette),
+#     colData = Tasic_metadata_vignette,
+#     rowData = txInfo
+# )
 
 # for sake of completeness: specify design formula from colData
 metadata(sumExp)$formula <- ~ 0 + as.factor(colData(sumExp)$group)
