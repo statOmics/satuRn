@@ -5,7 +5,14 @@
 \title{Test function to obtain a top list of transcripts that are
 differentially used in the contrast of interest}
 \usage{
-testDTU(object, contrasts, diagplot1 = TRUE, diagplot2 = TRUE, sort = FALSE)
+testDTU(
+  object,
+  contrasts,
+  diagplot1 = TRUE,
+  diagplot2 = TRUE,
+  sort = FALSE,
+  forceEmpirical = FALSE
+)
 }
 \arguments{
 \item{object}{A `SummarizedExperiment` instance containing a list of objects 
@@ -39,6 +46,14 @@ normal.}
 \item{sort}{`boolean(1)` Logical, defaults to FALSE. If set to TRUE, 
 the output of the topTable test function is sorted according to 
 the empirical p-values.}
+
+\item{forceEmpirical}{`boolean(1)` Logical, defaults to FALSE. If there are
+less than 500 features in a particular contrast, satuRn will by default
+not perform its empirical correction of p-values and only output raw
+p-values. By setting this parmater to TRUE, this behaviour can be
+overwritten and satuRn will try to perform the empirical correction
+anyway. Use with caution! Carefully inspect the two diagplots to assess
+if the correction is reasonable.}
 }
 \value{
 An updated `SummarizedExperiment` that contains the `Dataframes` 
@@ -73,7 +88,8 @@ sumExp <- testDTU(object = sumExp,
     contrasts = L, 
     diagplot1 = FALSE,
     diagplot2 = FALSE,
-    sort = FALSE)
+    sort = FALSE,
+    forceEmpirical = FALSE)
 }
 \author{
 Jeroen Gilis

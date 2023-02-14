@@ -18,16 +18,16 @@ fitDTU(object, ...)
 \arguments{
 \item{object}{A `SummarizedExperiment` instance generated with the
 SummarizedExperiment function of the SummarizedExperiment package.
+Alternatively, a RangedSummarizedExperiment or a SingleCellExperiment object.
 In the assay slot, provide the transcript-level expression counts as an
 ordinary `matrix`, `DataFrame`, a `sparseMatrix` or a `DelayedMatrix`.
 The `rowData` slot must be a `DataFrame` object describing the rows,
 which must contain a column `isoform_id` with the row names of
 the expression matrix and a column `gene_id` with the corresponding gene
 identifiers of each transcript. `colData` is a `DataFrame` describing
-the samples or cells in the experiment. Finally, specify the
-experimental design as a formula in the metadata slot. This formula must
-be based on the colData. See the documentation examples and the vignette
-for more details.}
+the samples or cells. Finally, specify the experimental design as a formula 
+in the metadata slot. This formula must be based on the colData. See the 
+documentation examples and the vignette for more details.}
 
 \item{...}{parameters including:}
 

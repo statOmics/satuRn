@@ -311,6 +311,14 @@ p.adjust_empirical <- function(pvalues,
 #' @param sort `boolean(1)` Logical, defaults to FALSE. If set to TRUE, 
 #'     the output of the topTable test function is sorted according to 
 #'     the empirical p-values.
+#'     
+#' @param forceEmpirical `boolean(1)` Logical, defaults to FALSE. If there are
+#'     less than 500 features in a particular contrast, satuRn will by default
+#'     not perform its empirical correction of p-values and only output raw
+#'     p-values. By setting this parmater to TRUE, this behaviour can be
+#'     overwritten and satuRn will try to perform the empirical correction
+#'     anyway. Use with caution! Carefully inspect the two diagplots to assess
+#'     if the correction is reasonable.
 #'
 #' @examples
 #' data(sumExp_example, package = "satuRn")
@@ -337,7 +345,8 @@ p.adjust_empirical <- function(pvalues,
 #'     contrasts = L, 
 #'     diagplot1 = FALSE,
 #'     diagplot2 = FALSE,
-#'     sort = FALSE)
+#'     sort = FALSE,
+#'     forceEmpirical = FALSE)
 #' @return An updated `SummarizedExperiment` that contains the `Dataframes` 
 #'     that display the significance of DTU for each transcript 
 #'     in each contrast of interest.
@@ -358,7 +367,8 @@ testDTU <- function(object,
                     contrasts,
                     diagplot1 = TRUE,
                     diagplot2 = TRUE, 
-                    sort = FALSE) {
+                    sort = FALSE,
+                    forceEmpirical = FALSE) {
     if (is.null(rowData(object)[["fitDTUModels"]])) {
         stop("fitDTUModels is empty. Did you run fitDTU first?")    
     }
@@ -390,7 +400,7 @@ testDTU <- function(object,
         pval <- pt(-abs(t), df) * 2
         regular_FDR <- p.adjust(pval, method = "BH") # regular FDR correction
         
-        if(sum(!is.na(pval)) < 500){
+        if(sum(!is.na(pval)) < 500 & !forceEmpirical){
           warning(paste0("Less than 500 features with non-NA results for contrast ",
                          i, ": not running empirical correction"))
           
@@ -406,6 +416,12 @@ testDTU <- function(object,
           rowData(object)[[paste0("fitDTUResult_", 
                                   colnames(contrasts)[i])]] <- result_contrast
         } else{
+          if(sum(!is.na(pval)) < 500){
+            warning(paste0("Less than 500 features with non-NA results for 
+                           contrast ", i, " while forceEmpirical is TRUE: 
+                           attempt to run empirical correction, but use with 
+                           caution!"))
+          }
           # empirical FDR correction    
           empirical <- satuRn:::p.adjust_empirical(pval, 
                                                    t, 
