@@ -41,7 +41,7 @@ cell types).
 selected transcripts in different groups of interest. 
 
 All details about the `satuRn` model and statistical tests are described 
-in our preprint [@Gilis2021].
+in our publication [@Gilis2021].
 
 In this vignette, we analyze a small subset of the data from [@Tasic2018]. 
 More specifically, an expression matrix and the corresponding metadata of 
@@ -223,7 +223,7 @@ sumExp
 
 # satuRn analysis
 
-## Fit quasi-binomial generalized linear models models
+## Fit quasi-binomial generalized linear models
 
 The `fitDTU` function of `satuRn` is used to model transcript usage in different
 groups of samples or cells. Here we adopt the default settings of the function.
