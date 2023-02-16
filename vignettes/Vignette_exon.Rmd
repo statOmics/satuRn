@@ -12,7 +12,7 @@ output:
   BiocStyle::pdf_document: default
 package: satuRn
 abstract: |
-  Vignette that describes how to use satuRn for perforimg differential exon
+  Vignette that describes how to use satuRn for performing differential exon
   usage analyses.
 vignette: >
   %\VignetteIndexEntry{Vignette for exon-level analyses}
@@ -24,10 +24,11 @@ In order to demonstrate the ability of `satuRn` to perform a **differential**
 **exon usage (DEU) analysis**, as opposed to a differential transcript usage 
 (DTU) analysis, we perform the DEU analysis described in the 
 [vignette](https://bioconductor.org/packages/devel/bioc/vignettes/DEXSeq/inst/doc/DEXSeq.html) 
-of `DEXSeq`. Note that for satuRn there is no real distinction between 
+of `DEXSeq`. Note that for `satuRn` there is no real distinction between 
 performing a transcript-level or exon-level analysis. Once a proper input object
-is provided, satuRn will perform a differential usage analysis regardless of the
-specific feature type.
+is provided, with each row corresponding to a sub gene-level feature, `satuRn` 
+will perform a differential usage analysis regardless of the specific feature 
+type.
 
 In this script, we perform a DEU analysis on the same dataset as in the `DEXSeq`
 vignette, i.e. a subset of the `pasilla` bulk RNA-Seq dataset by (Brooks 
@@ -101,7 +102,7 @@ remove <- which(table(rowData(dxd)$groupID) == 1)
 dxd <- dxd[rowData(dxd)$groupID != names(remove),]
 ```
 
-Wrangle into a `SummarizedExperiment` object. satuRn can also handle
+Wrangle the data into a `SummarizedExperiment` object. satuRn can also handle
 `RangedSummarizedExperiment` and `SingleCellExperiment` objects, but is not
 compatible with `DEXSeqDataSet` objects.
 
@@ -115,6 +116,11 @@ sumExp <- SummarizedExperiment::SummarizedExperiment(assays = list(counts=featur
 ```
 
 # satuRn analysis
+
+We here perform a canonical `satuRn` analysis with exons as feature type. For a
+more elaborate description of the different steps, we refer to the main 
+[vignette](https://www.bioconductor.org/packages/devel/bioc/vignettes/satuRn/inst/doc/Vignette.html) 
+of the `satuRn` package.
 
 ## Fit quasi-binomial generalized linear models
 
