@@ -43,6 +43,7 @@ Suggests:
     stageR,
     DelayedArray,
     fishpond,
+    data.table,
     tximportData
 VignetteBuilder: knitr
 Collate: 'data.R' 'satuRn-framework.R' 'allGenerics.R'
