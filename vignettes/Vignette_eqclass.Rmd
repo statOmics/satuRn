@@ -106,8 +106,9 @@ files <- c(file.path(dir,"alevin/mouse1_unst_50/alevin/bfh.txt"),
 
 # Additionally read a dataframe that links transcript identifiers to gene 
 # identifiers
-tx2gene <- data.table::fread(file.path(dir, "tx2gene_alevin.tsv"),
-                             header = FALSE)
+tx2gene <- read.table(file.path(dir, "tx2gene_alevin.tsv"),
+                      sep = "\t",
+                      header = FALSE)
 colnames(tx2gene) <- c("isoform_id", "gene_id")
 
 # use `alevinEC` to read and wrangle the equivalence class counts (~10 seconds)
