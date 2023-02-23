@@ -385,7 +385,7 @@ ranking of transcripts according to their p-value.
 Finally, we may visualize the usage of select transcripts in select groups 
 of interest.
 
-```{r, warning=FALSE}
+```{r, warning=FALSE, dpi=60}
 group1 <- colnames(sumExp)[colData(sumExp)$group == 
                              "VISp.L5_IT_VISp_Hsd11b1_Endou"]
 group2 <- colnames(sumExp)[colData(sumExp)$group == 

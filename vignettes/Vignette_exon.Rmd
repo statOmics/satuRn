@@ -160,7 +160,7 @@ sumExp <- satuRn::testDTU(object = sumExp,
 
 ## Visualize DTU
 
-```{r}
+```{r, dpi=60}
 # get all (3) statistically significant differentially used exons
 DEU <- rownames(rowData(sumExp)[["fitDTUResult_C1"]][which(rowData(sumExp)[["fitDTUResult_C1"]]$empirical_FDR < 0.05),])
 
