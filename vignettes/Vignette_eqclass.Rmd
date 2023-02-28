@@ -331,7 +331,7 @@ for a detailed explanation on the interpretation of the different columns.
 
 Finally, we may visualize the usage of the top 3 differentially used equivalence
 classes in the different treatment groups. By the setting the `transcripts` and
-`genes` arguments to `NULL` and specifying `top.n =3`, the 3 features with the
+`genes` arguments to `NULL` and specifying `top.n = 3`, the 3 features with the
 smallest (empirically correct) false discovery rates are displayed.
 
 ```{r, warning=FALSE}
