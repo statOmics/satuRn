@@ -6,7 +6,8 @@
 #' cell types to use for this vignette;
 #' L5_IT_VISp_Hsd11b1_Endou, L5_IT_ALM_Tmem163_Dmrtb1 and L5_IT_ALM_Tnc. 
 #' The data has already been leniently filtered with 
-#' the `filterByExpr` function of edgeR.
+#' the `filterByExpr` function of edgeR. After this, the transcripts of the 
+#' first 3000 genes were retained to further reduce the size of the data object.
 #' @usage data(Tasic_counts_vignette)
 "Tasic_counts_vignette"
 

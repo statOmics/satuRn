@@ -81,7 +81,8 @@ library(stageR)
 
 The following data corresponds to a small subset of the dataset 
 from [@Tasic2018] and is readily available from the `satuRn` package.
-To check how the subset was generate, please check `?Tasic_counts_vignette`.
+For more details on how the subset was generated, please check 
+`?Tasic_counts_vignette`.
 
 ```{r}
 data(Tasic_counts_vignette) # transcript expression matrix
@@ -126,11 +127,11 @@ txInfo$isoform_id <- txs$tx_id
 txInfo$gene_id <- txs$gene_id
 rownames(txInfo) <- txInfo$isoform_id
 
-# Remove transcripts that are the only isoform expressed of a certain gene
+# remove transcript version identifiers
 rownames(Tasic_counts_vignette) <- sub("\\..*", "", 
                                        rownames(Tasic_counts_vignette)) 
-# remove transcript version identifiers
 
+# Remove transcripts that are the only isoform expressed of a certain gene
 txInfo <- txInfo[txInfo$isoform_id %in% rownames(Tasic_counts_vignette), ]
 txInfo <- subset(txInfo, 
                  duplicated(gene_id) | duplicated(gene_id, fromLast = TRUE))
@@ -382,10 +383,15 @@ ranking of transcripts according to their p-value.
 
 ## Visualize DTU
 
-Finally, we may visualize the usage of select transcripts in select groups 
-of interest.
+Finally, we may visualize the usage of the top 3 differentially used transcripts
+in selected treatment groups. By the setting the `transcripts` and
+`genes` arguments to `NULL` and specifying `top.n = 3`, the 3 features with the
+smallest (empirically correct) false discovery rates are displayed. 
+Alternatively, visualizing transcripts of interest or all transcripts within a
+gene of interest is possible by specifying the `transcripts` or `genes` 
+arguments, respectively.
 
-```{r, warning=FALSE}
+```{r, warning=FALSE, dpi=60}
 group1 <- colnames(sumExp)[colData(sumExp)$group == 
                              "VISp.L5_IT_VISp_Hsd11b1_Endou"]
 group2 <- colnames(sumExp)[colData(sumExp)$group == 
@@ -397,11 +403,9 @@ plots <- satuRn::plotDTU(
     groups = list(group1, group2),
     coefficients = list(c(0, 0, 1), c(0, 1, 0)),
     summaryStat = "model",
-    transcripts = c("ENSMUST00000081554", 
-                    "ENSMUST00000195963", 
-                    "ENSMUST00000132062"),
+    transcripts = NULL,
     genes = NULL,
-    top.n = 6
+    top.n = 3
 )
 
 # to have same layout as in our paper

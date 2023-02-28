@@ -11,7 +11,8 @@ From these cells, we randomly sampled 20 cells of each of the following
 cell types to use for this vignette;
 L5_IT_VISp_Hsd11b1_Endou, L5_IT_ALM_Tmem163_Dmrtb1 and L5_IT_ALM_Tnc. 
 The data has already been leniently filtered with 
-the `filterByExpr` function of edgeR.}
+the `filterByExpr` function of edgeR. After this, the transcripts of the 
+first 3000 genes were retained to further reduce the size of the data object.}
 \format{
 An object of class \code{matrix} (inherits from \code{array}) with 6130 rows and 60 columns.
 }
@@ -27,6 +28,7 @@ From these cells, we randomly sampled 20 cells of each of the following
 cell types to use for this vignette;
 L5_IT_VISp_Hsd11b1_Endou, L5_IT_ALM_Tmem163_Dmrtb1 and L5_IT_ALM_Tnc. 
 The data has already been leniently filtered with 
-the `filterByExpr` function of edgeR.
+the `filterByExpr` function of edgeR. After this, the transcripts of the 
+first 3000 genes were retained to further reduce the size of the data object.
 }
 \keyword{datasets}
