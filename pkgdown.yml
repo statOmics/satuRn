@@ -3,6 +3,7 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   Vignette: Vignette.html
+  Vignette_eqclass: Vignette_eqclass.html
   Vignette_exon: Vignette_exon.html
-last_built: 2023-02-14T16:31Z
+last_built: 2023-02-28T12:53Z
 
