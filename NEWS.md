@@ -1,4 +1,9 @@
-# 1.7.1
+# 1.7.3
+
+Included two additional vignettes to guide users on using satuRn for performing 
+differential usage analyses for (1) exons and (2) equivalence classes.
+
+# 1.7.2
 
 Minor enhancement for handling fitErrors. When a glm model cannot be fitted,
 e.g., due to the sparsity of the data, satuRn will record this as a "fitError", returning
@@ -7,6 +12,12 @@ expressed in any sample or cell, the testDTU could fail in older versions of sat
 With the enhancement in version 1.7.1, such features will be handled correctly, i.e.,
 flagged as fitErrors and assigned NA estimates and p-values. Note that ideally such
 features should have been removed previously during feature-level filtering.
+
+# 1.7.1
+
+Attempt to make an enhancement for handling fitErrors. However, this attempt turned
+out to be unsuccessful, as per GitHub issue 25. Thus, the enhancement was finalised
+in satuRn version 1.7.2.
 
 # 1.4.1
 
