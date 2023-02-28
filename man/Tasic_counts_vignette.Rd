@@ -13,7 +13,7 @@ L5_IT_VISp_Hsd11b1_Endou, L5_IT_ALM_Tmem163_Dmrtb1 and L5_IT_ALM_Tnc.
 The data has already been leniently filtered with 
 the `filterByExpr` function of edgeR.}
 \format{
-An object of class \code{matrix} (inherits from \code{array}) with 22273 rows and 60 columns.
+An object of class \code{matrix} (inherits from \code{array}) with 6130 rows and 60 columns.
 }
 \usage{
 data(Tasic_counts_vignette)
